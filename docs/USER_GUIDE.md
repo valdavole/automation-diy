@@ -12,7 +12,7 @@ This guide walks through every part of the app in the order you'd typically use 
 4. Click **"Graph"** to view the torque/HP curve.
 5. Optionally, click **"2. Manual Throttle"** for a hands-on telemetry test with cooling behavior.
 6. Click **"3. Test Drive"** to see how the engine performs in an actual car (0–100 time, top speed).
-7. Use **File → Save Engine As...** to store your build as a `.json` file you can reload or share later.
+7. Name your engine and use **File → Save Engine As...** to store your build as a `.json` file you can reload or share later.
 
 Changing your language (CZ/EN radio buttons at the top) can be done at any time and doesn't affect your current build.
 

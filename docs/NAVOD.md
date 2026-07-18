@@ -12,7 +12,7 @@ Tento návod prochází appku v pořadí, v jakém ji typicky používáš. Tool
 4. Klikni na **"Graf"** a zobraz si křivku točivého momentu a výkonu.
 5. Volitelně klikni na **"2. Ruční plyn"** pro praktický test s telemetrií a chlazením.
 6. Klikni na **"3. Zkušební Jízda"** a podívej se, jak si motor vede v reálném autě (čas 0-100, maximálka).
-7. Přes **Soubor → Uložit motor jako...** si build ulož do `.json` souboru, ke kterému se můžeš vrátit nebo ho poslat dál.
+7. Pojmenuj svůj motor a přes **Soubor → Uložit motor jako...** si build ulož do `.json` souboru, ke kterému se můžeš vrátit nebo ho poslat dál.
 
 Jazyk appky (přepínač CZ/EN nahoře) můžeš měnit kdykoliv za chodu, aniž by to ovlivnilo rozpracovaný build.
 
