@@ -23,21 +23,23 @@ Sets the fundamental layout of the engine.
 - **Configuration**: Inline (cheap, smooth, gets impractically long with many cylinders) / V (compact, great for 6–8 cylinders) / Boxer (opposed pistons, lowest center of gravity).
 - **V-angle**: only relevant for V engines — 60° suits V6, 90° is the classic V8 angle for balance, 120° is very flat but very wide.
 - **Cylinders**: 3–5 for small, cheap builds; 6–8 as the performance standard; 10–16 for exotic hypercar-tier builds.
-- **Block material**: Cast Iron (heavy, indestructible) through Aluminium (standard) to AlSi/Magnesium (lower internal friction, motorsport-grade).
+- **Block material**: Cast Iron (heavy, indestructible) through Aluminium (standard, with Heavy/Light sub-variants for a weight-vs-durability trade-off) and AlSi (Heavy/Light — no cylinder liners, lower friction) to Aluminium Billet (machined from a single block, race-grade) and Magnesium (lowest friction, motorsport-grade).
 - **Bore / Stroke**: bore controls piston diameter (bigger bore → bigger valves → better high-RPM airflow); stroke controls piston travel (bigger stroke → strong low-end torque, but physically caps how high the engine can rev).
 - **Radiator efficiency**: how effectively the engine sheds heat — this is your buffer against overheating in the Manual Throttle test.
 
 ### Tab 2 — Bottom End
 This is where the engine's mechanical RPM ceiling is decided.
-- **Crankshaft / Conrods / Pistons materials** each carry their own independent RPM limit (e.g. Cast crank ≈ 6500 RPM, Forged ≈ 8500 RPM, Billet ≈ 11500 RPM; similar tiers exist for conrods and pistons). On the dyno, the **weakest of the three** determines the actual mechanical limit — upgrading just one part won't help if another is still the bottleneck.
-- **Balancer**: None / Harmonic Damper (+200 RPM, small friction cost) / Full Balancers (+500 RPM, bigger friction cost).
+- **Crankshaft / Conrods / Pistons materials** each carry their own independent RPM limit, now with finer Heavy/Light tiers within each material family (e.g. Cast crank ≈ 6500 RPM, Forged Steel Light ≈ 8800 RPM, Billet ≈ 11500 RPM; similar tiers exist for conrods and pistons, including a Hypereutectic Cast piston option for a durable, emissions-friendly middle ground). On the dyno, the **weakest of the three** determines the actual mechanical limit — upgrading just one part won't help if another is still the bottleneck.
+- **Balancer**: None / Harmonic Damper (+200 RPM, small friction cost) / Full Balancers (+500 RPM, bigger friction cost). Choosing Harmonic Damper or Full Balancers reveals an extra **balancer weight slider (0–50 kg)** for continuous fine-tuning: more added weight pushes the mechanical RPM limit further up, but increases internal friction and slows the engine's throttle response.
 
 ### Tab 3 — Top End
 Head and valvetrain configuration — this heavily influences knock risk.
-- **Head material**: Cast Iron retains heat and increases detonation risk; Aluminium dissipates heat and lowers it.
+- **Head material**: Cast Iron (Eco/Std/Perf tiers — Eco is cheap but knock-prone, Perf has better flow) retains heat and increases detonation risk; Aluminium (Eco/Std/Perf) dissipates heat and lowers it; Aluminium Billet Race is the race-grade option with the best heat dissipation and lowest friction.
 - **Valvetrain**: Pushrod (OHV, chokes past ~4200 RPM) / SOHC / DOHC (best for high RPM) / DAOHC (race-only, direct actuation).
 - **Valves per cylinder**: 2 (strong low-end, chokes up top) to 5 (extreme top-end, race-oriented).
-- **VVT / VVL**: variable valve timing/lift — smooths the power delivery across the whole rev range.
+- **VVT**: variable valve *timing* — None (fixed) / Intake (smooths delivery) / All (broadens the curve across the whole rev range).
+- **VVL**: variable valve *lift*, now a 3-state choice — None (fixed lift) / VVL (switches to a sharper cam profile above a set RPM) / CVVL (continuously variable, smoothest and most efficient blend). Selecting VVL or CVVL reveals two extra sliders: **VVL Profile** (how aggressive the secondary cam profile is) and **VVL Switch RPM** (exactly where the engine transitions to it).
+- **Valve spring stiffness**: a new slider — stiffer springs (higher values) let the engine safely rev higher without valve float (valves "bouncing" instead of closing properly), at the cost of a bit more friction and slightly reduced power.
 - **Cam profile**: low values bias torque low in the rev range; high values push an aggressive, top-end-biased, rougher-idling character.
 - **Compression ratio**: more compression means more power, but sharply increases knock risk (unless you're running Diesel, which ignores these limits).
 
@@ -50,20 +52,22 @@ Head and valvetrain configuration — this heavily influences knock risk.
 
 ### Tab 5 — Fuel & Tune
 This tab, together with Tab 3, drives the **knock/detonation** failure model.
-- **Fuel delivery**: Carburetor (worse atomization, more knock risk) / EFI Multi-point (modern standard) / Direct Injection (cools cylinders internally, cuts knock risk, adds power).
+- **Fuel delivery**: Carburetor (worse atomization, more knock risk) / Mechanical Fuel Injection (race-style, high fuel consumption) / Single Point EFI (basic single-injector setup) / EFI Multi-point (modern standard) / Direct Injection (cools cylinders internally, cuts knock risk, adds power). A new **carburetor/throttle body size slider** lets you fine-tune between low-RPM torque (smaller) and high-RPM breathing (larger).
 - **Intake configuration**: Single / Twin / ITB (independent throttle bodies — sharp response, strong top-end).
-- **Manifold**: Standard / Performance / Race / Compact — trades peak power for packaging or midrange.
-- **Fuel type**: octane rating; higher-octane fuels (Ultimate 100, Methanol) resist knock at high boost/compression; Diesel never detonates.
+- **Manifold**: now spans Standard (with Low/Mid sub-tiers), Performance (with Mid/High sub-tiers), Race, Compact, and Variable (broadens the effective rev range) — trading peak power for packaging or midrange. A **manifold size slider** fine-tunes intake runner width alongside the preset choice.
+- **Fuel type**: octane rating, now with more granularity — Low Quality 85 and Regular 91 at the bottom, Premium 95 and Super 98 as solid middle choices, Ultimate 100/E85/Methanol/Compressed Gas/Leaded Gasoline for high-boost builds, Diesel (never detonates), and **Nitromethane** — an extreme, high-risk/high-reward fuel that unlocks a much higher power ceiling than anything else, at real risk to engine longevity.
+- **Fuel map**: a new slider separate from AFR — leaning it out (0–40) trims fuel consumption but sharply raises knock risk and slightly hurts power, while richening it (60–100) helps cool the cylinders and slightly boosts power.
 - **AFR (air-fuel ratio)**: 14.7 is stoichiometric/"perfect" combustion; 12.5–13.0 is a rich mixture for max power; 15+ is lean and sharply raises knock risk.
 - **Ignition timing**: more advance = more power, but aggressive timing combined with high compression is a fast route to melted pistons.
 - **RPM limiter**: this is the number the dyno actually enforces. If you set it above the mechanical limit from Tab 2, the engine **will** blow up on the pull — that's intentional, not a bug.
 
 ### Tab 6 — Exhaust
 - **Architecture**: Single vs. Dual (dual effectively doubles total exhaust cross-section).
-- **Headers**: Cast (restrictive) vs. Tubular / Tubular Race (progressively less restrictive).
+- **Headers**: now a finer spectrum from Compact Cast (most restrictive) through Cast (Low/Mid/Standard tiers) to Tubular (Standard/Mid/Long/Race tiers, progressively less restrictive). A **header size slider** lets you fine-tune within whichever tier you pick.
 - **Pipe diameter**: too small a diameter for a high-power engine chokes the top of the curve.
-- **Catalytic converter**: None (max flow) / 2-way-3-way (some restriction) / High Flow (sport-oriented, less restrictive).
-- **Mufflers (x2)**: None (straight-through, no restriction) → Straight → Baffled → Reverse (quietest, most restrictive).
+- **Exhaust bypass valves**: a new option — with valves fitted, the exhaust bypasses the mufflers entirely above 3500 RPM for maximum flow at high RPM, at the cost of being louder there; below that threshold the mufflers work normally.
+- **Catalytic converter**: None (max flow) through 2-way/3-way (some restriction), an Exhaust Reactor, and up to sport-oriented High Flow and Pre-Cat combinations (Three-Way + Pre-Cat, High Flow 3-Way + Pre-Cat) that recover most of the flow a plain catalytic converter would cost.
+- **Mufflers (x2)**: None (straight-through, no restriction) → Straight → Baffled → Reverse Flow (quietest, most restrictive).
 
 ### Tab 7 — Drivetrain
 Everything here only matters for the **Test Drive** simulation, not the dyno.
@@ -79,7 +83,7 @@ Everything here only matters for the **Test Drive** simulation, not the dyno.
 Click **"1. Dyno Pull"**. The simulator sweeps RPM and computes torque/HP at each point. Two independent things can end the pull early with a failure:
 
 - **Mechanical over-rev**: if your RPM limiter (Tab 5) is set above the weakest of crank/conrod/piston limits (Tab 2), the pull stops there and tells you exactly which part failed and how to fix it (upgrade that part, or lower the limiter).
-- **Knock/detonation**: a "knock index" is computed from compression, ignition timing, AFR, fuel octane, and head material. Past a threshold, the engine detonates and melts a piston — even at RPM well below the mechanical limit. The failure message tells you which levers to pull back (lower compression/boost/ignition, use higher octane, richer AFR).
+- **Knock/detonation**: a "knock index" is computed from compression, ignition timing, AFR, fuel map, fuel octane, and head material. Past a threshold, the engine detonates and melts a piston — even at RPM well below the mechanical limit. The failure message tells you which levers to pull back (lower compression/boost/ignition, use higher octane, richer AFR/fuel map). Running Nitromethane raises the power ceiling dramatically but doesn't relax this model — it's a genuine high-risk choice, not a free upgrade.
 
 Click **"Graph"** afterward to see the resulting torque/HP curve.
 
@@ -101,7 +105,7 @@ If `sounddevice` and a working PortAudio backend are available, the engine note 
 
 ## 7. Save / Load
 
-Use **File → Save Engine As...** to write your current build (every parameter across all 7 tabs) to a `.json` file, and **File → Load Engine...** to bring it back later or share it with someone else running the app.
+Use **File → Save Engine As...** to write your current build (every parameter across all 7 tabs) to a `.json` file, and **File → Load Engine...** to bring it back later or share it with someone else running the app. Engine files saved with older app versions (including the old on/off VVL setting) load correctly — they're automatically converted to the current format.
 
 ## 8. Troubleshooting
 
