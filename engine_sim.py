@@ -25,7 +25,7 @@ except (ImportError, OSError):
 # --- LOKALIZAČNÍ SLOVNÍK (CZ / EN) ---
 T = {
     "cz": {
-        "app_title": "Automation DIY - Verze 4.2 (Physics Integration Update)",
+        "app_title": "Automation DIY - Verze 4.3.1 (Content & Tuning Update)",
         "menu_file": "Soubor",
         "menu_load": "Načíst motor (.json)...",
         "menu_save": "Uložit motor jako (.json)...",
@@ -39,26 +39,31 @@ T = {
         "tt_config": "Inline (Řadový): Levný, plynulý chod, ale u mnoha válců je moc dlouhý.\nV (Vidlicový): Kompaktní, krátký, skvělý pro 6 a 8 válců.\nBoxer (Plochý): Protiběžné písty. Dokonalé vyvážení a nízké těžiště.",
         "tt_vangle": "60°: Vhodný pro V6, motor je užší.\n90°: Klasika pro V8, skvělé vyvážení rotujících hmot.\n120°: Velmi plochý motor, snižuje těžiště, ale je extrémně široký.",
         "tt_cyl": "3 až 5: Levnější, vhodné pro malé objemy.\n6 až 8: Výkonný standard, kultivovaný chod.\n10 až 16: Exotické superauta. Obrovský výkon a spotřeba.",
-        "tt_block": "Cast Iron (Litina): Těžká, nezničitelná.\nAluminium: Standard.\nAlSi: Slitina bez vložek válců (nižší tření).\nMagnesium: Motorsport (nejnižší tření).",
+        "tt_block": "Cast Iron: Těžká, nezničitelná.\nAluminium (Light/Heavy/Billet): Hliník je standard. Heavy je pevnější, Light lehčí. Billet je frézovaný z jednoho kusu pro závodní nasazení.\nAlSi (Light/Heavy): Slitina bez vložek, snižuje tření.\nMagnesium: Motorsport, nejlehčí, nejnižší tření.",
         "tt_bore": "Určuje průměr pístu.\nVětší vrtání = umožňuje instalaci větších ventilů pro lepší průtok vzduchu ve vysokých otáčkách.",
         "tt_stroke": "Určuje vzdálenost, kterou píst urazí.\nVětší zdvih = masivní nárůst točivého momentu v nízkých otáčkách, ale fyzicky brání motoru dosáhnout vysokých RPM.",
         "tt_rad": "Větší chladič (vysoká účinnost v %) dokáže mnohem efektivněji odvádět teplo z bloku.\nUdrží tak motor déle v zátěži bez uvaření kapaliny a destrukce těsnění.",
 
-        "lbl_crank": "Materiál klikovky:", "lbl_conrods": "Materiál ojnic:", "lbl_pistons": "Materiál pístů:", "lbl_bal": "Vyvažováky:",
-        "tt_crank": "Cast: Sériovka (max 6500 RPM).\nForged: Pevná a odolná (8500 RPM, snesou turbo).\nBillet: Jeden kus oceli, přežije i 11500 RPM.\nFlat-plane: Specifická klika. U motorů V8 naprosto změní ZVUK i charakter na moderní / vysokootáčkový!",
-        "tt_conrods": "Cast: Sériovka do 6000 RPM.\nHeavy Duty: Do náklaďáků (7000 RPM).\nForged: Zlatý střed (8500 RPM).\nLW Forged: Rychlejší náběh (10000 RPM).\nTitanium: Nejlehčí, nejdražší (12000 RPM).",
-        "tt_pistons": "Cast: Sériové (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nForged: Nezbytné pro turba, odolají detonacím (8500 RPM).\nLW Forged: Superlehké (10500 RPM).\nLow Friction: Sníží spotřebu, ale nic nevydrží (7500 RPM).",
+        "lbl_crank": "Materiál klikovky:", "lbl_conrods": "Materiál ojnic:", "lbl_pistons": "Materiál pístů:", "lbl_bal": "Vyvažováky:", "lbl_bal_mass": "Váha vyvažováků:",
+        "tt_crank": "Cast / Cast Iron Heavy: Sériovka (max 6500 RPM), Heavy verze je robustnější.\nForged / Forged Steel (Heavy/Light): Kovaná, zlatý střed pro turba (8500 RPM).\nBillet / Billet Steel Heavy: Frézovaná z jednoho kusu, přežije i 11500 RPM.\nFlat-plane: U motorů V8 naprosto změní ZVUK i charakter na moderní / vysokootáčkový!",
+        "tt_conrods": "Cast (Light/Heavy): Sériovka do 6000 RPM.\nHeavy Duty: Do náklaďáků (7000 RPM).\nForged (Light/Heavy): Kované, zlatý střed (8500 RPM).\nLW Forged: Odlehčené kované (10000 RPM).\nTitanium: Nejlehčí, nejdražší (12000 RPM).",
+        "tt_pistons": "Cast (Light/Heavy): Sériové (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nHypereutectic Cast: Odolnější odlitek, lepší na emise a lehké turbo.\nForged (Light/Heavy): Nezbytné pro turba, odolají detonacím (8500 RPM).\nLW Forged: Superlehké (10500 RPM).\nLow Friction: Sníží spotřebu, ale nic nevydrží (7500 RPM).",
         "tt_bal": "None: Motor vibruje, je nejlehčí.\nHarmonic Damper: Guma tlumí kmity (+200 RPM limit, malé tření).\nFull Balancers: Přídavné hřídele (+500 RPM limit, ale sežerou výkon).",
+        "tt_bal_mass": "Přidání protizávaží perfektně vyváží motor, což posune limit otáček nahoru, ale přidá hmotnost na rotační vrstvě, takže stoupne vnitřní tření a motor bude mít pomalejší odezvu.",
 
-        "lbl_head_mat": "Materiál hlavy:",
-        "tt_head_mat": "Cast Iron (Litinová): Drží teplo, což drasticky ZVYŠUJE sklony k detonačnímu hoření.\nAluminium (Hliníková): Moderní, skvěle odvádí teplo (snižuje šanci na detonace).",
+        "lbl_head_mat": "Materiál hlavy:", "lbl_springs": "Tuhost pružin:", "lbl_vvl_prof": "VVL Profil:", "lbl_vvl_rpm": "VVL Otáčky:",
+        "tt_head_mat": "Cast Iron / Iron (Eco/Std/Perf): Litina drží teplo a silně ZVYŠUJE sklony ke klepání. Eco je levná, Perf má lepší flow.\nAluminium / Alu (Eco/Std/Perf): Hliník skvěle odvádí teplo (snižuje šanci na detonace).\nAlu Billet Race: Závodní, nejlepší odvod tepla a nejnižší tření.",
 
         "lbl_valve": "Rozvody:", "lbl_valvesn": "Ventilů na válec:", "lbl_vvt": "VVT (Časování):", "lbl_vvl": "VVL (Variabilní zdvih)",
         "lbl_cam": "Profil vačky:", "lbl_comp": "Kompresní poměr:",
         "tt_valve": "Pushrod (OHV): Vačka v bloku, těžké tyčky. Dusí se po překročení 4200 RPM.\nSOHC: 1 vačka v hlavě. Spolehlivé.\nDOHC: 2 vačky v hlavě. Perfektní pro vysoké otáčky.\nDAOHC: Přímé ovládání, závodní záležitost.",
         "tt_valvesn": "2: Skvělé pro nízké otáčky, nahoře se dusí.\n3: Kompromis.\n4: Moderní standard, ideální průtok.\n5: Extrémní výkon nahoře.",
         "tt_vvt": "None: Pevné časování.\nIntake: Mění časování sací vačky. Zlepšuje plynulost.\nAll: Variabilní sací i výfuková. Vyrovná křivku přes celé spektrum.",
-        "tt_cam": "0-30: Silné dole.\n40-60: Sportovní charakter.\n70-100: Agresivní profil. Extrémní výkon nahoře, nepravidelný volnoběh.",
+        "tt_vvl": "None: Pevný zdvih.\nVVL: Variabilní zdvih - přepne na ostrou vačku v daných otáčkách.\nCVVL: Plynule variabilní - vyrovná křivku a zvýší celkovou efektivitu.",
+        "tt_vvl_prof": "Určuje ostrost druhého (VVL) vačkového profilu. \n0-30: Jemný profil pro nízké otáčky.\n40-60: Sportovní.\n70-100: Závodní agresivní vačka, skvělá nahoře.",
+        "tt_vvl_rpm": "Určuje přesné otáčky, při kterých systém VVL přepne z normálního profilu (Tab 3: Profil vačky) na ostrý VVL Profil.",
+        "tt_springs": "Tvrdší pružiny a zdvihátka (50-100) umožní motoru točit mnohem vyšší otáčky bez 'odskakování ventilů' (Valve Float), ale přidávají tření a mírně snižují výkon.",
+        "tt_cam": "Určuje dýchání motoru. Vyšší profil přesouvá výkon k omezovači a volnoběh je neklidný.",
         "tt_comp": "Vyšší komprese (10+): Motor je silnější, ale ROSTE RIZIKO DETONACE!\nNízká komprese (7-9): Nutná pro přeplňování obřím turbem.\nNafta (Diesel) tyto limity ignoruje.",
 
         "lbl_asp": "Typ plnění:", "lbl_tb": "Ložiska turba:", "lbl_tc": "Konfigurace:", "lbl_ic": "Velikost Intercooleru:",
@@ -76,23 +81,29 @@ T = {
 
         "lbl_fdeliv": "Vstřikování:", "lbl_inconf": "Konfig. sání:", "lbl_man": "Sací svody:", "lbl_fuel": "Druh paliva:", "lbl_afr": "Směs (AFR):",
         "lbl_ign": "Předstih (Ignition):", "lbl_lim": "Omezovač RPM:",
-        "tt_fdeliv": "Carburetor (Karburátor): Klasika, horší odpařování (zvyšuje šanci klepání).\nEFI Multi: Moderní nepřímý vstřik.\nDirect Injection (Přímý vstřik): Chladí válce zevnitř, brutálně snižuje šanci na detonace a přidává výkon.",
+        "lbl_carb_size": "Velikost klapky/karb.:", "lbl_fuel_map": "Mapa paliva (Směs):", "lbl_man_size": "Velikost sání:",
+        "tt_fdeliv": "Carburetor: Klasika, horší odpařování (klepání).\nMechanical Injection: Závodní, obří spotřeba.\nSingle Point EFI: Základní stříkačka (1 tryska).\nEFI Multi: Moderní nepřímý vstřik.\nDirect Injection: Chladí válce zevnitř, brutálně brání detonacím.",
         "tt_inconf": "Single: Úsporné.\nTwin: Dvě klapky.\nITB (Nezávislé klapky): Šílená odezva a brutální výkon nahoře.",
-        "tt_man": "Standard: Vyvážené.\nPerformance: Krátší kanály, víc koní.\nRace: Přesune výkon blízko omezovači.\nCompact: Udusí výkon, ale vejde se kamkoliv.",
-        "tt_fuel": "Odolnost paliva proti detonačnímu hoření.\nUltimate 100 a Methanol pro velká turba.\nDiesel přežije obří kompresi i tlak a nikdy nezdetonuje!",
+        "tt_man": "Standard (Low/Mid): Vyvážené. Low je na spodek.\nPerformance (Mid/High): Větší průtok, High posouvá výkon nahoru.\nRace: Závodní nahoře.\nCompact: Vejdou se všude, ale dusí.\nVariable: Zvětšuje celkové spektrum otáček.",
+        "tt_fuel": "Odolnost proti klepání. Low Quality 85/Regular 91: Hrozné palivo. Premium 95/Super 98: Standard. Ultimate 100/E85/Methanol: Pro velká turba. Nitromethane: Absolutní šílenost, masivní výkon. Diesel: Nikdy nezdetonuje.",
         "tt_afr": "14.7 = Dokonalé spalování.\n12.5 - 13.0 = Bohatá směs, největší výkon.\n15+ = Chudá směs. Spotřeba padá, ale drasticky ROSTE RIZIKO DETONACÍ.",
         "tt_ign": "Víc předstihu = vyšší výkon.\nAle bacha: Agresivní předstih u vysoké komprese rychle roztaví písty (Klepání).\nIgnorováno u Dieselu.",
         "tt_lim": "NIKDY nedávej výš, než co vydrží tvé ojnice, jinak motor vybuchne!",
+        "tt_carb_size": "Určuje velikost karburátoru nebo škrtící klapky. Menší (0-40) pomáhá průtoku a krouťáku v nízkých otáčkách. Větší (60-100) je nutný pro vysoké otáčky, aby se motor nezadusil.",
+        "tt_man_size": "Šířka sacích kanálů. Malá přidává tah dole, velká odemyká vysoké otáčky, ale zhorší odezvu plynu v nízkých.",
+        "tt_fuel_map": "Nastavení palivové mapy. 0-40 (Lean): Snižuje spotřebu, ale rapidně roste riziko klepání a klesá výkon. 60-100 (Rich): Více paliva chladí válec a mírně zvedne výkon.",
 
         "lbl_arch": "Architektura:", "lbl_head_exh": "Svody (Headers):", "lbl_diam": "Průměr potrubí:", "lbl_cat": "Katalyzátor:",
-        "lbl_muf1": "Tlumič 1:", "lbl_muf2": "Tlumič 2:",
+        "lbl_muf1": "Tlumič 1:", "lbl_muf2": "Tlumič 2:", "lbl_head_size": "Velikost svodů:", "lbl_bypass": "Výfuk. klapky:",
         "tt_arch": "Dual efektivně ohromně zvětšuje celkový průřez výfuku.",
-        "tt_head_exh": "Cast (Litinové): Brzdí plyny.\nTubular: Plynulý odvod plynů.\nTubular Race: Max výkon u omezovače.",
+        "tt_head_exh": "Compact Cast: Obrovská restrikce.\nCast (Low/Mid/Std): Litina, brzdí výkon.\nTubular (Std/Mid/Long/Race): Plynulý odvod plynů. Long/Race dají max výkon u omezovače, ale uberou spodek.",
         "tt_diam": "Pokud máš 1000 koní a průměr odtoku jako z umyvadla (25mm), motor se zadusí a křivka spadne.",
-        "tt_cat": "None: Max výkon.\n2-way/3-way: Mírně dusí.\nHigh Flow: Sportovní řidší mřížka.",
-        "tt_muf": "None (Rovná roura): Žádná restrikce.\nStraight: Dobrý průtok.\nBaffled: Plyny kličkují, takže brzdí výkon.\nReverse: Nejtišší, velká restrikce.",
+        "tt_cat": "None: Žádný restriktor.\n2-way/3-way/Reactor: Různé typy keramik, které dusí výkon.\nHigh Flow (s Pre-Cat): Sportovní propustnější katalyzátory, minimální ztráta výkonu.",
+        "tt_muf": "None (Rovná roura): Žádná restrikce.\nStraight: Dobrý průtok.\nBaffled: Plyny kličkují = ztráta výkonu.\nReverse Flow: Nejtišší, ale největší dusítko.",
+        "tt_head_size": "Průměr svodového potrubí. Velký pomáhá extrémním výkonům, malý pomáhá rychlosti výfukových plynů pro lepší krouťák dole.",
+        "tt_bypass": "No Valves: Výfuk jde vždy přes tlumiče.\nBypass Valves: Klapky se v 3500 RPM otevřou a zcela obejdou tlumiče, čímž uvolní maximální výkon za cenu hluku.",
 
-        "lbl_veh": "Předvolba vozu:", "lbl_weight": "Váha (Weight):", "lbl_cd": "Odpor vzduchu (Cd):", "lbl_grip": "Trakce (Tire Grip):",
+        "lbl_veh": "Předvolba vozu:", "lbl_weight": "Váha:", "lbl_cd": "Odpor vzduchu (Cd):", "lbl_grip": "Trakce (Tire Grip):",
         "lbl_gears": "Počet převodů:", "lbl_fd": "Stálý převod:", "lbl_drive": "Pohon nápravy:",
         "tt_veh": "Přednastaví hodnoty šasi podle typických zástupců daných kategorií.\nUšetří ti čas při testování různých motorů v různých typech aut.",
         "tt_weight": "Celková hmotnost vozu s řidičem a náplněmi.\nZásadní parametr pro zrychlení z místa podle Newtonova druhého zákona (F=m*a).",
@@ -113,7 +124,7 @@ T = {
         "btn_retry": "NOVÝ POKUS", "btn_accel": "ZRYCHLUJEME...", "msg_not_reached": "Nedosaženo"
     },
     "en": {
-        "app_title": "Automation DIY - Version 4.2 (Physics Integration Update)",
+        "app_title": "Automation DIY - Version 4.3.1 (Content & Tuning Update)",
         "menu_file": "File",
         "menu_load": "Load Engine (.json)...",
         "menu_save": "Save Engine As (.json)...",
@@ -127,26 +138,31 @@ T = {
         "tt_config": "Inline: Cheap, smooth running, but too long for many cylinders.\nV: Compact, short, great for 6 and 8 cylinders.\nBoxer (Flat): Opposed pistons. Perfect balance and low center of gravity.",
         "tt_vangle": "60°: Suitable for V6, engine is narrower.\n90°: Classic for V8, great balance of rotating masses.\n120°: Very flat engine, lowers CG, but extremely wide.",
         "tt_cyl": "3 to 5: Cheaper, suitable for small displacements.\n6 to 8: Powerful standard, refined running.\n10 to 16: Exotic supercars. Massive power and consumption.",
-        "tt_block": "Cast Iron: Heavy, indestructible.\nAluminium: Standard.\nAlSi: Sleeveless alloy (lower friction).\nMagnesium: Motorsport (lowest friction).",
+        "tt_block": "Cast Iron: Heavy, indestructible.\nAluminium (Light/Heavy/Billet): Standard. Heavy is stronger, Light is lighter. Billet is CNC machined for racing.\nAlSi (Light/Heavy): Sleeveless alloy, reduces friction.\nMagnesium: Motorsport, lightest, lowest friction.",
         "tt_bore": "Determines the piston diameter.\nLarger bore = allows installing bigger valves for better airflow at high RPM.",
         "tt_stroke": "Determines the distance the piston travels.\nLarger stroke = massive increase in low-end torque, but physically limits the engine from reaching high RPM.",
         "tt_rad": "A larger radiator (high efficiency in %) can dissipate heat from the block much more effectively.\nIt keeps the engine under load longer without boiling the coolant and destroying the head gasket.",
 
-        "lbl_crank": "Crankshaft:", "lbl_conrods": "Connecting Rods:", "lbl_pistons": "Pistons:", "lbl_bal": "Balancers:",
-        "tt_crank": "Cast: Stock (max 6500 RPM).\nForged: Strong and durable (8500 RPM, can handle turbo).\nBillet: Single piece of steel, survives even 11500 RPM.\nFlat-plane: Specific crank. On V8s, it completely changes the SOUND and character to modern/high-revving!",
-        "tt_conrods": "Cast: Stock up to 6000 RPM.\nHeavy Duty: For trucks (7000 RPM).\nForged: Golden middle ground (8500 RPM).\nLW Forged: Faster spool (10000 RPM).\nTitanium: Lightest, most expensive (12000 RPM).",
-        "tt_pistons": "Cast: Stock (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nForged: Necessary for turbos, resists detonation (8500 RPM).\nLW Forged: Super light (10500 RPM).\nLow Friction: Lowers fuel consumption, but very fragile (7500 RPM).",
+        "lbl_crank": "Crankshaft:", "lbl_conrods": "Connecting Rods:", "lbl_pistons": "Pistons:", "lbl_bal": "Balancers:", "lbl_bal_mass": "Balancer Mass:",
+        "tt_crank": "Cast / Cast Iron Heavy: Stock (max 6500 RPM), Heavy is sturdier.\nForged / Forged Steel (Heavy/Light): Forged, sweet spot for turbos (8500 RPM).\nBillet / Billet Steel Heavy: CNC machined, survives 11500 RPM.\nFlat-plane: On V8s, completely changes SOUND and rev character to modern/high-revving!",
+        "tt_conrods": "Cast (Light/Heavy): Stock up to 6000 RPM.\nHeavy Duty: For trucks (7000 RPM).\nForged (Light/Heavy): Sweet spot (8500 RPM).\nLW Forged: Lightweight forged (10000 RPM).\nTitanium: Lightest, most expensive (12000 RPM).",
+        "tt_pistons": "Cast (Light/Heavy): Stock (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nHypereutectic Cast: Stronger cast, better for emissions and light turbo.\nForged (Light/Heavy): Resists detonation (8500 RPM).\nLW Forged: Super light (10500 RPM).\nLow Friction: Lowers fuel consumption, very fragile (7500 RPM).",
         "tt_bal": "None: Engine vibrates, but is the lightest.\nHarmonic Damper: Calms vibrations (+200 RPM limit, small friction).\nFull Balancers: Add. shafts (+500 RPM limit, but eats power).",
+        "tt_bal_mass": "Adding counterweights perfectly balances the engine, raising RPM limits but adding rotational mass, which increases internal friction and slows down throttle response.",
 
-        "lbl_head_mat": "Head Material:",
-        "tt_head_mat": "Cast Iron: Retains heat, drastically INCREASING detonation risk.\nAluminium: Modern, dissipates heat efficiently (lowers knock risk).",
+        "lbl_head_mat": "Head Material:", "lbl_springs": "Springs & Lifters:", "lbl_vvl_prof": "VVL Profile:", "lbl_vvl_rpm": "VVL RPM:",
+        "tt_head_mat": "Cast Iron / Iron (Eco/Std/Perf): Retains heat, heavily INCREASING knock risk. Eco is cheap, Perf flows better.\nAluminium / Alu (Eco/Std/Perf): Dissipates heat well (lowers knock risk).\nAlu Billet Race: Racing head, best cooling and lowest friction.",
 
         "lbl_valve": "Valvetrain:", "lbl_valvesn": "Valves per Cyl:", "lbl_vvt": "VVT (Timing):", "lbl_vvl": "VVL (Variable Lift)",
         "lbl_cam": "Cam Profile:", "lbl_comp": "Compression Ratio:",
         "tt_valve": "Pushrod (OHV): Cam in block, heavy pushrods. Chokes past 4200 RPM.\nSOHC: 1 cam in head. Reliable.\nDOHC: 2 cams in head. Perfect for high RPM.\nDAOHC: Direct actuation, racing tier.",
         "tt_valvesn": "2: Great for low RPM, chokes at the top.\n3: A compromise.\n4: Modern standard, ideal airflow.\n5: Extreme top-end power.",
         "tt_vvt": "None: Fixed timing.\nIntake: Varies intake cam timing. Improves smoothness.\nAll: Variable intake and exhaust. Flattens the curve across the whole spectrum.",
-        "tt_cam": "0-30: Strong low end.\n40-60: Sporty character.\n70-100: Aggressive profile. Extreme top-end power, rough idle.",
+        "tt_vvl": "None: Fixed lift.\nVVL: Variable Valve Lift - switches to aggressive cam profile at set RPM.\nCVVL: Continuous - flattens the torque curve and maximizes efficiency.",
+        "tt_vvl_prof": "Determines the aggressiveness of the second (VVL) cam profile. \n0-30: Mild profile for low-end torque.\n40-60: Sporty.\n70-100: Aggressive racing cam for top-end power.",
+        "tt_vvl_rpm": "Sets the exact RPM where the VVL system switches from the normal cam profile (Tab 3: Cam Profile) to the aggressive VVL Profile.",
+        "tt_springs": "Stiffer springs and lifters (50-100) allow the engine to rev much higher without valve float, but add friction and slightly reduce power.",
+        "tt_cam": "Determines engine breathing. Higher profile shifts power to the redline with a rough idle.",
         "tt_comp": "Higher compression (10+): Engine is stronger, but DETONATION RISK INCREASES!\nLow compression (7-9): Necessary for forced induction with a giant turbo.\nDiesel ignores these limits.",
 
         "lbl_asp": "Aspiration:", "lbl_tb": "Turbo Bearings:", "lbl_tc": "Configuration:", "lbl_ic": "Intercooler Size:",
@@ -164,21 +180,27 @@ T = {
 
         "lbl_fdeliv": "Fuel Delivery:", "lbl_inconf": "Intake Config:", "lbl_man": "Intake Manifold:", "lbl_fuel": "Fuel Type:", "lbl_afr": "AFR (Mixture):",
         "lbl_ign": "Ignition Timing:", "lbl_lim": "RPM Limit:",
-        "tt_fdeliv": "Carburetor: Classic, worse vaporization (increases knock risk).\nEFI Multi: Modern port injection.\nDirect Injection: Cools cylinders internally, massively reduces knock risk and adds power.",
+        "lbl_carb_size": "Carb/Throttle Size:", "lbl_fuel_map": "Fuel Map:", "lbl_man_size": "Manifold Size:",
+        "tt_fdeliv": "Carburetor: Classic, worse vaporization (knocking).\nMechanical Injection: Racing, poor economy.\nSingle Point EFI: Basic 1-injector system.\nEFI Multi: Modern port injection.\nDirect Injection: Cools cylinders internally, massively reducing knock risk.",
         "tt_inconf": "Single: Economical.\nTwin: Two throttle bodies.\nITB (Independent Throttle Bodies): Insane response and brutal top-end power.",
-        "tt_man": "Standard: Balanced.\nPerformance: Shorter runners, more horsepower.\nRace: Shifts power close to the rev limiter.\nCompact: Chokes power, but fits anywhere.",
-        "tt_fuel": "Fuel's resistance against detonation (knocking).\nUltimate 100 and Methanol for big turbos.\nDiesel survives massive compression and boost and never detonates!",
+        "tt_man": "Standard (Low/Mid): Balanced. Low biases bottom end.\nPerformance (Mid/High): Better flow, High shifts power up.\nRace: Top-end racing.\nCompact: Fits anywhere but chokes.\nVariable: Broadens the powerband.",
+        "tt_fuel": "Knock resistance. Low Quality 85/Regular 91: Terrible fuel. Premium 95/Super 98: Standard. Ultimate 100/E85/Methanol: For big turbos. Nitromethane: Absolute insanity, massive power boost. Diesel: Never knocks.",
         "tt_afr": "14.7 = Perfect combustion.\n12.5 - 13.0 = Rich mixture, highest power.\n15+ = Lean mixture. MPG goes up, but DETONATION RISK skyrockets.",
         "tt_ign": "More advance = higher power.\nBut beware: Aggressive timing with high compression quickly melts pistons (Knock).\nIgnored for Diesel.",
         "tt_lim": "NEVER set higher than what your conrods can handle, otherwise the engine will explode!",
+        "tt_carb_size": "Sets the carburetor or throttle body size. Smaller (0-40) helps low-end torque. Larger (60-100) is necessary for high RPMs to prevent choking.",
+        "tt_man_size": "Width of the intake runners. Small adds low-end grunt, large unlocks high RPMs but hurts throttle response down low.",
+        "tt_fuel_map": "Fuel map tuning. 0-40 (Lean): Lowers consumption but massively increases knock risk and drops power. 60-100 (Rich): More fuel cools the cylinder and slightly boosts power.",
 
         "lbl_arch": "Architecture:", "lbl_head_exh": "Headers:", "lbl_diam": "Pipe Diameter:", "lbl_cat": "Catalytic Converter:",
-        "lbl_muf1": "Muffler 1:", "lbl_muf2": "Muffler 2:",
+        "lbl_muf1": "Muffler 1:", "lbl_muf2": "Muffler 2:", "lbl_head_size": "Header Size:", "lbl_bypass": "Bypass Valves:",
         "tt_arch": "Dual effectively massively increases the overall exhaust cross-section.",
-        "tt_head_exh": "Cast: Restricts exhaust gases.\nTubular: Smooth gas extraction.\nTubular Race: Max power at the rev limiter.",
+        "tt_head_exh": "Compact Cast: Massive restriction.\nCast (Low/Mid/Std): Restricts power.\nTubular (Std/Mid/Long/Race): Smooth extraction. Long/Race give max top-end power but hurt the low-end.",
         "tt_diam": "If you have 1000 HP and a drain diameter like a sink (25mm), the engine will choke and the curve will drop.",
-        "tt_cat": "None: Max power.\n2-way/3-way: Slightly chokes.\nHigh Flow: Sporty, less restrictive mesh.",
-        "tt_muf": "None (Straight pipe): No restriction.\nStraight: Good flow.\nBaffled: Gases zigzag, which restricts power.\nReverse: Quietest, massive restriction.",
+        "tt_cat": "None: No restriction.\n2-way/3-way/Reactor: Various ceramics that choke power.\nHigh Flow (w/ Pre-Cat): Sporty, less restrictive meshes, minimal power loss.",
+        "tt_muf": "None (Straight pipe): No restriction.\nStraight: Good flow.\nBaffled: Gases zigzag = power loss.\nReverse Flow: Quietest, massive restriction.",
+        "tt_head_size": "Header pipe diameter. Large helps extreme power output, small helps exhaust gas velocity for better low-end torque.",
+        "tt_bypass": "No Valves: Exhaust always passes through mufflers.\nBypass Valves: Opens above 3500 RPM, completely bypassing mufflers for maximum flow at the cost of noise.",
 
         "lbl_veh": "Vehicle Preset:", "lbl_weight": "Weight:", "lbl_cd": "Air Drag (Cd):", "lbl_grip": "Tire Grip:",
         "lbl_gears": "Gears:", "lbl_fd": "Final Drive:", "lbl_drive": "Drivetrain:",
@@ -331,6 +353,7 @@ def run_engine_simulation(params):
     
     # 1. Integrace Balanceru (Zvyšuje mechanický limit, ale ovlivní tření)
     bal = params.get('balancer', 'None')
+    bal_mass = params.get('balancer_mass', 0.0)
     bal_rpm_bonus = 0
     friction_mult = 1.0
     if bal == "Harmonic Damper":
@@ -339,15 +362,28 @@ def run_engine_simulation(params):
     elif bal == "Full Balancers":
         bal_rpm_bonus = 500
         friction_mult *= 1.05
+    bal_rpm_bonus += (bal_mass * 10)
+    friction_mult *= (1.0 + (bal_mass * 0.002))
 
     # 2. Integrace Block Material (Hořčík a AlSi snižují vnitřní tření motoru díky absenci těžkých vložek)
     b_mat = params.get('block_mat', 'Aluminium')
-    if b_mat == "AlSi": friction_mult *= 0.95
-    elif b_mat == "Magnesium": friction_mult *= 0.90
+    if "AlSi" in b_mat: friction_mult *= 0.95
+    elif "Magnesium" in b_mat: friction_mult *= 0.90
+    elif "Billet" in b_mat: friction_mult *= 0.93
 
-    crank_lim = {"Cast": 6500, "Forged": 8500, "Billet": 11500, "Flat-plane": 9500}.get(params.get('crank', 'Cast'), 6500) + bal_rpm_bonus
-    conrod_lim = {"Cast": 6000, "Heavy Duty": 7000, "Forged": 8500, "LW Forged": 10000, "Titanium": 12000}.get(params.get('conrods', 'Heavy Duty'), 6000)
-    piston_lim = {"Cast": 6500, "Heavy Duty": 7000, "Forged": 8500, "LW Forged": 10500, "Low Friction": 7500}.get(params.get('pistons', 'Cast'), 6500)
+    cl_map = {"Cast": 6500, "Cast Iron Heavy": 6200, "Forged": 8500, "Forged Steel Heavy": 8000,
+              "Forged Steel Light": 8800, "Billet": 11500, "Billet Steel Heavy": 10500, "Flat-plane": 9500}
+    crank_lim = cl_map.get(params.get('crank', 'Cast'), 6500) + bal_rpm_bonus
+
+    cn_map = {"Cast": 6000, "Cast Heavy": 5500, "Cast Light": 6500, "Heavy Duty": 7000,
+              "Forged": 8500, "Forged Heavy": 8000, "Forged Light": 9000,
+              "LW Forged": 10000, "Titanium": 12000}
+    conrod_lim = cn_map.get(params.get('conrods', 'Heavy Duty'), 6000)
+
+    pt_map = {"Cast": 6500, "Cast Heavy": 6000, "Cast Light": 6800, "Heavy Duty": 7000,
+              "Forged": 8500, "Forged Heavy": 8000, "Forged Light": 9000,
+              "LW Forged": 10500, "Hypereutectic Cast": 7200, "Low Friction": 7500}
+    piston_lim = pt_map.get(params.get('pistons', 'Cast'), 6500)
     
     part_limits = {"Kliková hřídel/Crankshaft": crank_lim, "Ojnice/Conrods": conrod_lim, "Písty/Pistons": piston_lim}
     weakest_part = min(part_limits, key=part_limits.get)
@@ -369,7 +405,9 @@ def run_engine_simulation(params):
         actual_limit = rpm_limit
 
     rpm_range = np.arange(1000, actual_limit + 100, 100)
-    octane_dict = {"Regular 85": 85, "Premium 95": 95, "Ultimate 100": 100, "E85": 105, "Methanol": 115, "Diesel": 0}
+    octane_dict = {"Low Quality 85": 85, "Regular 85": 85, "Regular 91": 91, "Premium 95": 95, "Super 98": 98,
+                   "Ultimate 100": 100, "E85": 105, "Methanol": 115, "Diesel": 0,
+                   "Leaded Gasoline": 98, "Compressed Gas": 110, "Nitromethane": 150}
     octane = octane_dict.get(fuel_type, 95)
 
     ign_val = params.get('ignition', 50)
@@ -379,19 +417,38 @@ def run_engine_simulation(params):
     man = params.get('manifold', 'Standard')
     intake_conf = params.get('intake_conf', 'Single')
     man_mult, man_shift = 1.0, 0
-    if man == "Race": man_mult, man_shift = 1.1, 1000
-    elif man == "Performance": man_mult, man_shift = 1.05, 500
-    elif man == "Compact": man_mult, man_shift = 0.9, -500
-    if intake_conf == "ITB": man_mult *= 1.08 
+    if "Race" in man: man_mult, man_shift = 1.1, 1000
+    elif "Perf. High" in man: man_mult, man_shift = 1.08, 800
+    elif "Perf" in man: man_mult, man_shift = 1.05, 500
+    elif "Std. Mid" in man: man_mult, man_shift = 1.02, 200
+    elif "Compact" in man: man_mult, man_shift = 0.9, -500
+    elif "Low" in man: man_mult, man_shift = 0.95, -300
+    elif "Variable" in man: man_mult, man_shift = 1.05, 0 # Variable broadens curve
+    if intake_conf == "ITB": man_mult *= 1.08
 
     headers = params.get('headers', 'Cast')
-    headers_mult = 1.05 if headers == "Tubular Race" else (1.02 if headers == "Tubular" else 1.0)
+    headers_mult = 1.0
+    if "Compact Cast" in headers: headers_mult = 0.95
+    elif "Cast Low" in headers: headers_mult = 0.96
+    elif "Cast Mid" in headers: headers_mult = 0.97
+    elif "Cast" in headers: headers_mult = 0.97
+    elif "Tubular Race" in headers: headers_mult = 1.05
+    elif "Tubular Long" in headers: headers_mult = 1.04
+    elif "Tubular Mid" in headers: headers_mult = 1.03
+    elif "Tubular" in headers: headers_mult = 1.02
+
+    carb_sz = (params.get('carb_size', 50) - 50) / 50.0
+    man_sz = (params.get('man_size', 50) - 50) / 50.0
+    head_sz = (params.get('head_size', 50) - 50) / 50.0
+    man_shift += (man_sz + head_sz + carb_sz) * 400
 
     raw_bonus = (ign_mult * man_mult * headers_mult) - 1.0
-    asp = params.get('aspiration', 'NA')
+    if fuel_type == "Nitromethane": raw_bonus += 0.50 # Nitro cheat code
     
+    asp = params.get('aspiration', 'NA')
     if raw_bonus > 0:
         max_bonus = 0.15 if asp == "NA" else 0.40
+        if fuel_type == "Nitromethane": max_bonus = 1.0
         actual_bonus = max_bonus * (1.0 - np.exp(-raw_bonus / max_bonus))
         tuning_mult = 1.0 + actual_bonus
     else:
@@ -399,18 +456,24 @@ def run_engine_simulation(params):
 
     comp = params.get('comp_ratio', 10.0)
     afr = params.get('afr', 14.7)
+    fuel_map = params.get('fuel_map', 50)
     
     if is_diesel:
         afr_mult = 1.0 
         base_torque = (disp_cc / 1000) * 105 * (1.0 + ((comp - 15) * 0.015)) * tuning_mult
     else:
         afr_mult = 1.0 - 0.02 * ((afr - 13.0)**2)
+        afr_mult *= 1.0 - abs(fuel_map - 50) * 0.0005
         base_torque = (disp_cc / 1000) * 115 * (1.0 + ((comp - 10) * 0.025)) * afr_mult * tuning_mult
 
     cam = params.get('cam_profile', 30)
     valves = params.get('valves', 4)
     vvt = params.get('vvt', 'None')
-    vvl = params.get('vvl', False)
+    
+    vvl_state = str(params.get('vvl', 'None'))
+    if vvl_state == "True": vvl_state = "VVL"
+    elif vvl_state == "False": vvl_state = "None"
+    
     valvetrain = params.get('valvetrain', 'DOHC')
 
     vt_shift = 0
@@ -433,12 +496,18 @@ def run_engine_simulation(params):
             spread = 1500 + (c_prof * 15)
             if vvt == "Intake": spread *= 1.25
             elif vvt == "All": spread *= 1.5
+            if "Variable" in man: spread *= 1.15
             return np.exp(-0.5 * ((rpm_range - peak_rpm) / spread)**2)
 
     ve_curve = build_ve_curve(cam)
-    if vvl:
-        ve_high = build_ve_curve(min(100, cam + 40))
-        ve_curve = np.maximum(ve_curve, ve_high * 1.05)
+    if vvl_state in ["VVL", "CVVL"]:
+        vvl_prof = params.get('vvl_prof', 60)
+        vvl_rpm = params.get('vvl_rpm', 4000)
+        ve_high = build_ve_curve(vvl_prof)
+        if vvl_state == "CVVL": ve_high *= 1.08 
+        else: ve_high *= 1.05
+        blend = 1 / (1 + np.exp(-(rpm_range - vvl_rpm) / 200.0))
+        ve_curve = ve_curve * (1 - blend) + np.maximum(ve_curve, ve_high) * blend
 
     if valvetrain == "Pushrod (OHV)":
         ohv_choke = np.exp(-0.5 * (np.maximum(0, rpm_range - 4200) / 900)**2)
@@ -452,11 +521,20 @@ def run_engine_simulation(params):
         diesel_choke = np.exp(-0.5 * (np.maximum(0, rpm_range - 4200) / 800)**2)
         ve_curve *= diesel_choke
 
+    ve_curve *= (1.0 + (carb_sz + man_sz) * 0.05 * (rpm_range / max(rpm_range)))
+
+    vt_base = {"Pushrod (OHV)": 4500, "SOHC": 6000, "DOHC": 7500, "DAOHC": 8500}.get(valvetrain, 6000)
+    springs = params.get('springs', 50)
+    valve_float_lim = vt_base + (springs * 40)
+    float_choke = np.where(rpm_range > valve_float_lim, np.exp(-(rpm_range - valve_float_lim) * 0.005), 1.0)
+    ve_curve *= float_choke
+    friction_mult *= (1.0 + (springs - 50) * 0.001)
+
     # 3. Integrace Fuel Delivery (Typ vstřikování ovlivňuje účinnost sání a Knock index)
     f_deliv = params.get('fuel_deliv', 'EFI Multi')
     knock_modifier = 0
-    if f_deliv == "Carburetor":
-        ve_curve *= 0.95
+    if "Carburetor" in f_deliv or "Mechanical" in f_deliv or "Single Point" in f_deliv:
+        ve_curve *= 0.96
         knock_modifier += 2
     elif f_deliv == "Direct Injection":
         ve_curve *= 1.05
@@ -464,8 +542,13 @@ def run_engine_simulation(params):
 
     # 4. Integrace Head Material (Litinová hlava drží teplo a způsobuje klepání, Hliník odvádí)
     h_mat = params.get('head_mat', 'Aluminium')
-    if h_mat == "Cast Iron": knock_modifier += 3
+    if "Iron" in h_mat: knock_modifier += 3
+    if "Eco" in h_mat: friction_mult *= 0.98; knock_modifier += 1
+    elif "Perf" in h_mat: knock_modifier -= 1
+    elif "Billet Race" in h_mat: knock_modifier -= 2; friction_mult *= 0.95
     elif h_mat == "Aluminium": knock_modifier -= 1
+
+    knock_modifier -= (fuel_map - 50) * 0.1
 
     torque = base_torque * ve_curve
 
@@ -528,24 +611,30 @@ def run_engine_simulation(params):
         choke_factor = 1.0 - ((req_diam - exh_diam) / req_diam) * (rpm_range / max(rpm_range))
         torque *= np.maximum(0.5, choke_factor)
 
-    cat = params.get('cat', '3-way')
-    if cat == "2-way": torque *= 0.97
-    elif cat == "3-way": torque *= 0.985
-    elif cat == "High Flow": torque *= 0.995
-
-    headers = params.get('headers', 'Cast')
-    if headers == "Cast": torque *= 0.97
-
     muff1 = params.get('muffler1', 'Baffled')
-    if muff1 == "Baffled": torque *= 0.98
-    elif muff1 == "Reverse": torque *= 0.96
-    
     muff2 = params.get('muffler2', 'Baffled')
-    if muff2 == "Baffled": torque *= 0.98
-    elif muff2 == "Reverse": torque *= 0.96
+    muff_mult1 = 1.0
+    muff_mult2 = 1.0
+
+    if "Baffled" in muff1: muff_mult1 = 0.98
+    elif "Reverse Flow" in muff1 or "Reverse" in muff1: muff_mult1 = 0.96
+    if "Baffled" in muff2: muff_mult2 = 0.98
+    elif "Reverse Flow" in muff2 or "Reverse" in muff2: muff_mult2 = 0.96
+
+    total_muff = muff_mult1 * muff_mult2
+    if params.get('bypass', 'No Valves') == "Bypass Valves":
+        bypass_open = 1 / (1 + np.exp(-(rpm_range - 3500) / 200.0))
+        torque *= (total_muff * (1 - bypass_open) + 1.0 * bypass_open)
+    else:
+        torque *= total_muff
+
+    cat = params.get('cat', '3-way')
+    if "2-way" in cat: torque *= 0.97
+    elif ("3-way" in cat or "3-Way" in cat or "Three-Way" in cat) and "High Flow" not in cat: torque *= 0.985
+    elif "High Flow" in cat: torque *= 0.995
+    elif "Reactor" in cat: torque *= 0.95
 
     cyl_count = c
-    # Aplikace friction_mult odrážející materiál bloku a zátěž vyvažováků
     friction_torque = (disp_cc / 1000.0) * (4.0 + (cyl_count * 0.5) + 0.8 * (rpm_range / 1000.0)**1.5) * friction_mult
     torque = torque - friction_torque
     torque = np.maximum(torque, 0)
@@ -719,10 +808,11 @@ class EngineApp:
         self.root = root
         self.vars = {}
         self.vars['app_lang'] = tk.StringVar(value='cz')
+        
         self.lang_vars = {k: tk.StringVar(value=v) for k, v in T['cz'].items()}
         
         self.root.title(self.lang_vars['app_title'].get())
-        self.root.geometry("750x880")
+        self.root.geometry("750x750")
         
         self.setup_master_presets()
         self.create_variables()
@@ -736,7 +826,7 @@ class EngineApp:
         self.update_dynamic_ui()
 
     def tr(self, key):
-        return self.lang_vars[key].get()
+        return self.lang_vars.get(key, tk.StringVar(value="")).get()
 
     def apply_language(self):
         lang = self.vars['app_lang'].get()
@@ -793,7 +883,7 @@ class EngineApp:
                 'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Twin", 'intercooler': 70, 'turb_size': 40, 'boost': 0.50, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "Direct Injection", 'intake_conf': "Twin", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 14.5, 'ignition': 35, 'rpm_limit': 6800,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 65.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Straight",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1950.0, 'veh_cd': 0.35, 'tire_grip': 1.2, 'gears': 7, 'final_drive': 2.9, 'drivetrain': "AWD"
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1950.0, 'veh_cd': 0.35, 'tire_grip': 1.2, 'gears': 7, 'final_drive': 3.2, 'drivetrain': "AWD"
             },
             "Mercedes-Benz C63 AMG (M156)": {
                 'config': "V", 'cylinders': 8, 'v_angle': 90, 'block_mat': "Aluminium",
@@ -825,7 +915,9 @@ class EngineApp:
                 self.vars['veh_preset'].set(p['veh_preset'])
             for k, v in p.items():
                 if k in self.vars and k != 'veh_preset':
-                    if isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
+                    if k == 'vvl' and isinstance(v, bool):
+                        self.vars[k].set("VVL" if v else "None")
+                    elif isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
                     elif isinstance(self.vars[k], tk.DoubleVar): self.vars[k].set(float(v))
                     elif isinstance(self.vars[k], tk.IntVar): self.vars[k].set(int(v))
                     else: self.vars[k].set(str(v))
@@ -847,12 +939,16 @@ class EngineApp:
         self.vars['conrods'] = tk.StringVar(value="Heavy Duty")
         self.vars['pistons'] = tk.StringVar(value="Cast")
         self.vars['balancer'] = tk.StringVar(value="None")
+        self.vars['balancer_mass'] = tk.DoubleVar(value=0.0)
         
         self.vars['head_mat'] = tk.StringVar(value="Aluminium")
         self.vars['valvetrain'] = tk.StringVar(value="DOHC")
         self.vars['valves'] = tk.IntVar(value=4)
         self.vars['vvt'] = tk.StringVar(value="None")
-        self.vars['vvl'] = tk.BooleanVar(value=False)
+        self.vars['vvl'] = tk.StringVar(value="None")
+        self.vars['vvl_prof'] = tk.IntVar(value=60)
+        self.vars['vvl_rpm'] = tk.IntVar(value=4000)
+        self.vars['springs'] = tk.IntVar(value=50)
         self.vars['cam_profile'] = tk.IntVar(value=25)
         self.vars['comp_ratio'] = tk.DoubleVar(value=10.0)
         
@@ -867,16 +963,21 @@ class EngineApp:
         self.vars['sc_pulley'] = tk.DoubleVar(value=0.8)
         
         self.vars['fuel_deliv'] = tk.StringVar(value="EFI Multi")
+        self.vars['carb_size'] = tk.IntVar(value=50)
         self.vars['intake_conf'] = tk.StringVar(value="Single")
         self.vars['manifold'] = tk.StringVar(value="Standard")
+        self.vars['man_size'] = tk.IntVar(value=50)
         self.vars['fuel_type'] = tk.StringVar(value="Premium 95")
+        self.vars['fuel_map'] = tk.IntVar(value=50)
         self.vars['afr'] = tk.DoubleVar(value=14.7)
         self.vars['ignition'] = tk.IntVar(value=30)
         self.vars['rpm_limit'] = tk.IntVar(value=6500)
         
         self.vars['headers'] = tk.StringVar(value="Cast")
+        self.vars['head_size'] = tk.IntVar(value=50)
         self.vars['exh_arch'] = tk.StringVar(value="Single")
         self.vars['exh_diam'] = tk.DoubleVar(value=44.0)
+        self.vars['bypass'] = tk.StringVar(value="No Valves")
         self.vars['cat'] = tk.StringVar(value="3-way")
         self.vars['muffler1'] = tk.StringVar(value="Baffled")
         self.vars['muffler2'] = tk.StringVar(value="Baffled")
@@ -917,7 +1018,9 @@ class EngineApp:
             with open(file_path, 'r', encoding='utf-8') as f: data = json.load(f)
             for k, v in data.items():
                 if k in self.vars:
-                    if isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
+                    if k == 'vvl' and isinstance(v, bool):
+                        self.vars[k].set("VVL" if v else "None")
+                    elif isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
                     elif isinstance(self.vars[k], tk.DoubleVar): self.vars[k].set(float(v))
                     elif isinstance(self.vars[k], tk.IntVar): self.vars[k].set(int(v))
                     else: self.vars[k].set(str(v))
@@ -972,34 +1075,37 @@ class EngineApp:
         self.frame_v = ttk.Frame(tab1); self.frame_v.grid(row=1, column=0, columnspan=4, sticky=tk.EW)
         make_combo(self.frame_v, 0, "lbl_vangle", 'v_angle', [60, 90, 120], "tt_vangle")
         make_combo(tab1, 2, "lbl_cyl", 'cylinders', [3, 4, 5, 6, 8, 10, 12, 16], "tt_cyl")
-        make_combo(tab1, 3, "lbl_block", 'block_mat', ["Cast Iron", "Aluminium", "AlSi", "Magnesium"], "tt_block")
+        make_combo(tab1, 3, "lbl_block", 'block_mat', ["Cast Iron", "Aluminium", "Aluminium Heavy", "Aluminium Light", "AlSi", "AlSi Heavy", "AlSi Light", "Aluminium Billet", "Magnesium"], "tt_block")
         make_slider(tab1, 4, "lbl_bore", 'bore', 50.0, 120.0, 0.1, "mm", "tt_bore")
         make_slider(tab1, 5, "lbl_stroke", 'stroke', 50.0, 120.0, 0.1, "mm", "tt_stroke")
         make_slider(tab1, 6, "lbl_rad", 'radiator', 10, 100, 1, "%", "tt_rad")
         ttk.Label(tab1, textvariable=self.lang_vars['lbl_calc_disp']).grid(row=7, column=0, pady=10, sticky=tk.W)
         ttk.Label(tab1, textvariable=self.vars['calc_disp'], font=("Arial", 10, "bold")).grid(row=7, column=1, sticky=tk.W)
-        
-        self.vars['config'].trace_add("write", self.update_dynamic_ui)
-        self.vars['aspiration'].trace_add("write", self.update_dynamic_ui)
 
         # TAB 2 - Bottom End
         tab2 = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(tab2, text=self.tr("tab_2"))
-        make_combo(tab2, 0, "lbl_crank", 'crank', ["Cast", "Forged", "Billet", "Flat-plane"], "tt_crank")
-        make_combo(tab2, 1, "lbl_conrods", 'conrods', ["Cast", "Heavy Duty", "Forged", "LW Forged", "Titanium"], "tt_conrods")
-        make_combo(tab2, 2, "lbl_pistons", 'pistons', ["Cast", "Heavy Duty", "Forged", "LW Forged", "Low Friction"], "tt_pistons")
+        make_combo(tab2, 0, "lbl_crank", 'crank', ["Cast", "Cast Iron Heavy", "Forged", "Forged Steel Heavy", "Forged Steel Light", "Billet", "Billet Steel Heavy", "Flat-plane"], "tt_crank")
+        make_combo(tab2, 1, "lbl_conrods", 'conrods', ["Cast", "Cast Heavy", "Cast Light", "Heavy Duty", "Forged", "Forged Heavy", "Forged Light", "LW Forged", "Titanium"], "tt_conrods")
+        make_combo(tab2, 2, "lbl_pistons", 'pistons', ["Cast", "Cast Heavy", "Cast Light", "Heavy Duty", "Forged", "Forged Heavy", "Forged Light", "LW Forged", "Hypereutectic Cast", "Low Friction"], "tt_pistons")
         make_combo(tab2, 3, "lbl_bal", 'balancer', ["None", "Harmonic Damper", "Full Balancers"], "tt_bal")
+        self.frame_bal_mass = ttk.Frame(tab2); self.frame_bal_mass.grid(row=4, column=0, columnspan=4, sticky=tk.EW)
+        make_slider(self.frame_bal_mass, 0, "lbl_bal_mass", 'balancer_mass', 0.0, 50.0, 0.1, "kg", "tt_bal_mass")
 
         # TAB 3 - Top End
         tab3 = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(tab3, text=self.tr("tab_3"))
-        make_combo(tab3, 0, "lbl_head_mat", 'head_mat', ["Cast Iron", "Aluminium"], "tt_head_mat")
+        make_combo(tab3, 0, "lbl_head_mat", 'head_mat', ["Cast Iron", "Iron Eco.", "Iron Std.", "Iron Perf", "Aluminium", "Alu Eco", "Alu Std.", "Alu Perf", "Alu Billet Race"], "tt_head_mat")
         make_combo(tab3, 1, "lbl_valve", 'valvetrain', ["Pushrod (OHV)", "SOHC", "DOHC", "DAOHC"], "tt_valve")
         make_combo(tab3, 2, "lbl_valvesn", 'valves', [2, 3, 4, 5], "tt_valvesn")
         make_combo(tab3, 3, "lbl_vvt", 'vvt', ["None", "Intake", "All"], "tt_vvt")
-        ttk.Checkbutton(tab3, textvariable=self.lang_vars["lbl_vvl"], variable=self.vars['vvl']).grid(row=4, column=1, columnspan=2, sticky=tk.W, pady=5)
-        make_slider(tab3, 5, "lbl_cam", 'cam_profile', 0, 100, 1, "", "tt_cam")
-        make_slider(tab3, 6, "lbl_comp", 'comp_ratio', 7.0, 22.0, 0.1, ": 1", "tt_comp")
+        make_combo(tab3, 4, "lbl_vvl", 'vvl', ["None", "VVL", "CVVL"], "tt_vvl")
+        self.frame_vvl_set = ttk.Frame(tab3); self.frame_vvl_set.grid(row=5, column=0, columnspan=4, sticky=tk.EW)
+        make_slider(self.frame_vvl_set, 0, "lbl_vvl_prof", 'vvl_prof', 0, 100, 1, "", "tt_vvl_prof")
+        make_slider(self.frame_vvl_set, 1, "lbl_vvl_rpm", 'vvl_rpm', 500, 12000, 100, "RPM", "tt_vvl_rpm")
+        make_slider(tab3, 6, "lbl_springs", 'springs', 0, 100, 1, "", "tt_springs")
+        make_slider(tab3, 7, "lbl_cam", 'cam_profile', 0, 100, 1, "", "tt_cam")
+        make_slider(tab3, 8, "lbl_comp", 'comp_ratio', 7.0, 22.0, 0.1, ": 1", "tt_comp")
 
         # TAB 4 - Aspiration
         tab4 = ttk.Frame(self.notebook, padding=10)
@@ -1019,23 +1125,28 @@ class EngineApp:
         # TAB 5 - Fuel & Tune
         tab5 = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(tab5, text=self.tr("tab_5"))
-        make_combo(tab5, 0, "lbl_fdeliv", 'fuel_deliv', ["Carburetor", "EFI Multi", "Direct Injection"], "tt_fdeliv")
-        make_combo(tab5, 1, "lbl_inconf", 'intake_conf', ["Single", "Twin", "ITB"], "tt_inconf")
-        make_combo(tab5, 2, "lbl_man", 'manifold', ["Standard", "Performance", "Race", "Compact"], "tt_man")
-        make_combo(tab5, 3, "lbl_fuel", 'fuel_type', ["Regular 85", "Premium 95", "Ultimate 100", "E85", "Methanol", "Diesel"], "tt_fuel")
-        make_slider(tab5, 4, "lbl_afr", 'afr', 10.0, 20.0, 0.1, "", "tt_afr")
-        make_slider(tab5, 5, "lbl_ign", 'ignition', 0, 100, 1, "", "tt_ign")
-        make_slider(tab5, 6, "lbl_lim", 'rpm_limit', 3000, 12000, 10, "RPM", "tt_lim")
+        make_combo(tab5, 0, "lbl_fdeliv", 'fuel_deliv', ["Carburetor", "Mechanical Fuel Injection", "Single Point EFI", "EFI Multi", "Direct Injection"], "tt_fdeliv")
+        make_slider(tab5, 1, "lbl_carb_size", 'carb_size', 0, 100, 1, "", "tt_carb_size")
+        make_combo(tab5, 2, "lbl_inconf", 'intake_conf', ["Single", "Twin", "ITB"], "tt_inconf")
+        make_combo(tab5, 3, "lbl_man", 'manifold', ["Standard", "Std. Low", "Std. Mid", "Performance", "Perf. Mid", "Perf. High", "Race", "Compact", "Variable"], "tt_man")
+        make_slider(tab5, 4, "lbl_man_size", 'man_size', 0, 100, 1, "", "tt_man_size")
+        make_combo(tab5, 5, "lbl_fuel", 'fuel_type', ["Low Quality 85", "Regular 91", "Premium 95", "Super 98", "Ultimate 100", "E85", "Methanol", "Diesel", "Leaded Gasoline", "Compressed Gas", "Nitromethane"], "tt_fuel")
+        make_slider(tab5, 6, "lbl_fuel_map", 'fuel_map', 0, 100, 1, "", "tt_fuel_map")
+        make_slider(tab5, 7, "lbl_afr", 'afr', 10.0, 20.0, 0.1, "", "tt_afr")
+        make_slider(tab5, 8, "lbl_ign", 'ignition', 0, 100, 1, "", "tt_ign")
+        make_slider(tab5, 9, "lbl_lim", 'rpm_limit', 3000, 12000, 10, "RPM", "tt_lim")
 
         # TAB 6 - Exhaust
         tab6 = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(tab6, text=self.tr("tab_6"))
         make_combo(tab6, 0, "lbl_arch", 'exh_arch', ["Single", "Dual"], "tt_arch")
-        make_combo(tab6, 1, "lbl_head_exh", 'headers', ["Cast", "Tubular", "Tubular Race"], "tt_head_exh")
-        make_slider(tab6, 2, "lbl_diam", 'exh_diam', 25.0, 150.0, 0.5, "mm", "tt_diam")
-        make_combo(tab6, 3, "lbl_cat", 'cat', ["None", "2-way", "3-way", "High Flow"], "tt_cat")
-        make_combo(tab6, 4, "lbl_muf1", 'muffler1', ["None", "Straight", "Baffled", "Reverse"], "tt_muf")
-        make_combo(tab6, 5, "lbl_muf2", 'muffler2', ["None", "Straight", "Baffled", "Reverse"], "tt_muf")
+        make_combo(tab6, 1, "lbl_head_exh", 'headers', ["Compact Cast", "Cast Low", "Cast Mid", "Cast", "Tubular", "Tubular Mid", "Tubular Long", "Tubular Race"], "tt_head_exh")
+        make_slider(tab6, 2, "lbl_head_size", 'head_size', 0, 100, 1, "", "tt_head_size")
+        make_slider(tab6, 3, "lbl_diam", 'exh_diam', 25.0, 150.0, 0.5, "mm", "tt_diam")
+        make_combo(tab6, 4, "lbl_bypass", 'bypass', ["No Valves", "Bypass Valves"], "tt_bypass")
+        make_combo(tab6, 5, "lbl_cat", 'cat', ["None", "2-way", "3-way", "High Flow", "Exhaust Reactor", "Three-Way + Pre-Cat", "High Flow 3-Way + Pre-Cat"], "tt_cat")
+        make_combo(tab6, 6, "lbl_muf1", 'muffler1', ["None", "Straight", "Baffled", "Reverse Flow"], "tt_muf")
+        make_combo(tab6, 7, "lbl_muf2", 'muffler2', ["None", "Straight", "Baffled", "Reverse Flow"], "tt_muf")
 
         # TAB 7 - Drivetrain
         tab7 = ttk.Frame(self.notebook, padding=10)
@@ -1058,6 +1169,12 @@ class EngineApp:
         make_combo(tab7, 4, "lbl_gears", 'gears', [4, 5, 6, 7, 8], "tt_gears")
         make_slider(tab7, 5, "lbl_fd", 'final_drive', 2.0, 6.0, 0.1, ": 1", "tt_fd")
         make_combo(tab7, 6, "lbl_drive", 'drivetrain', ["FWD", "RWD", "AWD"], "tt_drive")
+
+        # Bind traces for dynamic updates
+        self.vars['config'].trace_add("write", self.update_dynamic_ui)
+        self.vars['aspiration'].trace_add("write", self.update_dynamic_ui)
+        self.vars['balancer'].trace_add("write", self.update_dynamic_ui)
+        self.vars['vvl'].trace_add("write", self.update_dynamic_ui)
 
         # --- SPODNÍ ČÁST (Konzole a tlačítka) ---
         bottom_frame = ttk.Frame(self.root, padding=10)
@@ -1085,10 +1202,17 @@ class EngineApp:
     def update_dynamic_ui(self, *args):
         if self.vars['config'].get() == "V": self.frame_v.grid()
         else: self.frame_v.grid_remove()
+        
         asp = self.vars['aspiration'].get()
         if asp == "Turbo": self.frame_turbo.grid(); self.frame_sc.grid_remove()
         elif asp == "Supercharger": self.frame_turbo.grid_remove(); self.frame_sc.grid()
         else: self.frame_turbo.grid_remove(); self.frame_sc.grid_remove()
+
+        if self.vars['balancer'].get() == "None": self.frame_bal_mass.grid_remove()
+        else: self.frame_bal_mass.grid()
+
+        if self.vars['vvl'].get() == "None": self.frame_vvl_set.grid_remove()
+        else: self.frame_vvl_set.grid()
 
     def update_displacement(self):
         try:
