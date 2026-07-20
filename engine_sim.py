@@ -25,7 +25,7 @@ except (ImportError, OSError):
 # --- LOKALIZAČNÍ SLOVNÍK (CZ / EN) ---
 T = {
     "cz": {
-        "app_title": "Automation DIY - Verze 4.3.1 (Content & Tuning Update)",
+        "app_title": "Automation DIY - Verze 4.4 (Tech Level & Curve Tune Update)",
         "menu_file": "Soubor",
         "menu_load": "Načíst motor (.json)...",
         "menu_save": "Uložit motor jako (.json)...",
@@ -35,7 +35,7 @@ T = {
         "tab_4": "4. Aspiration", "tab_5": "5. Fuel & Tune", "tab_6": "6. Exhaust", "tab_7": "7. Drivetrain",
         
         "lbl_config": "Konfigurace:", "lbl_vangle": "Úhel V:", "lbl_cyl": "Počet válců:", "lbl_block": "Materiál bloku:",
-        "lbl_bore": "Vrtání (Bore):", "lbl_stroke": "Zdvih (Stroke):", "lbl_rad": "Účinnost chladiče:", "lbl_calc_disp": "Vypočítaný objem:",
+        "lbl_bore": "Vrtání (Bore):", "lbl_stroke": "Zdvih (Stroke):", "lbl_rad": "Účinnost chladiče:", "lbl_tech": "Technologická úroveň:", "lbl_calc_disp": "Vypočítaný objem:",
         "tt_config": "Inline (Řadový): Levný, plynulý chod, ale u mnoha válců je moc dlouhý.\nV (Vidlicový): Kompaktní, krátký, skvělý pro 6 a 8 válců.\nBoxer (Plochý): Protiběžné písty. Dokonalé vyvážení a nízké těžiště.",
         "tt_vangle": "60°: Vhodný pro V6, motor je užší.\n90°: Klasika pro V8, skvělé vyvážení rotujících hmot.\n120°: Velmi plochý motor, snižuje těžiště, ale je extrémně široký.",
         "tt_cyl": "3 až 5: Levnější, vhodné pro malé objemy.\n6 až 8: Výkonný standard, kultivovaný chod.\n10 až 16: Exotické superauta. Obrovský výkon a spotřeba.",
@@ -43,6 +43,7 @@ T = {
         "tt_bore": "Určuje průměr pístu.\nVětší vrtání = umožňuje instalaci větších ventilů pro lepší průtok vzduchu ve vysokých otáčkách.",
         "tt_stroke": "Určuje vzdálenost, kterou píst urazí.\nVětší zdvih = masivní nárůst točivého momentu v nízkých otáčkách, ale fyzicky brání motoru dosáhnout vysokých RPM.",
         "tt_rad": "Větší chladič (vysoká účinnost v %) dokáže mnohem efektivněji odvádět teplo z bloku.\nUdrží tak motor déle v zátěži bez uvaření kapaliny a destrukce těsnění.",
+        "tt_tech": "Určuje technologickou éru motoru.\n60 = 70. léta (karburátory).\n100 = moderní standard (beze změny).\n115+ = špičkové high-tech motory.\nOvlivňuje celkovou účinnost, dýchání motoru, tření a odolnost proti klepání.",
 
         "lbl_crank": "Materiál klikovky:", "lbl_conrods": "Materiál ojnic:", "lbl_pistons": "Materiál pístů:", "lbl_bal": "Vyvažováky:", "lbl_bal_mass": "Váha vyvažováků:",
         "tt_crank": "Cast / Cast Iron Heavy: Sériovka (max 6500 RPM), Heavy verze je robustnější.\nForged / Forged Steel (Heavy/Light): Kovaná, zlatý střed pro turba (8500 RPM).\nBillet / Billet Steel Heavy: Frézovaná z jednoho kusu, přežije i 11500 RPM.\nFlat-plane: U motorů V8 naprosto změní ZVUK i charakter na moderní / vysokootáčkový!",
@@ -124,7 +125,7 @@ T = {
         "btn_retry": "NOVÝ POKUS", "btn_accel": "ZRYCHLUJEME...", "msg_not_reached": "Nedosaženo"
     },
     "en": {
-        "app_title": "Automation DIY - Version 4.3.1 (Content & Tuning Update)",
+        "app_title": "Automation DIY - Version 4.4 (Tech Level & Curve Tune Update)",
         "menu_file": "File",
         "menu_load": "Load Engine (.json)...",
         "menu_save": "Save Engine As (.json)...",
@@ -134,7 +135,7 @@ T = {
         "tab_4": "4. Aspiration", "tab_5": "5. Fuel & Tune", "tab_6": "6. Exhaust", "tab_7": "7. Drivetrain",
         
         "lbl_config": "Configuration:", "lbl_vangle": "V Angle:", "lbl_cyl": "Cylinders:", "lbl_block": "Block Material:",
-        "lbl_bore": "Bore:", "lbl_stroke": "Stroke:", "lbl_rad": "Radiator Efficiency:", "lbl_calc_disp": "Calculated Disp:",
+        "lbl_bore": "Bore:", "lbl_stroke": "Stroke:", "lbl_rad": "Radiator Efficiency:", "lbl_tech": "Technology Level:", "lbl_calc_disp": "Calculated Disp:",
         "tt_config": "Inline: Cheap, smooth running, but too long for many cylinders.\nV: Compact, short, great for 6 and 8 cylinders.\nBoxer (Flat): Opposed pistons. Perfect balance and low center of gravity.",
         "tt_vangle": "60°: Suitable for V6, engine is narrower.\n90°: Classic for V8, great balance of rotating masses.\n120°: Very flat engine, lowers CG, but extremely wide.",
         "tt_cyl": "3 to 5: Cheaper, suitable for small displacements.\n6 to 8: Powerful standard, refined running.\n10 to 16: Exotic supercars. Massive power and consumption.",
@@ -142,6 +143,7 @@ T = {
         "tt_bore": "Determines the piston diameter.\nLarger bore = allows installing bigger valves for better airflow at high RPM.",
         "tt_stroke": "Determines the distance the piston travels.\nLarger stroke = massive increase in low-end torque, but physically limits the engine from reaching high RPM.",
         "tt_rad": "A larger radiator (high efficiency in %) can dissipate heat from the block much more effectively.\nIt keeps the engine under load longer without boiling the coolant and destroying the head gasket.",
+        "tt_tech": "Determines the technological era of the engine.\n60 = 1970s era.\n100 = modern standard (unchanged).\n115+ = cutting-edge high-tech engines.\nAffects overall efficiency, breathing, friction, and knock resistance.",
 
         "lbl_crank": "Crankshaft:", "lbl_conrods": "Connecting Rods:", "lbl_pistons": "Pistons:", "lbl_bal": "Balancers:", "lbl_bal_mass": "Balancer Mass:",
         "tt_crank": "Cast / Cast Iron Heavy: Stock (max 6500 RPM), Heavy is sturdier.\nForged / Forged Steel (Heavy/Light): Forged, sweet spot for turbos (8500 RPM).\nBillet / Billet Steel Heavy: CNC machined, survives 11500 RPM.\nFlat-plane: On V8s, completely changes SOUND and rev character to modern/high-revving!",
@@ -341,6 +343,8 @@ def generate_engine_wav(rpm_list, cylinders, aspiration, crank_type="Cast", file
 # --- NEZÁVISLÉ FYZIKÁLNÍ JÁDRO ---
 def run_engine_simulation(params):
     lang = params.get('lang', 'cz')
+    tech_level = params.get('tech_level', 100)
+    tech_factor = tech_level / 100.0
     b = params.get('bore', 87.5)
     s = params.get('stroke', 83.1)
     c = params.get('cylinders', 4)
@@ -460,11 +464,13 @@ def run_engine_simulation(params):
     
     if is_diesel:
         afr_mult = 1.0 
-        base_torque = (disp_cc / 1000) * 105 * (1.0 + ((comp - 15) * 0.015)) * tuning_mult
+        diesel_coeff = 65 + tech_factor * 40
+        base_torque = (disp_cc / 1000) * diesel_coeff * (1.0 + ((comp - 15) * 0.015)) * tuning_mult
     else:
+        gas_coeff = 70 + tech_factor * 45
         afr_mult = 1.0 - 0.02 * ((afr - 13.0)**2)
         afr_mult *= 1.0 - abs(fuel_map - 50) * 0.0005
-        base_torque = (disp_cc / 1000) * 115 * (1.0 + ((comp - 10) * 0.025)) * afr_mult * tuning_mult
+        base_torque = (disp_cc / 1000) * gas_coeff * (1.0 + ((comp - 10) * 0.025)) * afr_mult * tuning_mult
 
     cam = params.get('cam_profile', 30)
     valves = params.get('valves', 4)
@@ -488,8 +494,9 @@ def run_engine_simulation(params):
             if vvt == "Intake": right_spread *= 1.15
             elif vvt == "All": right_spread *= 1.25
             
-            left_side = np.exp(-0.5 * ((rpm_range - peak_rpm) / left_spread)**2)
-            right_side = np.exp(-0.5 * ((rpm_range - peak_rpm) / right_spread)**2)
+            # Plynulý základ 45 % pro naftu (běží bez škrtící klapky, nasává víc vzduchu)
+            left_side = 0.45 + 0.55 * np.exp(-0.5 * ((rpm_range - peak_rpm) / left_spread)**2)
+            right_side = 0.45 + 0.55 * np.exp(-0.5 * ((rpm_range - peak_rpm) / right_spread)**2)
             return np.where(rpm_range < peak_rpm, left_side, right_side)
         else:
             peak_rpm = 3000 + (c_prof * 45) + ((valves - 2) * 500) + man_shift + vt_shift
@@ -497,9 +504,13 @@ def run_engine_simulation(params):
             if vvt == "Intake": spread *= 1.25
             elif vvt == "All": spread *= 1.5
             if "Variable" in man: spread *= 1.15
-            return np.exp(-0.5 * ((rpm_range - peak_rpm) / spread)**2)
+            
+            # Plynulý základ 35 % pro benzín
+            return 0.35 + 0.65 * np.exp(-0.5 * ((rpm_range - peak_rpm) / spread)**2)
 
     ve_curve = build_ve_curve(cam)
+    ve_curve *= (0.55 + 0.45 * tech_factor)
+    
     if vvl_state in ["VVL", "CVVL"]:
         vvl_prof = params.get('vvl_prof', 60)
         vvl_rpm = params.get('vvl_rpm', 4000)
@@ -567,7 +578,10 @@ def run_engine_simulation(params):
         if params.get('turbo_bearing', 'Journal') == "Ball Bearings": lag_rpm -= 500
         ic_eff = 0.6 + (ic_size / 250.0) 
         actual_boost = active_boost * ic_eff
-        boost_curve = 1.0 + (actual_boost * 1.10 * (1 - np.exp(-0.003 * np.maximum(0, rpm_range - lag_rpm))))
+        
+        # OPRAVA: Plynulý náběh turba (Sigmoid) místo ostrého matematického zlomu
+        spool_smoothness = 200.0  # Hodnota, která určuje, jak pozvolna se turbo roztáčí
+        boost_curve = 1.0 + (actual_boost * 1.10 * (1 / (1 + np.exp(-(rpm_range - lag_rpm) / spool_smoothness))))
         torque *= boost_curve
         
     elif asp == "Supercharger":
@@ -586,6 +600,8 @@ def run_engine_simulation(params):
         torque -= parasitic_loss
 
     lean_penalty = (afr - 14.7) * 4 if afr > 14.7 else 0
+    
+    knock_modifier -= (tech_factor - 1.0) * 30
     
     if is_diesel:
         knock_index = 0 
@@ -634,6 +650,7 @@ def run_engine_simulation(params):
     elif "High Flow" in cat: torque *= 0.995
     elif "Reactor" in cat: torque *= 0.95
 
+    friction_mult *= (1.4 - 0.4 * tech_factor)
     cyl_count = c
     friction_torque = (disp_cc / 1000.0) * (4.0 + (cyl_count * 0.5) + 0.8 * (rpm_range / 1000.0)**1.5) * friction_mult
     torque = torque - friction_torque
@@ -711,7 +728,13 @@ def run_vehicle_kinematics(veh_params, engine_data):
             wheel_rpm = (sim_v / (2 * math.pi * r)) * 60
             engine_rpm = wheel_rpm * ratios[sim_gear] * fd
             
-            launch_rpm = min(4000.0, max_rpm * 0.75)
+            # Najdeme, v jakých otáčkách má motor maximální krouticí moment
+            max_trq_idx = np.argmax(trq_arr)
+            peak_trq_rpm = rpm_arr[max_trq_idx]
+            
+            # Ideální start (Launch Control) je zhruba na 85 % maxima krouťáku.
+            # Omezíme to zespodu na 2500 RPM a shora nesmí překročit 75 % červeného pole.
+            launch_rpm = min(max(2500.0, peak_trq_rpm * 0.85), max_rpm * 0.75)
             if sim_gear == 0 and engine_rpm < launch_rpm:
                 calc_rpm = launch_rpm
             else:
@@ -853,7 +876,8 @@ class EngineApp:
                 'aspiration': "NA", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 50, 'turb_size': 50, 'boost': 0.5, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "EFI Multi", 'intake_conf': "Single", 'manifold': "Standard", 'fuel_type': "Premium 95", 'afr': 14.7, 'ignition': 30, 'rpm_limit': 6500,
                 'exh_arch': "Single", 'headers': "Cast", 'exh_diam': 44.0, 'cat': "3-way", 'muffler1': "Baffled", 'muffler2': "Baffled",
-                'veh_preset': "Mazda 6 (2002)", 'veh_weight': 1350.0, 'veh_cd': 0.30, 'tire_grip': 0.9, 'gears': 5, 'final_drive': 4.9, 'drivetrain': "FWD"
+                'veh_preset': "Mazda 6 (2002)", 'veh_weight': 1350.0, 'veh_cd': 0.30, 'tire_grip': 0.9, 'gears': 5, 'final_drive': 4.9, 'drivetrain': "FWD",
+                'tech_level': 98
             },
             "Škoda Octavia 1.9 TDI": {
                 'config': "Inline", 'cylinders': 4, 'v_angle': 90, 'block_mat': "Cast Iron",
@@ -863,7 +887,8 @@ class EngineApp:
                 'aspiration': "Turbo", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 30, 'turb_size': 20, 'boost': 0.7, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "Direct Injection", 'intake_conf': "Single", 'manifold': "Standard", 'fuel_type': "Diesel", 'afr': 17.0, 'ignition': 15, 'rpm_limit': 4500,
                 'exh_arch': "Single", 'headers': "Cast", 'exh_diam': 45.0, 'cat': "3-way", 'muffler1': "Baffled", 'muffler2': "Baffled",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1350.0, 'veh_cd': 0.31, 'tire_grip': 0.8, 'gears': 5, 'final_drive': 3.1, 'drivetrain': "FWD"
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1350.0, 'veh_cd': 0.31, 'tire_grip': 0.8, 'gears': 5, 'final_drive': 3.1, 'drivetrain': "FWD",
+                'tech_level': 82
             },
             "BMW M3 E46 (S54B32)": {
                 'config': "Inline", 'cylinders': 6, 'v_angle': 90, 'block_mat': "Cast Iron",
@@ -873,7 +898,8 @@ class EngineApp:
                 'aspiration': "NA", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 50, 'turb_size': 50, 'boost': 0.5, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "EFI Multi", 'intake_conf': "ITB", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 13.5, 'ignition': 60, 'rpm_limit': 8000,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 60.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Baffled",
-                'veh_preset': "Lehký sporťák", 'veh_weight': 1495.0, 'veh_cd': 0.32, 'tire_grip': 1.1, 'gears': 6, 'final_drive': 3.62, 'drivetrain': "RWD"
+                'veh_preset': "Lehký sporťák", 'veh_weight': 1495.0, 'veh_cd': 0.32, 'tire_grip': 1.1, 'gears': 6, 'final_drive': 3.62, 'drivetrain': "RWD",
+                'tech_level': 100
             },
             "Audi RS6 C7 (4.0 TFSI)": {
                 'config': "V", 'cylinders': 8, 'v_angle': 90, 'block_mat': "Aluminium",
@@ -883,7 +909,8 @@ class EngineApp:
                 'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Twin", 'intercooler': 70, 'turb_size': 40, 'boost': 0.50, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "Direct Injection", 'intake_conf': "Twin", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 14.5, 'ignition': 35, 'rpm_limit': 6800,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 65.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Straight",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1950.0, 'veh_cd': 0.35, 'tire_grip': 1.2, 'gears': 7, 'final_drive': 3.2, 'drivetrain': "AWD"
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1950.0, 'veh_cd': 0.35, 'tire_grip': 1.2, 'gears': 7, 'final_drive': 3.2, 'drivetrain': "AWD",
+                'tech_level': 98
             },
             "Mercedes-Benz C63 AMG (M156)": {
                 'config': "V", 'cylinders': 8, 'v_angle': 90, 'block_mat': "Aluminium",
@@ -893,7 +920,8 @@ class EngineApp:
                 'aspiration': "NA", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 50, 'turb_size': 50, 'boost': 0.5, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "EFI Multi", 'intake_conf': "Twin", 'manifold': "Standard", 'fuel_type': "Premium 95", 'afr': 13.0, 'ignition': 45, 'rpm_limit': 7200,
                 'exh_arch': "Dual", 'headers': "Cast", 'exh_diam': 65.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Straight",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1730.0, 'veh_cd': 0.32, 'tire_grip': 1.0, 'gears': 7, 'final_drive': 3.06, 'drivetrain': "RWD"
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1730.0, 'veh_cd': 0.32, 'tire_grip': 1.0, 'gears': 7, 'final_drive': 3.06, 'drivetrain': "RWD",
+                'tech_level': 90
             },
             "Bugatti Veyron 16.4": {
                 'config': "V", 'cylinders': 16, 'v_angle': 90, 'block_mat': "Aluminium",
@@ -903,7 +931,8 @@ class EngineApp:
                 'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Quad", 'intercooler': 100, 'turb_size': 50, 'boost': 0.50, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "EFI Multi", 'intake_conf': "Twin", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 12.0, 'ignition': 55, 'rpm_limit': 6500,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 90.0, 'cat': "High Flow", 'muffler1': "None", 'muffler2': "Straight",
-                'veh_preset': "Moderní Supersport", 'veh_weight': 1888.0, 'veh_cd': 0.36, 'tire_grip': 1.6, 'gears': 7, 'final_drive': 2.5, 'drivetrain': "AWD"
+                'veh_preset': "Moderní Supersport", 'veh_weight': 1888.0, 'veh_cd': 0.36, 'tire_grip': 1.5, 'gears': 7, 'final_drive': 2.7, 'drivetrain': "AWD",
+                'tech_level': 100
             }
         }
 
@@ -933,6 +962,7 @@ class EngineApp:
         self.vars['bore'] = tk.DoubleVar(value=87.5)  
         self.vars['stroke'] = tk.DoubleVar(value=83.1) 
         self.vars['radiator'] = tk.IntVar(value=50) 
+        self.vars['tech_level'] = tk.IntVar(value=98)
         self.vars['calc_disp'] = tk.StringVar(value="0 cc") 
         
         self.vars['crank'] = tk.StringVar(value="Cast")
@@ -1079,8 +1109,9 @@ class EngineApp:
         make_slider(tab1, 4, "lbl_bore", 'bore', 50.0, 120.0, 0.1, "mm", "tt_bore")
         make_slider(tab1, 5, "lbl_stroke", 'stroke', 50.0, 120.0, 0.1, "mm", "tt_stroke")
         make_slider(tab1, 6, "lbl_rad", 'radiator', 10, 100, 1, "%", "tt_rad")
-        ttk.Label(tab1, textvariable=self.lang_vars['lbl_calc_disp']).grid(row=7, column=0, pady=10, sticky=tk.W)
-        ttk.Label(tab1, textvariable=self.vars['calc_disp'], font=("Arial", 10, "bold")).grid(row=7, column=1, sticky=tk.W)
+        make_slider(tab1, 7, "lbl_tech", 'tech_level', 50, 150, 1, "", "tt_tech")
+        ttk.Label(tab1, textvariable=self.lang_vars['lbl_calc_disp']).grid(row=8, column=0, pady=10, sticky=tk.W)
+        ttk.Label(tab1, textvariable=self.vars['calc_disp'], font=("Arial", 10, "bold")).grid(row=8, column=1, sticky=tk.W)
 
         # TAB 2 - Bottom End
         tab2 = ttk.Frame(self.notebook, padding=10)
@@ -1613,7 +1644,14 @@ class EngineApp:
         else:
             wheel_rpm = (self.v / (2 * math.pi * r)) * 60
             engine_rpm = wheel_rpm * ratios[self.gear] * fd
-            launch_rpm = min(4000.0, max_rpm * 0.75)
+            
+            # Najdeme, v jakých otáčkách má motor maximální krouticí moment
+            max_trq_idx = np.argmax(trq_arr)
+            peak_trq_rpm = rpm_arr[max_trq_idx]
+            
+            # Ideální start (Launch Control) je zhruba na 85 % maxima krouťáku.
+            # Omezíme to zespodu na 2500 RPM a shora nesmí překročit 75 % červeného pole.
+            launch_rpm = min(max(2500.0, peak_trq_rpm * 0.85), max_rpm * 0.75)
             if self.gear == 0 and engine_rpm < launch_rpm:
                 calc_rpm = launch_rpm + math.sin(time.time() * 25) * 150
             else:
