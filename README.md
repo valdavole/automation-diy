@@ -50,7 +50,3 @@ Inspired by the *Automation: The Car Company Tycoon Game* genre. This is an inde
 ## Contributing
 
 This project grew from a single evolving script through many iterative versions, so the current codebase lives in one large file. Pull requests are welcome — a split into `physics.py` / `audio.py` / `gui.py` / `presets.py` modules is a good first contribution if you'd like to help with maintainability.
-
-## License
-
-*No license has been chosen yet.* Until a `LICENSE` file is added, standard copyright applies (all rights reserved) even though the source is public. If you intend this to be genuinely open-source, add a `LICENSE` file before publishing — MIT is the simplest permissive option; GPLv3 if you want forks to stay open.

@@ -50,7 +50,3 @@ Inspirováno žánrem hry *Automation: The Car Company Tycoon Game*. Jde o nezá
 ## Přispívání
 
 Projekt vyrostl z jednoho postupně vyvíjeného skriptu přes mnoho iterativních verzí, takže současný kód žije v jednom velkém souboru. Pull requesty jsou vítány — rozdělení na moduly `physics.py` / `audio.py` / `gui.py` / `presets.py` je dobrý první příspěvek, pokud chceš pomoct s udržovatelností.
-
-## Licence
-
-*Licence zatím nebyla zvolena.* Dokud nepřidáš soubor `LICENSE`, platí standardní autorská ochrana (all rights reserved), i když je zdrojový kód veřejný. Pokud to má být skutečně open-source, přidej `LICENSE` soubor před publikací — MIT je nejjednodušší permisivní volba, GPLv3 pokud chceš, aby forky zůstaly otevřené.
