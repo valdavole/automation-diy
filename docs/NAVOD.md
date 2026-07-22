@@ -74,7 +74,7 @@ Vše zde má vliv jen na simulaci **Zkušební jízdy**, ne na dyno.
 - **Předvolba vozu**: rychle nastaví hodnoty šasi podle typického zástupce dané kategorie.
 - **Váha**: celková hmotnost auta + řidiče + náplní — základní člen F = m·a pro zrychlení.
 - **Odpor vzduchu (Cd)**: aerodynamický odpor, hlavně omezuje maximální rychlost.
-- **Trakce pneumatik**: kolik síly dokážou pneumatiky přenést, než se protočí — tohle omezuje tvůj start z místa, ne surový výkon.
+- **Trakce pneumatik**: kolik síly dokážou pneumatiky přenést, než se protočí — tohle omezuje tvůj start z místa, ne surový výkon. Tato hodnota nově figuruje i ve výpočtu aerodynamického přítlaku; sportovní vozy (grip > 1.0) ve vyšších rychlostech dynamicky generují přítlak k silnici.
 - **Převody / Stálý převod**: víc rychlostních stupňů udrží motor déle v ideálním pásmu otáček; vyšší stálý převod znamená kratší převody (lepší zrychlení, nižší maximálka, víc řazení).
 - **Pohon nápravy**: FWD (ztrácí trakci při zrychlení kvůli přenosu váhy) / RWD (získává trakci při zrychlení) / AWD (nejlepší celková trakce).
 
@@ -95,7 +95,7 @@ Tohle je živý, praktický test místo okamžitého sweepu. Drž tlačítko ply
 
 Simuluje zrychlení 0–100 km/h a maximální rychlost pomocí nastavení šasi ze záložky 7 v kombinaci s křivkou točivého momentu tvého motoru:
 - **Launch control** řídí počáteční otáčky, aby motor "nezadusil".
-- **Přenos váhy** posouvá zátěž na přední nebo zadní nápravu při zrychlení, což mění, kolik síly dokážou hnaná kola přenést, než se protočí — sleduj **indikátor TCS/prokluzu**.
+- **Přenos váhy a aerodynamika** posouvá zátěž na přední nebo zadní nápravu při zrychlení, a ve vysokých rychlostech počítá s přítlakem, což mění, kolik síly dokážou hnaná kola přenést, než se protočí — sleduj **indikátor TCS/prokluzu**.
 - **Řazení** probíhá automaticky blízko ideálních otáček pro řazení, s krátkým postihem za dobu řazení.
 - Jízda se automaticky ukončí, jakmile zrychlení splasne, a appka ti nahlásí čas 0–100 a maximální rychlost.
 

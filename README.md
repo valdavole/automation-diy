@@ -11,7 +11,7 @@ A homemade, open-source engine-building and dyno simulator inspired by the "Auto
 - **7-tab engine builder**: Block, Bottom End, Top End, Aspiration, Fuel & Tune, Exhaust, Drivetrain
 - **Physics-based dyno simulation** — torque/HP curve generation, with two independent failure modes: mechanical over-rev (crankshaft/conrods/pistons, whichever is weakest) and knock/detonation (compression, ignition timing, AFR, octane, head material)
 - **Manual throttle telemetry mode** — hold the throttle and watch coolant temperature; overheating blows the head gasket
-- **0–100 test drive simulation** — weight transfer, FWD/RWD/AWD traction modeling, tire grip limits, gear shifting, launch control, top speed detection
+- **0–100 test drive simulation** — weight transfer, aerodynamic downforce, FWD/RWD/AWD traction modeling, tire grip limits, gear shifting, launch control, top speed detection
 - **Procedurally generated engine audio** — no samples, the waveform is synthesized live from your engine's spec
 - **Built-in tooltips** explaining the real-world engineering effect of every single parameter
 - **Save/Load** engine configurations as portable JSON files

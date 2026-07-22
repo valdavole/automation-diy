@@ -74,7 +74,7 @@ Everything here only matters for the **Test Drive** simulation, not the dyno.
 - **Vehicle preset**: quickly sets chassis values to a typical example of a vehicle category.
 - **Weight**: total car + driver + fluids mass — the core F = m·a term for acceleration.
 - **Drag coefficient (Cd)**: aerodynamic drag, mainly caps top speed.
-- **Tire grip**: how much force the tires can put down before spinning — this is what limits your launch, not raw horsepower.
+- **Tire grip**: how much force the tires can put down before spinning — this limits your launch, not raw horsepower. This value also acts as an indicator for aerodynamic downforce; sporty cars (grip > 1.0) will dynamically generate downforce at high speeds, improving stability and high-speed grip.
 - **Gears / Final drive**: more gears keep the engine in its ideal RPM band longer; a higher final drive ratio means shorter gearing (better acceleration, lower top speed, more shifting).
 - **Drivetrain layout**: FWD (loses traction under acceleration due to weight transfer) / RWD (gains traction under acceleration) / AWD (best overall traction).
 
@@ -95,7 +95,7 @@ This is a live, hands-on test rather than an instant sweep. Hold the throttle bu
 
 Simulates a 0–100 km/h run and top speed using your Tab 7 chassis settings combined with your engine's torque curve:
 - **Launch control** manages the initial RPM to avoid bogging down.
-- **Weight transfer** shifts load onto the front or rear axle under acceleration, which changes how much force your drive wheels can put down before slipping — watch the **TCS/slip indicator**.
+- **Weight transfer and Aerodynamics** shifts load onto the front or rear axle under acceleration, and computes downforce at higher speeds based on the vehicle's grip and aerodynamic drag. This changes how much force your drive wheels can put down before slipping — watch the **TCS/slip indicator**.
 - **Gear shifts** happen automatically near the ideal shift RPM, with a short shift-delay penalty.
 - The run ends automatically once acceleration flattens out, reporting your 0–100 time and top speed.
 

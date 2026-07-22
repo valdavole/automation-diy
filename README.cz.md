@@ -11,7 +11,7 @@ Domácí, open-source simulátor stavby motoru a dyna, inspirovaný žánrem her
 - **Stavba motoru na 7 záložkách**: Block, Bottom End, Top End, Aspiration, Fuel & Tune, Exhaust, Drivetrain
 - **Fyzikálně založená dyno simulace** — výpočet křivky točivého momentu a výkonu, se dvěma nezávislými módy selhání: mechanické přetočení (klikovka/ojnice/písty, vždy vyhraje nejslabší díl) a detonační hoření/klepání (komprese, předstih, směs AFR, oktanové číslo, materiál hlavy)
 - **Telemetrie s ručním plynem** — drž plynový pedál a sleduj teplotu chladicí kapaliny; přehřátí prasklé těsnění hlavy
-- **Zkušební jízda 0–100 km/h** — přenos váhy, trakční model FWD/RWD/AWD, limit přilnavosti pneumatik, řazení, launch control, detekce maximální rychlosti
+- **Zkušební jízda 0–100 km/h** — přenos váhy, aerodynamický přítlak, trakční model FWD/RWD/AWD, limit přilnavosti pneumatik, řazení, launch control, detekce maximální rychlosti
 - **Procedurálně generovaný zvuk motoru** — žádné nahrávky, waveform se syntetizuje živě podle specifikace tvého motoru
 - **Vestavěné tooltips**, které vysvětlují reálný inženýrský dopad každého jednotlivého parametru
 - **Uložení/Načtení** konfigurace motoru jako přenositelný JSON soubor

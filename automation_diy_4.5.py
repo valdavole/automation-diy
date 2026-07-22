@@ -25,7 +25,7 @@ except (ImportError, OSError):
 # --- LOKALIZAČNÍ SLOVNÍK (CZ / EN) ---
 T = {
     "cz": {
-        "app_title": "Automation DIY - Verze 4.4 (Tech Level & Curve Tune Update)",
+        "app_title": "Automation DIY - Verze 4.5 (Aero & Dynamics Update)",
         "menu_file": "Soubor",
         "menu_load": "Načíst motor (.json)...",
         "menu_save": "Uložit motor jako (.json)...",
@@ -48,7 +48,7 @@ T = {
         "lbl_crank": "Materiál klikovky:", "lbl_conrods": "Materiál ojnic:", "lbl_pistons": "Materiál pístů:", "lbl_bal": "Vyvažováky:", "lbl_bal_mass": "Váha vyvažováků:",
         "tt_crank": "Cast / Cast Iron Heavy: Sériovka (max 6500 RPM), Heavy verze je robustnější.\nForged / Forged Steel (Heavy/Light): Kovaná, zlatý střed pro turba (8500 RPM).\nBillet / Billet Steel Heavy: Frézovaná z jednoho kusu, přežije i 11500 RPM.\nFlat-plane: U motorů V8 naprosto změní ZVUK i charakter na moderní / vysokootáčkový!",
         "tt_conrods": "Cast (Light/Heavy): Sériovka do 6000 RPM.\nHeavy Duty: Do náklaďáků (7000 RPM).\nForged (Light/Heavy): Kované, zlatý střed (8500 RPM).\nLW Forged: Odlehčené kované (10000 RPM).\nTitanium: Nejlehčí, nejdražší (12000 RPM).",
-        "tt_pistons": "Cast (Light/Heavy): Sériové (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nHypereutectic Cast: Odolnější odlitek, lepší na emise a lehké turbo.\nForged (Light/Heavy): Nezbytné pro turba, odolají detonacím (8500 RPM).\nLW Forged: Superlehké (10500 RPM).\nLow Friction: Sníží spotřebu, ale nic nevydrží (7500 RPM).",
+        "tt_pistons": "Cast (Light/Heavy): Sériové (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nHypereutectic Cast: Odolnější odlitek, lepší na emise a lehké turbo.\nForged (Light/Heavy): Nezbytné pro turba, odolají detonacím (8500 RPM).\nLW Forged: Superlehké (12000 RPM).\nLow Friction: Sníží spotřebu, ale nic nevydrží (7500 RPM).",
         "tt_bal": "None: Motor vibruje, je nejlehčí.\nHarmonic Damper: Guma tlumí kmity (+200 RPM limit, malé tření).\nFull Balancers: Přídavné hřídele (+500 RPM limit, ale sežerou výkon).",
         "tt_bal_mass": "Přidání protizávaží perfektně vyváží motor, což posune limit otáček nahoru, ale přidá hmotnost na rotační vrstvě, takže stoupne vnitřní tření a motor bude mít pomalejší odezvu.",
 
@@ -125,7 +125,7 @@ T = {
         "btn_retry": "NOVÝ POKUS", "btn_accel": "ZRYCHLUJEME...", "msg_not_reached": "Nedosaženo"
     },
     "en": {
-        "app_title": "Automation DIY - Version 4.4 (Tech Level & Curve Tune Update)",
+        "app_title": "Automation DIY - Version 4.5 (Aero & Dynamics Update)",
         "menu_file": "File",
         "menu_load": "Load Engine (.json)...",
         "menu_save": "Save Engine As (.json)...",
@@ -148,7 +148,7 @@ T = {
         "lbl_crank": "Crankshaft:", "lbl_conrods": "Connecting Rods:", "lbl_pistons": "Pistons:", "lbl_bal": "Balancers:", "lbl_bal_mass": "Balancer Mass:",
         "tt_crank": "Cast / Cast Iron Heavy: Stock (max 6500 RPM), Heavy is sturdier.\nForged / Forged Steel (Heavy/Light): Forged, sweet spot for turbos (8500 RPM).\nBillet / Billet Steel Heavy: CNC machined, survives 11500 RPM.\nFlat-plane: On V8s, completely changes SOUND and rev character to modern/high-revving!",
         "tt_conrods": "Cast (Light/Heavy): Stock up to 6000 RPM.\nHeavy Duty: For trucks (7000 RPM).\nForged (Light/Heavy): Sweet spot (8500 RPM).\nLW Forged: Lightweight forged (10000 RPM).\nTitanium: Lightest, most expensive (12000 RPM).",
-        "tt_pistons": "Cast (Light/Heavy): Stock (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nHypereutectic Cast: Stronger cast, better for emissions and light turbo.\nForged (Light/Heavy): Resists detonation (8500 RPM).\nLW Forged: Super light (10500 RPM).\nLow Friction: Lowers fuel consumption, very fragile (7500 RPM).",
+        "tt_pistons": "Cast (Light/Heavy): Stock (6500 RPM).\nHeavy Duty: Max 7000 RPM.\nHypereutectic Cast: Stronger cast, better for emissions and light turbo.\nForged (Light/Heavy): Resists detonation (8500 RPM).\nLW Forged: Super light (12000 RPM).\nLow Friction: Lowers fuel consumption, very fragile (7500 RPM).",
         "tt_bal": "None: Engine vibrates, but is the lightest.\nHarmonic Damper: Calms vibrations (+200 RPM limit, small friction).\nFull Balancers: Add. shafts (+500 RPM limit, but eats power).",
         "tt_bal_mass": "Adding counterweights perfectly balances the engine, raising RPM limits but adding rotational mass, which increases internal friction and slows down throttle response.",
 
@@ -386,7 +386,7 @@ def run_engine_simulation(params):
 
     pt_map = {"Cast": 6500, "Cast Heavy": 6000, "Cast Light": 6800, "Heavy Duty": 7000,
               "Forged": 8500, "Forged Heavy": 8000, "Forged Light": 9000,
-              "LW Forged": 10500, "Hypereutectic Cast": 7200, "Low Friction": 7500}
+              "LW Forged": 12000, "Hypereutectic Cast": 7200, "Low Friction": 7500}
     piston_lim = pt_map.get(params.get('pistons', 'Cast'), 6500)
     
     part_limits = {"Kliková hřídel/Crankshaft": crank_lim, "Ojnice/Conrods": conrod_lim, "Písty/Pistons": piston_lim}
@@ -753,19 +753,36 @@ def run_vehicle_kinematics(veh_params, engine_data):
                 current_trq = np.interp(calc_rpm, rpm_arr, trq_arr)
                 force_wheel = (current_trq * ratios[sim_gear] * fd * 0.86) / r
                 
+                # 1. Vypočítáme aerodynamický odpor dřív, abychom z něj určili přítlak
+                drag = 0.5 * rho * cd * area * sim_v**2
+                roll = mass * g * 0.015
+                
+                # 2. Simulace přítlaku (Downforce). Reálný přítlak dělá funkční aero paket
+                # (křídla, difuzor, spoiler) - ne odpor vzduchu (Cd) samotný, ten o přítomnosti
+                # aera nic neříká (hranaté auto s vysokým Cd nemá přítlak o nic víc než áčko).
+                # Jako proxy bereme grip pneumatik - u aut v presetech roste právě se sportovním/
+                # závodním laděním. Běžné auto (grip <= 1.0) tak nemá žádný umělý přítlak,
+                # závodně laděné auto ho má, ale v reálných, ne přehnaných hodnotách.
+                aero_factor = max(0.0, min(1.0, (grip - 1.0) / 0.5))
+                aero_downforce = drag * aero_factor * 0.8
+                
+                # 3. Rozložení umělé váhy na nápravy vč. aerodynamiky
                 transfer = (mass * sim_a_prev * cg_height) / wheelbase
-                if drivetrain == "FWD": driven_weight = (mass * g * w_f) - transfer
-                elif drivetrain == "RWD": driven_weight = (mass * g * w_r) + transfer
-                else: driven_weight = mass * g
+                
+                if drivetrain == "FWD": 
+                    driven_weight = (mass * g * w_f) - transfer + (aero_downforce * 0.4)
+                elif drivetrain == "RWD": 
+                    driven_weight = (mass * g * w_r) + transfer + (aero_downforce * 0.6)
+                else: 
+                    driven_weight = mass * g + aero_downforce
                     
                 driven_weight = max(driven_weight, mass * g * 0.1)
                 max_grip_force = driven_weight * grip
                 
-                if force_wheel > max_grip_force:
-                    force_wheel = max_grip_force
+                # --- OPRAVA: Oříznutí hrubé síly motoru na fyzický limit pneumatik ---
+                force_wheel = min(force_wheel, max_grip_force)
                     
-                drag = 0.5 * rho * cd * area * sim_v**2
-                roll = mass * g * 0.015
+                # Zbytek výpočtu zrychlení (drag a roll už máš spočítané nahoře)
                 net_force = force_wheel - drag - roll
                 a = net_force / (mass * 1.05)
                 
@@ -839,6 +856,7 @@ class EngineApp:
         
         self.setup_master_presets()
         self.create_variables()
+        self.snapshot_factory_defaults()
         self.create_menu()
         
         self.create_language_selector()
@@ -923,7 +941,7 @@ class EngineApp:
                 'veh_preset': "Vlastní (Custom)", 'veh_weight': 1730.0, 'veh_cd': 0.32, 'tire_grip': 1.0, 'gears': 7, 'final_drive': 3.06, 'drivetrain': "RWD",
                 'tech_level': 90
             },
-            "Bugatti Veyron 16.4": {
+            "Bugatti Veyron 16.4 Super Sport": {
                 'config': "V", 'cylinders': 16, 'v_angle': 90, 'block_mat': "Aluminium",
                 'bore': 86.0, 'stroke': 86.0, 'radiator': 100,
                 'crank': "Billet", 'conrods': "Titanium", 'pistons': "Forged", 'balancer': "Full Balancers",
@@ -940,18 +958,35 @@ class EngineApp:
         name = self.vars['engine_name'].get()
         if name in self.master_presets:
             p = self.master_presets[name]
+            # Reset VŠECHNY parametry na tovární výchozí hodnoty jako první krok.
+            # Díky tomu i nový slider, který zapomeneme doplnit do některého presetu,
+            # spadne na rozumný default místo toho, aby "přežil" z předešlého vozidla.
+            for k, default_v in self.factory_defaults.items():
+                self._set_var(k, default_v)
             if 'veh_preset' in p:
                 self.vars['veh_preset'].set(p['veh_preset'])
             for k, v in p.items():
                 if k in self.vars and k != 'veh_preset':
                     if k == 'vvl' and isinstance(v, bool):
                         self.vars[k].set("VVL" if v else "None")
-                    elif isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
-                    elif isinstance(self.vars[k], tk.DoubleVar): self.vars[k].set(float(v))
-                    elif isinstance(self.vars[k], tk.IntVar): self.vars[k].set(int(v))
-                    else: self.vars[k].set(str(v))
+                    else:
+                        self._set_var(k, v)
             self.update_displacement()
             self.update_dynamic_ui()
+
+    def _set_var(self, k, v):
+        if isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
+        elif isinstance(self.vars[k], tk.DoubleVar): self.vars[k].set(float(v))
+        elif isinstance(self.vars[k], tk.IntVar): self.vars[k].set(int(v))
+        else: self.vars[k].set(str(v))
+
+    def snapshot_factory_defaults(self):
+        # Uloží startovní hodnotu KAŽDÉHO slideru/comboboxu hned po vytvoření
+        # proměnných - tj. dřív, než se do nich sáhne presetem nebo uloženým motorem.
+        self.factory_defaults = {
+            k: v.get() for k, v in self.vars.items()
+            if k not in ['calc_disp', 'app_lang', 'engine_name']
+        }
 
     def create_variables(self):
         self.vars['engine_name'] = tk.StringVar(value="Sériová Mazda LF-DE 2.0")
@@ -1046,14 +1081,17 @@ class EngineApp:
         file_path = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
         if file_path:
             with open(file_path, 'r', encoding='utf-8') as f: data = json.load(f)
+            # Stejný důvod jako u apply_master_preset: pokud starší uložený motor
+            # nějaký (novější) parametr vůbec neobsahuje, nesmí zůstat hodnota
+            # z dřívějška - nejdřív reset na tovární default, pak overlay uložených dat.
+            for k, default_v in self.factory_defaults.items():
+                self._set_var(k, default_v)
             for k, v in data.items():
                 if k in self.vars:
                     if k == 'vvl' and isinstance(v, bool):
                         self.vars[k].set("VVL" if v else "None")
-                    elif isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
-                    elif isinstance(self.vars[k], tk.DoubleVar): self.vars[k].set(float(v))
-                    elif isinstance(self.vars[k], tk.IntVar): self.vars[k].set(int(v))
-                    else: self.vars[k].set(str(v))
+                    else:
+                        self._set_var(k, v)
             self.update_dynamic_ui()
             self.update_displacement()
 
@@ -1378,6 +1416,8 @@ class EngineApp:
         self.rev_window.configure(bg='#111111')
         self.rev_window.resizable(False, False)
         self.rev_window.protocol("WM_DELETE_WINDOW", self.on_rev_close)
+        self.rev_window.transient(self.root)
+        self.rev_window.grab_set()
         
         self.throttle_active = False
         self.last_throttle = False
@@ -1448,6 +1488,7 @@ class EngineApp:
 
     def on_rev_close(self):
         self.stop_audio_stream()
+        self.rev_window.grab_release()
         self.rev_window.destroy()
 
     # --- OKNO 2: ZKUŠEBNÍ JÍZDA ---
@@ -1460,6 +1501,8 @@ class EngineApp:
         self.drive_win.configure(bg='#111111')
         self.drive_win.resizable(False, False)
         self.drive_win.protocol("WM_DELETE_WINDOW", self.on_drive_close)
+        self.drive_win.transient(self.root)
+        self.drive_win.grab_set()
 
         limit_rpm = float(self.vars['rpm_limit'].get())
         
@@ -1670,10 +1713,28 @@ class EngineApp:
                 current_trq = np.interp(calc_rpm, rpm_arr, trq_arr)
                 force_wheel = (current_trq * ratios[self.gear] * fd * 0.86) / r
                 
+                # 1. Vypočítáme aerodynamický odpor dřív, abychom z něj určili přítlak
+                drag = 0.5 * rho * cd * area * self.v**2
+                roll = mass * g * 0.015
+                
+                # 2. Simulace přítlaku (Downforce). Reálný přítlak dělá funkční aero paket
+                # (křídla, difuzor, spoiler) - ne odpor vzduchu (Cd) samotný, ten o přítomnosti
+                # aera nic neříká (hranaté auto s vysokým Cd nemá přítlak o nic víc než áčko).
+                # Jako proxy bereme grip pneumatik - u aut v presetech roste právě se sportovním/
+                # závodním laděním. Běžné auto (grip <= 1.0) tak nemá žádný umělý přítlak,
+                # závodně laděné auto ho má, ale v reálných, ne přehnaných hodnotách.
+                aero_factor = max(0.0, min(1.0, (grip - 1.0) / 0.5))
+                aero_downforce = drag * aero_factor * 0.8
+                
+                # 3. Rozložení umělé váhy na nápravy vč. aerodynamiky
                 transfer = (mass * self.a_prev * cg_height) / wheelbase
-                if drivetrain == "FWD": driven_weight = (mass * g * w_f) - transfer
-                elif drivetrain == "RWD": driven_weight = (mass * g * w_r) + transfer
-                else: driven_weight = mass * g
+                
+                if drivetrain == "FWD": 
+                    driven_weight = (mass * g * w_f) - transfer + (aero_downforce * 0.4)
+                elif drivetrain == "RWD": 
+                    driven_weight = (mass * g * w_r) + transfer + (aero_downforce * 0.6)
+                else: 
+                    driven_weight = mass * g + aero_downforce
                     
                 driven_weight = max(driven_weight, mass * g * 0.1)
                 max_grip_force = driven_weight * grip
@@ -1722,6 +1783,7 @@ class EngineApp:
 
     def on_drive_close(self):
         self.stop_audio_stream()
+        self.drive_win.grab_release()
         self.drive_win.destroy()
 
     def start_audio_stream(self, is_drive=False):
@@ -1750,16 +1812,16 @@ class EngineApp:
             freq = (rpm / 60.0) * (cylinders / 2.0)
             d_phase = 2.0 * np.pi * freq / fs
             phases = getattr(self, 'audio_phase', 0.0) + np.arange(1, frames + 1) * d_phase
-            self.audio_phase = phases[-1] % (2.0 * np.pi)
+            self.audio_phase = phases[-1]
             
             rev_freq = rpm / 60.0
             d_rev_phase = 2.0 * np.pi * rev_freq / fs
             rev_phases = getattr(self, 'rev_phase', 0.0) + np.arange(1, frames + 1) * d_rev_phase
-            self.rev_phase = rev_phases[-1] % (2.0 * np.pi)
+            self.rev_phase = rev_phases[-1]
             
             d_flut = 2.0 * np.pi * 7.5 / fs
             flut_phases = getattr(self, 'flutter_phase', 0.0) + np.arange(1, frames + 1) * d_flut
-            self.flutter_phase = flut_phases[-1] % (2.0 * np.pi)
+            self.flutter_phase = flut_phases[-1]
             
             wave_data = generate_audio_frame(
                 phases, rev_phases, cylinders, aspiration, rpm, 
@@ -1769,7 +1831,7 @@ class EngineApp:
             if hasattr(self, 'flutter_intensity'): self.flutter_intensity *= 0.93 
             
         try:
-            self.stream = sd.OutputStream(samplerate=fs, channels=1, callback=audio_callback)
+            self.stream = sd.OutputStream(samplerate=fs, channels=1, callback=audio_callback, blocksize=2048)
             self.stream.start()
         except Exception as e:
             self.safe_log(f"Chyba při startu zvuku: {e}")
