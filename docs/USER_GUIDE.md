@@ -26,6 +26,7 @@ Sets the fundamental layout of the engine.
 - **Block material**: Cast Iron (heavy, indestructible) through Aluminium (standard, with Heavy/Light sub-variants for a weight-vs-durability trade-off) and AlSi (Heavy/Light — no cylinder liners, lower friction) to Aluminium Billet (machined from a single block, race-grade) and Magnesium (lowest friction, motorsport-grade).
 - **Bore / Stroke**: bore controls piston diameter (bigger bore → bigger valves → better high-RPM airflow); stroke controls piston travel (bigger stroke → strong low-end torque, but physically caps how high the engine can rev).
 - **Radiator efficiency**: how effectively the engine sheds heat — this is your buffer against overheating in the Manual Throttle test.
+- **Technology Level (Tech Level)**: determines the era of your engine (from historic 60s engines through the modern standard of 100, up to cutting-edge 115+ builds). This acts as a global multiplier — it fundamentally affects overall combustion efficiency, engine breathing, internal friction, and crucially, the baseline knock resistance.
 
 ### Tab 2 — Bottom End
 This is where the engine's mechanical RPM ceiling is decided.
