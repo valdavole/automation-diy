@@ -26,6 +26,7 @@ Základní koncepce motoru.
 - **Materiál bloku**: Litina (těžká, nezničitelná) přes Hliník (standard, s podvarianty Heavy/Light pro poměr váha/odolnost) a AlSi (Heavy/Light — bez vložek válců, nižší tření) až po Aluminium Billet (frézovaný z jednoho kusu, závodní úroveň) a Hořčík (nejnižší tření, motorsportová úroveň).
 - **Vrtání / Zdvih**: vrtání určuje průměr pístu (větší vrtání → větší ventily → lepší průtok při vysokých otáčkách); zdvih určuje dráhu pístu (větší zdvih → silný točivý moment dole, ale fyzicky omezuje maximální otáčky).
 - **Účinnost chladiče**: jak efektivně motor odvádí teplo — tohle je tvá rezerva proti přehřátí v testu s ručním plynem.
+- **Technologická úroveň (Tech Level)**: určuje éru tvého motoru (od historických motorů z 60. let přes moderní standard s hodnotou 100 až po špičkové high-tech motory 115+). Tento parametr funguje jako globální násobič – zásadně ovlivňuje celkovou účinnost spalování, dýchání motoru, vnitřní tření a hlavně základní odolnost proti klepání.
 
 ### Záložka 2 — Bottom End
 Tady se rozhoduje o mechanickém stropu otáček motoru.
