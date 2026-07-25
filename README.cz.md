@@ -63,7 +63,7 @@ Vyžaduje Python 3.10+.
 
 ```bash
 pip install numpy matplotlib sounddevice
-python engine_sim.py
+python automation_diy_4.8.5.py
 ```
 
 `tkinter` je součástí většiny standardních instalací Pythonu pro Windows. Na některých linuxových distribucích může být potřeba doinstalovat ho přes systémového správce balíčků.
