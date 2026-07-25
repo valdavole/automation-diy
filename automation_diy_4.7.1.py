@@ -5,6 +5,7 @@ import platform
 import threading
 import math
 import wave
+import tempfile
 import numpy as np
 import matplotlib.pyplot as plt
 import tkinter as tk
@@ -25,7 +26,7 @@ except (ImportError, OSError):
 # --- LOKALIZAČNÍ SLOVNÍK (CZ / EN) ---
 T = {
     "cz": {
-        "app_title": "Automation DIY - Verze 4.5 (Aero & Dynamics Update)",
+        "app_title": "Automation DIY - Verze 4.7.1 (Custom Gearing & Test Track)",
         "menu_file": "Soubor",
         "menu_load": "Načíst motor (.json)...",
         "menu_save": "Uložit motor jako (.json)...",
@@ -105,27 +106,42 @@ T = {
         "tt_bypass": "No Valves: Výfuk jde vždy přes tlumiče.\nBypass Valves: Klapky se v 3500 RPM otevřou a zcela obejdou tlumiče, čímž uvolní maximální výkon za cenu hluku.",
 
         "lbl_veh": "Předvolba vozu:", "lbl_weight": "Váha:", "lbl_cd": "Odpor vzduchu (Cd):", "lbl_grip": "Trakce (Tire Grip):",
+        "lbl_area": "Čelní plocha:", "lbl_wheel": "Poloměr kola:", "lbl_speed_limit": "Omezovač rychlosti:", "lbl_downforce": "Přítlak (Cl·A):",
         "lbl_gears": "Počet převodů:", "lbl_fd": "Stálý převod:", "lbl_drive": "Pohon nápravy:",
+        "lbl_custom_gears": "Jemné nastavení jednotlivých převodů", "btn_reset_gears": "Načíst automatické převody",
+        "lbl_gear_1": "1. převod:", "lbl_gear_2": "2. převod:", "lbl_gear_3": "3. převod:", "lbl_gear_4": "4. převod:",
+        "lbl_gear_5": "5. převod:", "lbl_gear_6": "6. převod:", "lbl_gear_7": "7. převod:", "lbl_gear_8": "8. převod:",
         "tt_veh": "Přednastaví hodnoty šasi podle typických zástupců daných kategorií.\nUšetří ti čas při testování různých motorů v různých typech aut.",
         "tt_weight": "Celková hmotnost vozu s řidičem a náplněmi.\nZásadní parametr pro zrychlení z místa podle Newtonova druhého zákona (F=m*a).",
         "tt_cd": "Koeficient aerodynamického odporu.\nKlíčový pro maximální rychlost. Běžná auta mají kolem 0.30, supersporty méně.",
-        "tt_grip": "Přilnavost pneumatik (koeficient smykového tření).\nOmezuje maximální tažnou sílu na kolech, než se začnou protáčet.",
+        "tt_grip": "Přilnavost pneumatik (bezrozměrný koeficient).\nOmezuje maximální podélnou sílu na hnaných kolech. Sama o sobě nevytváří aerodynamický přítlak.",
+        "tt_area": "Čelní referenční plocha vozu v m². Aerodynamický odpor je úměrný součinu Cd × plocha.",
+        "tt_wheel": "Dynamický poloměr hnaného kola v metrech. Ovlivňuje převod síly i rychlost při daných otáčkách.",
+        "tt_speed_limit": "Elektronický omezovač maximální rychlosti. 0 znamená bez elektronického omezení.",
+        "tt_downforce": "Součin součinitele přítlaku a referenční plochy (Cl·A) v m². 0 = žádný modelovaný přítlak.",
         "tt_gears": "Počet rychlostních stupňů v převodovce.\nVíc rychlostí udrží motor déle v ideálním spektru otáček.",
         "tt_fd": "Stálý převod na hnané nápravě (diferenciál).\nVětší číslo = kratší kvalty, lepší zrychlení, ale nižší maximálka a víc řazení.",
         "tt_drive": "FWD: Náhon na přední. Ztrácí trakci při zrychlení.\nRWD: Náhon na zadní. Trakce roste při zrychlení.\nAWD: Náhon na všechna kola. Maximální využití váhy pro trakci.",
+        "tt_custom_gears": "Volitelné přesné převody. Když není zaškrtnuto, simulátor používá stejné automatické sady jako doposud. Počet viditelných převodů odpovídá zvolenému počtu rychlostí.",
 
-        "btn_dyno": "1. Dyno Pull", "btn_graph": "Graf", "btn_rev": "2. Ruční plyn", "btn_drive": "3. Zkušební Jízda", "btn_no_snd": "Zvuk Nedostupný",
+        "btn_dyno": "1. Dyno Pull", "btn_graph": "Graf", "btn_rev": "2. Ruční plyn", "btn_drive": "3. Zkušební Jízda", "btn_track": "4. Testovací dráha", "btn_no_snd": "Zvuk Nedostupný",
         "msg_dyno_hdr": "--- DYNO PULL (Měření výkonu):", "msg_rpm": "Otáčky", "msg_trq": "Točák", "msg_hp": "Výkon",
         "msg_done": "\nHotovo!", "msg_blown": "💥 ZNIČENO!", "msg_fix": "🔧 JAK TO OPRAVIT:", 
         "msg_max_hp": "Max Výkon:", "msg_max_trq": "Max Moment:", "msg_ready": "-> Připraveno na Zkušební jízdu!",
 
         "win_rev_title": "Telemetrie (Ruční plyn a Chlazení)", "lbl_coolant": "Teplota kapaliny:", "btn_pedal": "PLYNOVÝ PEDÁL (Držet stisknuté)",
         "msg_hg_blown": "💥 PRASKLÉ TĚSNĚNÍ POD HLAVOU! 💥",
+        "msg_invalid": "Neplatné vstupní hodnoty",
+        "msg_file_error": "Chyba souboru",
         "win_drv_title": "Zkušební Jízda (0 - Max)", "btn_launch": "START LAUNCH", "btn_skip": "PŘESKOČIT NA MAX",
-        "btn_retry": "NOVÝ POKUS", "btn_accel": "ZRYCHLUJEME...", "msg_not_reached": "Nedosaženo"
+        "btn_retry": "NOVÝ POKUS", "btn_accel": "ZRYCHLUJEME...", "msg_not_reached": "Nedosaženo",
+        "win_track_title": "Testovací dráha - měřené kolo", "btn_track_start": "START MĚŘENÉHO KOLA", "btn_track_retry": "NOVÉ KOLO",
+        "lbl_lap_time": "Čas kola", "lbl_track_speed": "Rychlost", "lbl_track_gear": "Převod", "lbl_track_sector": "Sektor",
+        "lbl_track_length": "Délka dráhy", "lbl_track_avg": "Průměrná rychlost", "lbl_track_max": "Maximální rychlost",
+        "msg_track_ready": "Připraveno na start", "msg_track_running": "Měřené kolo probíhá...", "msg_track_finished": "Kolo dokončeno"
     },
     "en": {
-        "app_title": "Automation DIY - Version 4.5 (Aero & Dynamics Update)",
+        "app_title": "Automation DIY - Version 4.7.1 (Custom Gearing & Test Track)",
         "menu_file": "File",
         "menu_load": "Load Engine (.json)...",
         "menu_save": "Save Engine As (.json)...",
@@ -205,24 +221,39 @@ T = {
         "tt_bypass": "No Valves: Exhaust always passes through mufflers.\nBypass Valves: Opens above 3500 RPM, completely bypassing mufflers for maximum flow at the cost of noise.",
 
         "lbl_veh": "Vehicle Preset:", "lbl_weight": "Weight:", "lbl_cd": "Air Drag (Cd):", "lbl_grip": "Tire Grip:",
+        "lbl_area": "Frontal Area:", "lbl_wheel": "Wheel Radius:", "lbl_speed_limit": "Speed Limiter:", "lbl_downforce": "Downforce (Cl·A):",
         "lbl_gears": "Gears:", "lbl_fd": "Final Drive:", "lbl_drive": "Drivetrain:",
+        "lbl_custom_gears": "Fine-tune individual gear ratios", "btn_reset_gears": "Load automatic ratios",
+        "lbl_gear_1": "1st gear:", "lbl_gear_2": "2nd gear:", "lbl_gear_3": "3rd gear:", "lbl_gear_4": "4th gear:",
+        "lbl_gear_5": "5th gear:", "lbl_gear_6": "6th gear:", "lbl_gear_7": "7th gear:", "lbl_gear_8": "8th gear:",
         "tt_veh": "Pre-sets chassis values according to typical representatives of the given categories.\nSaves you time when testing different engines in different types of cars.",
         "tt_weight": "Total weight of the vehicle with driver and fluids.\nCrucial parameter for acceleration from a standstill according to Newton's second law (F=m*a).",
         "tt_cd": "Aerodynamic drag coefficient.\nKey for top speed. Normal cars have around 0.30, supercars less.",
-        "tt_grip": "Tire grip (coefficient of sliding friction).\nLimits the maximum pulling force on the wheels before they start spinning.",
+        "tt_grip": "Tire grip (dimensionless coefficient).\nLimits longitudinal force at the driven wheels. It does not create aerodynamic downforce by itself.",
+        "tt_area": "Vehicle frontal reference area in m². Aerodynamic drag is proportional to Cd × area.",
+        "tt_wheel": "Dynamic driven-wheel radius in metres. It affects both wheel force and road speed at a given RPM.",
+        "tt_speed_limit": "Electronic maximum-speed limiter. 0 disables electronic limiting.",
+        "tt_downforce": "Lift-coefficient-area product (Cl·A) in m². 0 means no modelled downforce.",
         "tt_gears": "Number of gears in the transmission.\nMore gears keep the engine longer in the ideal RPM spectrum.",
         "tt_fd": "Final drive ratio on the driven axle (differential).\nHigher number = shorter gears, better acceleration, but lower top speed and more shifting.",
         "tt_drive": "FWD: Front-Wheel Drive. Loses traction under acceleration.\nRWD: Rear-Wheel Drive. Traction increases under acceleration.\nAWD: All-Wheel Drive. Maximum use of weight for traction.",
+        "tt_custom_gears": "Optional exact ratios. When unchecked, the simulator uses the same automatic ratio sets as before. The number of visible ratios follows the selected gear count.",
 
-        "btn_dyno": "1. Dyno Pull", "btn_graph": "Show Graph", "btn_rev": "2. Manual Throttle", "btn_drive": "3. Test Drive", "btn_no_snd": "Sound N/A",
+        "btn_dyno": "1. Dyno Pull", "btn_graph": "Show Graph", "btn_rev": "2. Manual Throttle", "btn_drive": "3. Test Drive", "btn_track": "4. Test Track", "btn_no_snd": "Sound N/A",
         "msg_dyno_hdr": "--- DYNO PULL:", "msg_rpm": "RPM", "msg_trq": "Torque", "msg_hp": "Power",
         "msg_done": "\nDone!", "msg_blown": "💥 DESTROYED!", "msg_fix": "🔧 HOW TO FIX:", 
         "msg_max_hp": "Max Power:", "msg_max_trq": "Max Torque:", "msg_ready": "-> Ready for Test Drive!",
 
         "win_rev_title": "Telemetry (Throttle & Cooling)", "lbl_coolant": "Coolant Temp:", "btn_pedal": "THROTTLE PEDAL (Hold)",
         "msg_hg_blown": "💥 BLOWN HEAD GASKET! 💥",
+        "msg_invalid": "Invalid input values",
+        "msg_file_error": "File error",
         "win_drv_title": "Test Drive (0 - Max)", "btn_launch": "START LAUNCH", "btn_skip": "SKIP TO TOP SPEED",
-        "btn_retry": "RETRY LAUNCH", "btn_accel": "ACCELERATING...", "msg_not_reached": "Not Reached"
+        "btn_retry": "RETRY LAUNCH", "btn_accel": "ACCELERATING...", "msg_not_reached": "Not Reached",
+        "win_track_title": "Test Track - Timed Lap", "btn_track_start": "START TIMED LAP", "btn_track_retry": "NEW LAP",
+        "lbl_lap_time": "Lap time", "lbl_track_speed": "Speed", "lbl_track_gear": "Gear", "lbl_track_sector": "Sector",
+        "lbl_track_length": "Track length", "lbl_track_avg": "Average speed", "lbl_track_max": "Maximum speed",
+        "msg_track_ready": "Ready to start", "msg_track_running": "Timed lap in progress...", "msg_track_finished": "Lap complete"
     }
 }
 
@@ -322,8 +353,8 @@ def generate_engine_wav(rpm_list, cylinders, aspiration, crank_type="Cast", file
     num_steps = len(rpm_list)
     total_time = num_steps * step_duration
     num_samples = int(total_time * fs)
-    t_samples = np.linspace(0, total_time, num_samples)
-    t_rpms = np.linspace(0, total_time, num_steps)
+    t_samples = np.linspace(0, total_time, num_samples, endpoint=False)
+    t_rpms = np.linspace(0, total_time, num_steps, endpoint=False)
     rpm_samples = np.interp(t_samples, t_rpms, rpm_list)
     freqs = (rpm_samples / 60.0) * (cylinders / 2.0)
     rev_freqs = (rpm_samples / 60.0)
@@ -341,23 +372,349 @@ def generate_engine_wav(rpm_list, cylinders, aspiration, crank_type="Cast", file
         f.writeframes(wave_int.tobytes())
 
 # --- NEZÁVISLÉ FYZIKÁLNÍ JÁDRO ---
+def clamp(value, low, high):
+    return max(low, min(high, value))
+
+
+def get_gear_ratios(gear_count, custom_ratios=None):
+    """Vrátí původní automatickou sadu, nebo přesně zadané volitelné převody."""
+    gear_count = int(clamp(int(gear_count), 4, 8))
+    if custom_ratios is not None:
+        ratios = [float(value) for value in list(custom_ratios)[:gear_count]]
+        if len(ratios) != gear_count:
+            raise ValueError("Custom gear-ratio count does not match the gearbox")
+        if any(not math.isfinite(value) or value < 0.30 or value > 5.50 for value in ratios):
+            raise ValueError("Custom gear ratios must be between 0.30 and 5.50")
+        if any(ratios[i] <= ratios[i + 1] for i in range(len(ratios) - 1)):
+            raise ValueError("Custom gear ratios must decrease with every higher gear")
+        return ratios
+    if gear_count == 4:
+        return [2.8, 1.5, 1.0, 0.8]
+    if gear_count == 5:
+        return [3.3, 1.9, 1.3, 1.0, 0.8]
+    if gear_count == 6:
+        return [3.5, 2.0, 1.4, 1.0, 0.8, 0.6]
+    return [4.0, 2.5, 1.7, 1.2, 0.9, 0.7, 0.55, 0.45][:gear_count]
+
+
+# Jediná geometrie testovací dráhy. Stejné body se používají pro kresbu, délku,
+# sektory, poloměry zatáček i fyzikální výpočet rychlostního profilu.
+TEST_TRACK_TARGET_LENGTH = 3605.0
+TEST_TRACK_SAMPLE_STEP = 5.0
+
+# Řídicí body technického okruhu v lokálních souřadnicích. Catmull-Romova křivka
+# z nich vytvoří spojitou uzavřenou stopu s rovinkami, vracáky, esíčky i rychlými oblouky.
+TEST_TRACK_CONTROL_POINTS = np.asarray([
+    (0.0, 0.0),
+    (260.0, -8.0),
+    (560.0, 0.0),
+    (760.0, 60.0),
+    (820.0, 190.0),
+    (790.0, 320.0),
+    (700.0, 390.0),
+    (850.0, 460.0),
+    (920.0, 590.0),
+    (850.0, 700.0),
+    (680.0, 730.0),
+    (540.0, 670.0),
+    (420.0, 730.0),
+    (280.0, 680.0),
+    (150.0, 600.0),
+    (70.0, 480.0),
+    (110.0, 360.0),
+    (250.0, 330.0),
+    (370.0, 390.0),
+    (500.0, 350.0),
+    (585.0, 250.0),
+    (520.0, 170.0),
+    (390.0, 150.0),
+    (290.0, 210.0),
+    (180.0, 170.0),
+    (70.0, 190.0),
+    (10.0, 100.0),
+], dtype=float)
+
+
+def _catmull_rom_closed(points, samples_per_segment=35):
+    """Vzorkuje uzavřenou Catmull-Romovu křivku bez duplicitního koncového bodu."""
+    points = np.asarray(points, dtype=float)
+    result = []
+    count = len(points)
+    for i in range(count):
+        p0 = points[(i - 1) % count]
+        p1 = points[i]
+        p2 = points[(i + 1) % count]
+        p3 = points[(i + 2) % count]
+        for j in range(samples_per_segment):
+            t = j / samples_per_segment
+            t2 = t * t
+            t3 = t2 * t
+            point = 0.5 * (
+                (2.0 * p1)
+                + (-p0 + p2) * t
+                + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2
+                + (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3
+            )
+            result.append(point)
+    return np.asarray(result, dtype=float)
+
+
+def _resample_closed_polyline(points, target_length, step):
+    """Přeškáluje a převzorkuje uzavřenou stopu na téměř konstantní délku kroku."""
+    points = np.asarray(points, dtype=float)
+    closed = np.vstack((points, points[0]))
+    seg = np.linalg.norm(np.diff(closed, axis=0), axis=1)
+    raw_length = float(np.sum(seg))
+    if raw_length <= 1e-9:
+        raise ValueError('Track geometry has zero length')
+
+    scaled = points * (target_length / raw_length)
+    closed = np.vstack((scaled, scaled[0]))
+    seg = np.linalg.norm(np.diff(closed, axis=0), axis=1)
+    cumulative = np.concatenate(([0.0], np.cumsum(seg)))
+    total = float(cumulative[-1])
+    point_count = max(120, int(round(total / step)))
+    sample_s = np.linspace(0.0, total, point_count, endpoint=False)
+    x = np.interp(sample_s, cumulative, closed[:, 0])
+    y = np.interp(sample_s, cumulative, closed[:, 1])
+    sampled = np.column_stack((x, y))
+
+    next_points = np.roll(sampled, -1, axis=0)
+    ds = np.linalg.norm(next_points - sampled, axis=1)
+    # Druhé drobné škálování odstraní chybu vzniklou převzorkováním.
+    sampled *= target_length / float(np.sum(ds))
+    next_points = np.roll(sampled, -1, axis=0)
+    ds = np.linalg.norm(next_points - sampled, axis=1)
+    return sampled, ds
+
+
+def _cyclic_smooth(values, passes=5):
+    values = np.asarray(values, dtype=float)
+    for _ in range(passes):
+        values = (
+            np.roll(values, 2) + 4.0 * np.roll(values, 1) + 6.0 * values
+            + 4.0 * np.roll(values, -1) + np.roll(values, -2)
+        ) / 16.0
+    return values
+
+
+def build_test_track_geometry():
+    """Vytvoří jediný zdroj pravdy pro vykreslení i fyzikální model okruhu."""
+    dense = _catmull_rom_closed(TEST_TRACK_CONTROL_POINTS)
+    points, ds = _resample_closed_polyline(dense, TEST_TRACK_TARGET_LENGTH, TEST_TRACK_SAMPLE_STEP)
+
+    # Diskrétní křivost ze změny tečného směru. Poloměr = 1 / křivost.
+    prev_points = np.roll(points, 1, axis=0)
+    next_points = np.roll(points, -1, axis=0)
+    tangent_a = points - prev_points
+    tangent_b = next_points - points
+    angle_a = np.arctan2(tangent_a[:, 1], tangent_a[:, 0])
+    angle_b = np.arctan2(tangent_b[:, 1], tangent_b[:, 0])
+    delta = (angle_b - angle_a + np.pi) % (2.0 * np.pi) - np.pi
+    local_ds = 0.5 * (np.linalg.norm(tangent_a, axis=1) + np.linalg.norm(tangent_b, axis=1))
+    curvature = np.abs(delta) / np.maximum(local_ds, 1e-6)
+    curvature = _cyclic_smooth(curvature, passes=6)
+    radii = np.where(curvature > 1.0 / 5000.0, 1.0 / curvature, np.inf)
+
+    distances = np.concatenate(([0.0], np.cumsum(ds)))
+    mid_distances = distances[:-1] + ds * 0.5
+    sector_boundaries = (TEST_TRACK_TARGET_LENGTH * 0.31, TEST_TRACK_TARGET_LENGTH * 0.63)
+    sectors = np.where(mid_distances < sector_boundaries[0], 1,
+                       np.where(mid_distances < sector_boundaries[1], 2, 3)).astype(int)
+
+    return {
+        'points': points,
+        'step_lengths': ds,
+        'radii': radii,
+        'sectors': sectors,
+        'distances': distances,
+        'track_length': float(np.sum(ds)),
+    }
+
+
+TEST_TRACK_GEOMETRY = build_test_track_geometry()
+
+
+def run_track_simulation(veh_params, engine_data, geometry=None):
+    """Vypočítá deterministické letmé kolo přímo po vykreslené geometrii okruhu."""
+    geometry = geometry or TEST_TRACK_GEOMETRY
+    rpm_arr = np.asarray(engine_data['rpm'], dtype=float)
+    trq_arr = np.asarray(engine_data['torque'], dtype=float)
+    if rpm_arr.size == 0 or trq_arr.size != rpm_arr.size:
+        raise ValueError("Engine curve is empty or inconsistent")
+    if not np.all(np.isfinite(rpm_arr)) or not np.all(np.isfinite(trq_arr)) or np.max(trq_arr) <= 0.0:
+        raise ValueError("Engine curve has no usable torque")
+
+    mass = clamp(float(veh_params.get('weight', 1350.0)), 500.0, 3000.0)
+    cd = clamp(float(veh_params.get('cd', 0.30)), 0.15, 0.80)
+    area = clamp(float(veh_params.get('area', 2.2)), 1.2, 4.0)
+    grip = clamp(float(veh_params.get('grip', 0.9)), 0.3, 2.5)
+    wheel_radius = clamp(float(veh_params.get('wheel_radius', 0.33)), 0.20, 0.55)
+    speed_limiter_kmh = max(0.0, float(veh_params.get('speed_limiter', 0.0)))
+    downforce_cla = clamp(float(veh_params.get('downforce_cla', 0.0)), 0.0, 4.0)
+    gear_count = int(clamp(int(veh_params.get('gears', 5)), 4, 8))
+    final_drive = clamp(float(veh_params.get('final_drive', 4.1)), 1.5, 7.0)
+    drivetrain = veh_params.get('drivetrain', 'FWD')
+    ratios = get_gear_ratios(gear_count, veh_params.get('gear_ratios'))
+
+    points = np.asarray(geometry['points'], dtype=float)
+    step_lengths = np.asarray(geometry['step_lengths'], dtype=float)
+    radii = np.asarray(geometry['radii'], dtype=float)
+    sectors = np.asarray(geometry['sectors'], dtype=int)
+    point_count = len(step_lengths)
+    track_length = float(np.sum(step_lengths))
+    if not (len(points) == len(radii) == len(sectors) == point_count):
+        raise ValueError('Track geometry arrays are inconsistent')
+
+    max_rpm = float(rpm_arr[-1])
+    drivetrain_eff = {"FWD": 0.90, "RWD": 0.88, "AWD": 0.82}.get(drivetrain, 0.88)
+    driven_fraction = {"FWD": 0.60, "RWD": 0.55, "AWD": 1.00}.get(drivetrain, 0.55)
+    rho = 1.2
+    g = 9.81
+    rolling_coeff = 0.015
+
+    top_gear_speed = (max_rpm / (ratios[-1] * final_drive)) * (2.0 * math.pi * wheel_radius) / 60.0
+    electronic_limit = speed_limiter_kmh / 3.6 if speed_limiter_kmh > 0.0 else float('inf')
+    absolute_speed_limit = min(top_gear_speed, electronic_limit, 125.0)
+
+    speed_limits = np.full(point_count, absolute_speed_limit, dtype=float)
+    lateral_grip = grip * 0.96
+    for i, radius in enumerate(radii):
+        if math.isfinite(radius):
+            denominator = mass / radius - lateral_grip * 0.5 * rho * downforce_cla
+            if denominator > 1e-9:
+                speed_limits[i] = min(absolute_speed_limit, math.sqrt(lateral_grip * mass * g / denominator))
+
+    def total_tire_accel(speed):
+        normal_accel = g + (0.5 * rho * downforce_cla * speed * speed) / mass
+        return grip * normal_accel
+
+    def lateral_accel(speed, radius):
+        return 0.0 if not math.isfinite(radius) else speed * speed / radius
+
+    def best_drive_accel(speed, radius):
+        wheel_rpm = (speed / (2.0 * math.pi * wheel_radius)) * 60.0
+        total_capacity = total_tire_accel(speed)
+        lat = lateral_accel(speed, radius)
+        longitudinal_capacity = math.sqrt(max(0.0, total_capacity * total_capacity - lat * lat))
+        traction_force = mass * longitudinal_capacity * driven_fraction
+        drag = 0.5 * rho * cd * area * speed * speed
+        rolling = mass * g * rolling_coeff
+        best_accel = -(drag + rolling) / (mass * 1.05)
+        best_gear = gear_count - 1
+
+        if speed_limiter_kmh > 0.0 and speed >= electronic_limit:
+            return min(0.0, best_accel), best_gear
+
+        for gear_index, ratio in enumerate(ratios):
+            engine_rpm = wheel_rpm * ratio * final_drive
+            if engine_rpm > max_rpm * 1.001:
+                continue
+            calc_rpm = clamp(engine_rpm, 1000.0, max_rpm)
+            torque = float(np.interp(calc_rpm, rpm_arr, trq_arr))
+            wheel_force = torque * ratio * final_drive * drivetrain_eff / wheel_radius
+            wheel_force = min(wheel_force, traction_force)
+            accel = (wheel_force - drag - rolling) / (mass * 1.05)
+            if accel > best_accel:
+                best_accel = accel
+                best_gear = gear_index
+        return best_accel, best_gear
+
+    def braking_accel(speed, radius):
+        total_capacity = total_tire_accel(speed)
+        lat = lateral_accel(speed, radius)
+        tire_braking = math.sqrt(max(0.0, total_capacity * total_capacity - lat * lat))
+        tire_braking = min(tire_braking, 1.25 * g)
+        aero_braking = (0.5 * rho * cd * area * speed * speed) / mass
+        return max(0.5, tire_braking + aero_braking)
+
+    profile = speed_limits.copy()
+
+    # Cyklický zpětný průchod vytvoří brzdné zóny před zatáčkami skutečné geometrie.
+    for _ in range(9):
+        for i in range(point_count - 1, -1, -1):
+            next_i = (i + 1) % point_count
+            allowed = math.sqrt(max(0.0, profile[next_i] ** 2 + 2.0 * braking_accel(profile[next_i], radii[next_i]) * step_lengths[i]))
+            profile[i] = min(profile[i], allowed)
+
+    # Dopředný průchod omezí profil tím, co auto mezi body skutečně stihne zrychlit.
+    for _ in range(14):
+        for i in range(point_count):
+            next_i = (i + 1) % point_count
+            accel, _ = best_drive_accel(profile[i], radii[i])
+            allowed = math.sqrt(max(0.0, profile[i] ** 2 + 2.0 * max(accel, -2.0) * step_lengths[i]))
+            profile[next_i] = min(profile[next_i], allowed)
+
+    for _ in range(5):
+        for i in range(point_count - 1, -1, -1):
+            next_i = (i + 1) % point_count
+            allowed = math.sqrt(max(0.0, profile[next_i] ** 2 + 2.0 * braking_accel(profile[next_i], radii[next_i]) * step_lengths[i]))
+            profile[i] = min(profile[i], allowed)
+        for i in range(point_count):
+            next_i = (i + 1) % point_count
+            accel, _ = best_drive_accel(profile[i], radii[i])
+            allowed = math.sqrt(max(0.0, profile[i] ** 2 + 2.0 * max(accel, -2.0) * step_lengths[i]))
+            profile[next_i] = min(profile[next_i], allowed)
+
+    profile = np.maximum(profile, 1.0)
+    gears = np.asarray([best_drive_accel(profile[i], radii[i])[1] for i in range(point_count)], dtype=int)
+    next_profile = np.roll(profile, -1)
+    interval_times = 2.0 * step_lengths / np.maximum(profile + next_profile, 1e-6)
+
+    shift_penalties = np.zeros(point_count, dtype=float)
+    upshifts = 0
+    downshifts = 0
+    for i in range(point_count):
+        next_i = (i + 1) % point_count
+        if gears[next_i] > gears[i]:
+            shift_penalties[i] = 0.16
+            upshifts += 1
+        elif gears[next_i] < gears[i]:
+            shift_penalties[i] = 0.03
+            downshifts += 1
+
+    interval_times = interval_times + shift_penalties
+    cumulative_time = np.concatenate(([0.0], np.cumsum(interval_times)))
+    distances = np.concatenate(([0.0], np.cumsum(step_lengths)))
+    lap_time = float(cumulative_time[-1])
+
+    sector_times = [float(np.sum(interval_times[sectors == sector])) for sector in (1, 2, 3)]
+    closed_points = np.vstack((points, points[0]))
+
+    return {
+        'lap_time': lap_time,
+        'track_length': track_length,
+        'average_speed': track_length / lap_time,
+        'max_speed': float(np.max(profile)),
+        'sector_times': sector_times,
+        'upshifts': upshifts,
+        'downshifts': downshifts,
+        'distances': distances,
+        'cumulative_time': cumulative_time,
+        'speed_profile': np.concatenate((profile, [profile[0]])),
+        'gear_profile': np.concatenate((gears, [gears[0]])),
+        'sector_profile': np.concatenate((sectors, [sectors[0]])),
+        'track_points': closed_points,
+        'corner_radii': np.concatenate((radii, [radii[0]])),
+    }
+
 def run_engine_simulation(params):
     lang = params.get('lang', 'cz')
-    tech_level = params.get('tech_level', 100)
+    tech_level = clamp(float(params.get('tech_level', 100)), 50.0, 150.0)
     tech_factor = tech_level / 100.0
-    b = params.get('bore', 87.5)
-    s = params.get('stroke', 83.1)
-    c = params.get('cylinders', 4)
+    b = clamp(float(params.get('bore', 87.5)), 50.0, 120.0)
+    s = clamp(float(params.get('stroke', 83.1)), 50.0, 120.0)
+    c = int(clamp(int(params.get('cylinders', 4)), 3, 16))
     disp_cc = math.pi * ((b/20)**2) * (s/10) * c
     
-    rpm_limit = params.get('rpm_limit', 6500)
+    rpm_limit = int(clamp(int(params.get('rpm_limit', 6500)), 3000, 12000))
     blow_up = False
     blow_up_reason = ""
     blow_up_fix = ""
     
     # 1. Integrace Balanceru (Zvyšuje mechanický limit, ale ovlivní tření)
     bal = params.get('balancer', 'None')
-    bal_mass = params.get('balancer_mass', 0.0)
+    bal_mass = 0.0 if bal == "None" else float(params.get('balancer_mass', 0.0))
     bal_rpm_bonus = 0
     friction_mult = 1.0
     if bal == "Harmonic Damper":
@@ -408,7 +765,9 @@ def run_engine_simulation(params):
     else:
         actual_limit = rpm_limit
 
-    rpm_range = np.arange(1000, actual_limit + 100, 100)
+    rpm_range = np.arange(1000, actual_limit, 100)
+    if rpm_range.size == 0 or rpm_range[-1] != actual_limit:
+        rpm_range = np.append(rpm_range, actual_limit)
     octane_dict = {"Low Quality 85": 85, "Regular 85": 85, "Regular 91": 91, "Premium 95": 95, "Super 98": 98,
                    "Ultimate 100": 100, "E85": 105, "Methanol": 115, "Diesel": 0,
                    "Leaded Gasoline": 98, "Compressed Gas": 110, "Nitromethane": 150}
@@ -488,9 +847,9 @@ def run_engine_simulation(params):
 
     def build_ve_curve(c_prof):
         if is_diesel:
-            peak_rpm = 1900 + (c_prof * 15) + ((valves - 2) * 150) + (man_shift * 0.3)
-            left_spread = 1200 + (c_prof * 10)
-            right_spread = 2500 + (c_prof * 20)
+            peak_rpm = 1700 + (c_prof * 10) + ((valves - 2) * 120) + (man_shift * 0.20)
+            left_spread = 900 + (c_prof * 8)
+            right_spread = 1900 + (c_prof * 15)
             if vvt == "Intake": right_spread *= 1.15
             elif vvt == "All": right_spread *= 1.25
             
@@ -499,14 +858,24 @@ def run_engine_simulation(params):
             right_side = 0.45 + 0.55 * np.exp(-0.5 * ((rpm_range - peak_rpm) / right_spread)**2)
             return np.where(rpm_range < peak_rpm, left_side, right_side)
         else:
-            peak_rpm = 3000 + (c_prof * 45) + ((valves - 2) * 500) + man_shift + vt_shift
-            spread = 1500 + (c_prof * 15)
-            if vvt == "Intake": spread *= 1.25
-            elif vvt == "All": spread *= 1.5
-            if "Variable" in man: spread *= 1.15
-            
-            # Plynulý základ 35 % pro benzín
-            return 0.35 + 0.65 * np.exp(-0.5 * ((rpm_range - peak_rpm) / spread)**2)
+            peak_rpm = 2800 + (c_prof * 24) + ((valves - 2) * 260) + (man_shift * 0.65) + (vt_shift * 0.45)
+            left_spread = 1350 + (c_prof * 9)
+            right_spread = 2050 + (c_prof * 15)
+            if vvt == "Intake":
+                left_spread *= 1.05
+                right_spread *= 1.15
+            elif vvt == "All":
+                left_spread *= 1.15
+                right_spread *= 1.30
+            if "Variable" in man:
+                left_spread *= 1.10
+                right_spread *= 1.15
+
+            # Asymetrická křivka: sériový motor po maximu momentu neklesá tak prudce,
+            # aby byl realistický výkon ve vyšších otáčkách.
+            left_side = 0.35 + 0.65 * np.exp(-0.5 * ((rpm_range - peak_rpm) / left_spread)**2)
+            right_side = 0.35 + 0.65 * np.exp(-0.5 * ((rpm_range - peak_rpm) / right_spread)**2)
+            return np.where(rpm_range < peak_rpm, left_side, right_side)
 
     ve_curve = build_ve_curve(cam)
     ve_curve *= (0.55 + 0.45 * tech_factor)
@@ -569,19 +938,22 @@ def run_engine_simulation(params):
         turb_size = params.get('turb_size', 50)
         ic_size = params.get('intercooler', 50)
         
-        # 5. Integrace Turbo Config (Víc menších turb znamená mnohem menší lag)
-        lag_rpm = 2000 + (turb_size * 20) + (ic_size * 4)
+        # Spool je závislý na velikosti turba, průtoku motoru, počtu turbodmychadel a ložiscích.
+        displacement_l = max(0.5, disp_cc / 1000.0)
+        lag_rpm = 1500 + (turb_size * 18) + (ic_size * 1.0) - min(700, max(0.0, displacement_l - 1.0) * 140)
         t_conf = params.get('turbo_config', 'Single')
-        if t_conf == "Twin": lag_rpm -= 400
-        elif t_conf == "Quad": lag_rpm -= 800
-            
-        if params.get('turbo_bearing', 'Journal') == "Ball Bearings": lag_rpm -= 500
-        ic_eff = 0.6 + (ic_size / 250.0) 
-        actual_boost = active_boost * ic_eff
-        
-        # OPRAVA: Plynulý náběh turba (Sigmoid) místo ostrého matematického zlomu
-        spool_smoothness = 200.0  # Hodnota, která určuje, jak pozvolna se turbo roztáčí
-        boost_curve = 1.0 + (actual_boost * 1.10 * (1 / (1 + np.exp(-(rpm_range - lag_rpm) / spool_smoothness))))
+        if t_conf == "Twin": lag_rpm -= 300
+        elif t_conf == "Quad": lag_rpm -= 550
+        if params.get('turbo_bearing', 'Journal') == "Ball Bearings": lag_rpm -= 250
+        lag_rpm = clamp(lag_rpm, 1100.0, 5200.0)
+
+        # Intercooler primárně zlepšuje hustotu náplně a odolnost proti klepání;
+        # nemá násobit nebo rušit nastavený plnicí tlak.
+        charge_eff = 0.86 + 0.12 * (ic_size / 100.0)
+        knock_modifier -= ic_size * 0.04
+        spool_smoothness = 260.0
+        spool = 1.0 / (1.0 + np.exp(-(rpm_range - lag_rpm) / spool_smoothness))
+        boost_curve = 1.0 + active_boost * charge_eff * spool
         torque *= boost_curve
         
     elif asp == "Supercharger":
@@ -598,6 +970,7 @@ def run_engine_simulation(params):
         elif sc_type == "Twin-screw": torque *= (1.0 + active_boost * 1.0 * sc_efficiency)
         
         torque -= parasitic_loss
+        torque = np.maximum(torque, 0.0)
 
     lean_penalty = (afr - 14.7) * 4 if afr > 14.7 else 0
     
@@ -622,8 +995,9 @@ def run_engine_simulation(params):
 
     exh_diam = params.get('exh_diam', 50.0)
     if params.get('exh_arch', 'Single') == "Dual": exh_diam *= 1.414 
-    req_diam = math.sqrt(np.max(torque) / 2) * 2.5 
-    if exh_diam < req_diam:
+    peak_torque_for_exhaust = max(0.0, float(np.max(torque)))
+    req_diam = math.sqrt(peak_torque_for_exhaust / 2.0) * 2.5 if peak_torque_for_exhaust > 0.0 else 0.0
+    if req_diam > 0.0 and exh_diam < req_diam:
         choke_factor = 1.0 - ((req_diam - exh_diam) / req_diam) * (rpm_range / max(rpm_range))
         torque *= np.maximum(0.5, choke_factor)
 
@@ -656,7 +1030,7 @@ def run_engine_simulation(params):
     torque = torque - friction_torque
     torque = np.maximum(torque, 0)
 
-    hp = (torque * rpm_range) / 7021.5
+    hp = (torque * rpm_range) / 7127.0  # mechanical horsepower (HP), not metric PS
     
     return {
         "rpm": rpm_range, 
@@ -668,35 +1042,41 @@ def run_engine_simulation(params):
     }
 
 def run_vehicle_kinematics(veh_params, engine_data):
+    """Jednoduchá podélná dynamika vozu s omezením trakcí, převody, redlinem a aerodynamikou."""
     dt = 0.02
-    rpm_arr = engine_data['rpm']
-    trq_arr = engine_data['torque']
-    max_rpm = rpm_arr[-1]
-    max_hp_idx = np.argmax(engine_data["hp"])
-    max_hp_rpm = engine_data["rpm"][max_hp_idx]
-    ideal_shift_rpm = min(max_rpm - 50, max_hp_rpm + 400)
-    
-    mass = veh_params.get('weight', 1350.0)
-    cd = veh_params.get('cd', 0.30)
-    grip = veh_params.get('grip', 0.9)
-    gear_count = veh_params.get('gears', 5)
-    fd = veh_params.get('final_drive', 4.1)
+    rpm_arr = np.asarray(engine_data['rpm'], dtype=float)
+    trq_arr = np.asarray(engine_data['torque'], dtype=float)
+    if rpm_arr.size == 0 or trq_arr.size != rpm_arr.size:
+        raise ValueError("Engine curve is empty or inconsistent")
+    if not np.all(np.isfinite(rpm_arr)) or not np.all(np.isfinite(trq_arr)) or np.max(trq_arr) <= 0.0:
+        raise ValueError("Engine curve has no usable torque")
+
+    max_rpm = float(rpm_arr[-1])
+    max_hp_idx = int(np.argmax(engine_data["hp"]))
+    max_hp_rpm = float(engine_data["rpm"][max_hp_idx])
+    ideal_shift_rpm = min(max_rpm - 50.0, max_hp_rpm + 400.0)
+
+    mass = clamp(float(veh_params.get('weight', 1350.0)), 500.0, 3000.0)
+    cd = clamp(float(veh_params.get('cd', 0.30)), 0.15, 0.80)
+    area = clamp(float(veh_params.get('area', 2.2)), 1.2, 4.0)
+    grip = clamp(float(veh_params.get('grip', 0.9)), 0.3, 2.5)
+    wheel_radius = clamp(float(veh_params.get('wheel_radius', 0.33)), 0.20, 0.55)
+    speed_limiter_kmh = max(0.0, float(veh_params.get('speed_limiter', 0.0)))
+    downforce_cla = clamp(float(veh_params.get('downforce_cla', 0.0)), 0.0, 4.0)
+    gear_count = int(clamp(int(veh_params.get('gears', 5)), 4, 8))
+    fd = clamp(float(veh_params.get('final_drive', 4.1)), 1.5, 7.0)
     drivetrain = veh_params.get('drivetrain', 'FWD')
+    ratios = get_gear_ratios(gear_count, veh_params.get('gear_ratios'))
 
-    if gear_count <= 4: ratios = [2.8, 1.5, 1.0, 0.8]
-    elif gear_count == 5: ratios = [3.3, 1.9, 1.3, 1.0, 0.8]
-    elif gear_count == 6: ratios = [3.5, 2.0, 1.4, 1.0, 0.8, 0.6]
-    else: ratios = [4.0, 2.5, 1.7, 1.2, 0.9, 0.7, 0.55, 0.45][:gear_count]
-
-    r = 0.33 
-    area = 2.2 
-    rho = 1.2 
+    drivetrain_eff = {"FWD": 0.90, "RWD": 0.88, "AWD": 0.82}.get(drivetrain, 0.88)
+    rho = 1.2
     g = 9.81
+    rolling_coeff = 0.015
     wheelbase = 2.7
     cg_height = 0.5
-    w_f = 0.6 if drivetrain == "FWD" else 0.5
-    w_r = 0.4 if drivetrain == "FWD" else 0.5
-    
+    w_f = 0.60 if drivetrain == "FWD" else 0.50
+    w_r = 1.0 - w_f
+
     sim_v = 0.0
     sim_gear = 0
     sim_time = 0.0
@@ -704,95 +1084,61 @@ def run_vehicle_kinematics(veh_params, engine_data):
     sim_shift_delay = 0.0
     sim_a_prev = 0.0
     sim_max_v = 0.0
-    
+
     max_sim_steps = int(300 / dt)
-    
-    for step in range(max_sim_steps):
+    peak_trq_rpm = float(rpm_arr[int(np.argmax(trq_arr))])
+    launch_rpm = min(max(1800.0, peak_trq_rpm * 0.85), max_rpm * 0.75)
+
+    for _ in range(max_sim_steps):
         sim_time += dt
-        a = 0.0
-        is_shifting_now = False
-        
-        if sim_v > sim_max_v:
-            sim_max_v = sim_v
-            
+        sim_max_v = max(sim_max_v, sim_v)
         if sim_time_100 is None and sim_v * 3.6 >= 100.0:
             sim_time_100 = sim_time
-            
-        if sim_shift_delay > 0:
-            sim_shift_delay -= dt
-            is_shifting_now = True
 
+        drag = 0.5 * rho * cd * area * sim_v**2
+        roll = mass * g * rolling_coeff
+        a = 0.0
+        is_shifting_now = sim_shift_delay > 0.0
         if is_shifting_now:
-            a = (-0.5 * rho * cd * area * sim_v**2 - mass * g * 0.015) / mass
+            sim_shift_delay = max(0.0, sim_shift_delay - dt)
+            a = -(drag + roll) / mass
         else:
-            wheel_rpm = (sim_v / (2 * math.pi * r)) * 60
+            wheel_rpm = (sim_v / (2.0 * math.pi * wheel_radius)) * 60.0
             engine_rpm = wheel_rpm * ratios[sim_gear] * fd
-            
-            # Najdeme, v jakých otáčkách má motor maximální krouticí moment
-            max_trq_idx = np.argmax(trq_arr)
-            peak_trq_rpm = rpm_arr[max_trq_idx]
-            
-            # Ideální start (Launch Control) je zhruba na 85 % maxima krouťáku.
-            # Omezíme to zespodu na 2500 RPM a shora nesmí překročit 75 % červeného pole.
-            launch_rpm = min(max(2500.0, peak_trq_rpm * 0.85), max_rpm * 0.75)
-            if sim_gear == 0 and engine_rpm < launch_rpm:
-                calc_rpm = launch_rpm
+            calc_rpm = launch_rpm if sim_gear == 0 and engine_rpm < launch_rpm else max(1000.0, engine_rpm)
+
+            if calc_rpm > ideal_shift_rpm and sim_gear < gear_count - 1:
+                sim_gear += 1
+                sim_shift_delay = 0.20
+                is_shifting_now = True
+                a = -(drag + roll) / mass
             else:
-                calc_rpm = max(1000.0, engine_rpm)
-            
-            if calc_rpm > ideal_shift_rpm:
-                if sim_gear < gear_count - 1:
-                    sim_gear += 1
-                    sim_shift_delay = 0.20 
-                    is_shifting_now = True
-                    a = (-0.5 * rho * cd * area * sim_v**2 - mass * g * 0.015) / mass
+                over_redline = sim_gear == gear_count - 1 and engine_rpm > max_rpm
+                electronically_limited = speed_limiter_kmh > 0.0 and sim_v * 3.6 >= speed_limiter_kmh
+                if over_redline or electronically_limited:
+                    force_wheel = 0.0
                 else:
-                    calc_rpm = max_rpm
-            
-            if not is_shifting_now:
-                current_trq = np.interp(calc_rpm, rpm_arr, trq_arr)
-                force_wheel = (current_trq * ratios[sim_gear] * fd * 0.86) / r
-                
-                # 1. Vypočítáme aerodynamický odpor dřív, abychom z něj určili přítlak
-                drag = 0.5 * rho * cd * area * sim_v**2
-                roll = mass * g * 0.015
-                
-                # 2. Simulace přítlaku (Downforce). Reálný přítlak dělá funkční aero paket
-                # (křídla, difuzor, spoiler) - ne odpor vzduchu (Cd) samotný, ten o přítomnosti
-                # aera nic neříká (hranaté auto s vysokým Cd nemá přítlak o nic víc než áčko).
-                # Jako proxy bereme grip pneumatik - u aut v presetech roste právě se sportovním/
-                # závodním laděním. Běžné auto (grip <= 1.0) tak nemá žádný umělý přítlak,
-                # závodně laděné auto ho má, ale v reálných, ne přehnaných hodnotách.
-                aero_factor = max(0.0, min(1.0, (grip - 1.0) / 0.5))
-                aero_downforce = drag * aero_factor * 0.8
-                
-                # 3. Rozložení umělé váhy na nápravy vč. aerodynamiky
+                    calc_rpm = min(calc_rpm, max_rpm)
+                    current_trq = float(np.interp(calc_rpm, rpm_arr, trq_arr))
+                    force_wheel = (current_trq * ratios[sim_gear] * fd * drivetrain_eff) / wheel_radius
+
+                aero_downforce = 0.5 * rho * downforce_cla * sim_v**2
                 transfer = (mass * sim_a_prev * cg_height) / wheelbase
-                
-                if drivetrain == "FWD": 
-                    driven_weight = (mass * g * w_f) - transfer + (aero_downforce * 0.4)
-                elif drivetrain == "RWD": 
-                    driven_weight = (mass * g * w_r) + transfer + (aero_downforce * 0.6)
-                else: 
+                if drivetrain == "FWD":
+                    driven_weight = mass * g * w_f - transfer + aero_downforce * 0.40
+                elif drivetrain == "RWD":
+                    driven_weight = mass * g * w_r + transfer + aero_downforce * 0.60
+                else:
                     driven_weight = mass * g + aero_downforce
-                    
-                driven_weight = max(driven_weight, mass * g * 0.1)
-                max_grip_force = driven_weight * grip
-                
-                # --- OPRAVA: Oříznutí hrubé síly motoru na fyzický limit pneumatik ---
+                max_grip_force = max(0.0, driven_weight * grip)
                 force_wheel = min(force_wheel, max_grip_force)
-                    
-                # Zbytek výpočtu zrychlení (drag a roll už máš spočítané nahoře)
-                net_force = force_wheel - drag - roll
-                a = net_force / (mass * 1.05)
-                
+                a = (force_wheel - drag - roll) / (mass * 1.05)
+
         sim_a_prev = a
-        sim_v += a * dt
-        sim_v = max(sim_v, 0.0)
-        
-        if not is_shifting_now and a < 0.001 and sim_v > 15.0:
+        sim_v = max(0.0, sim_v + a * dt)
+        if not is_shifting_now and abs(a) < 0.001 and sim_v > 15.0:
             break
-            
+
     return {
         "time_0_100": sim_time_100,
         "top_speed": sim_max_v,
@@ -847,12 +1193,14 @@ class EngineApp:
     def __init__(self, root):
         self.root = root
         self.vars = {}
+        self.allowed_values = {}
+        self._suspend_vehicle_preset_callback = False
         self.vars['app_lang'] = tk.StringVar(value='cz')
         
         self.lang_vars = {k: tk.StringVar(value=v) for k, v in T['cz'].items()}
         
         self.root.title(self.lang_vars['app_title'].get())
-        self.root.geometry("750x750")
+        self.root.geometry("750x850")
         
         self.setup_master_presets()
         self.create_variables()
@@ -863,6 +1211,10 @@ class EngineApp:
         self.create_widgets()
         
         self.dyno_results = {}
+        self.dyno_params = None
+        self._dyno_running = False
+        self._dyno_changed_during_run = False
+        self.bind_dyno_invalidation_traces()
         self.update_displacement()
         self.update_dynamic_ui()
 
@@ -890,11 +1242,11 @@ class EngineApp:
                 'config': "Inline", 'cylinders': 4, 'v_angle': 90, 'block_mat': "Aluminium",
                 'bore': 87.5, 'stroke': 83.1, 'radiator': 50,
                 'crank': "Cast", 'conrods': "Heavy Duty", 'pistons': "Cast", 'balancer': "None",
-                'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "None", 'vvl': False, 'cam_profile': 25, 'comp_ratio': 10.0,
+                'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "None", 'vvl': False, 'cam_profile': 55, 'comp_ratio': 10.0,
                 'aspiration': "NA", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 50, 'turb_size': 50, 'boost': 0.5, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
-                'fuel_deliv': "EFI Multi", 'intake_conf': "Single", 'manifold': "Standard", 'fuel_type': "Premium 95", 'afr': 14.7, 'ignition': 30, 'rpm_limit': 6500,
+                'fuel_deliv': "EFI Multi", 'intake_conf': "Single", 'manifold': "Standard", 'fuel_type': "Premium 95", 'afr': 14.7, 'ignition': 25, 'rpm_limit': 6500,
                 'exh_arch': "Single", 'headers': "Cast", 'exh_diam': 44.0, 'cat': "3-way", 'muffler1': "Baffled", 'muffler2': "Baffled",
-                'veh_preset': "Mazda 6 (2002)", 'veh_weight': 1350.0, 'veh_cd': 0.30, 'tire_grip': 0.9, 'gears': 5, 'final_drive': 4.9, 'drivetrain': "FWD",
+                'veh_preset': "Mazda 6 (2002)", 'veh_weight': 1350.0, 'veh_cd': 0.30, 'veh_area': 2.20, 'wheel_radius': 0.315, 'speed_limiter': 0.0, 'downforce_cla': 0.0, 'tire_grip': 0.9, 'gears': 5, 'final_drive': 4.3, 'drivetrain': "FWD",
                 'tech_level': 98
             },
             "Škoda Octavia 1.9 TDI": {
@@ -902,54 +1254,54 @@ class EngineApp:
                 'bore': 79.5, 'stroke': 95.5, 'radiator': 40,
                 'crank': "Forged", 'conrods': "Heavy Duty", 'pistons': "Heavy Duty", 'balancer': "None",
                 'head_mat': "Aluminium", 'valvetrain': "SOHC", 'valves': 2, 'vvt': "None", 'vvl': False, 'cam_profile': 0, 'comp_ratio': 17.0,
-                'aspiration': "Turbo", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 30, 'turb_size': 20, 'boost': 0.7, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
+                'aspiration': "Turbo", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 30, 'turb_size': 20, 'boost': 0.8, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "Direct Injection", 'intake_conf': "Single", 'manifold': "Standard", 'fuel_type': "Diesel", 'afr': 17.0, 'ignition': 15, 'rpm_limit': 4500,
                 'exh_arch': "Single", 'headers': "Cast", 'exh_diam': 45.0, 'cat': "3-way", 'muffler1': "Baffled", 'muffler2': "Baffled",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1350.0, 'veh_cd': 0.31, 'tire_grip': 0.8, 'gears': 5, 'final_drive': 3.1, 'drivetrain': "FWD",
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1350.0, 'veh_cd': 0.31, 'veh_area': 2.15, 'wheel_radius': 0.305, 'speed_limiter': 0.0, 'downforce_cla': 0.0, 'tire_grip': 0.8, 'gears': 5, 'final_drive': 3.1, 'drivetrain': "FWD",
                 'tech_level': 82
             },
             "BMW M3 E46 (S54B32)": {
                 'config': "Inline", 'cylinders': 6, 'v_angle': 90, 'block_mat': "Cast Iron",
                 'bore': 87.0, 'stroke': 91.0, 'radiator': 70,
                 'crank': "Forged", 'conrods': "Forged", 'pistons': "Forged", 'balancer': "Harmonic Damper",
-                'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "All", 'vvl': False, 'cam_profile': 55, 'comp_ratio': 11.5,
+                'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "All", 'vvl': False, 'cam_profile': 75, 'comp_ratio': 11.5,
                 'aspiration': "NA", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 50, 'turb_size': 50, 'boost': 0.5, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "EFI Multi", 'intake_conf': "ITB", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 13.5, 'ignition': 60, 'rpm_limit': 8000,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 60.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Baffled",
-                'veh_preset': "Lehký sporťák", 'veh_weight': 1495.0, 'veh_cd': 0.32, 'tire_grip': 1.1, 'gears': 6, 'final_drive': 3.62, 'drivetrain': "RWD",
+                'veh_preset': "Lehký sporťák", 'veh_weight': 1495.0, 'veh_cd': 0.32, 'veh_area': 2.00, 'wheel_radius': 0.325, 'speed_limiter': 250.0, 'downforce_cla': 0.0, 'tire_grip': 1.1, 'gears': 6, 'final_drive': 3.62, 'drivetrain': "RWD",
                 'tech_level': 100
             },
             "Audi RS6 C7 (4.0 TFSI)": {
                 'config': "V", 'cylinders': 8, 'v_angle': 90, 'block_mat': "Aluminium",
                 'bore': 84.5, 'stroke': 89.0, 'radiator': 90,
-                'crank': "Flat-plane", 'conrods': "Forged", 'pistons': "Forged", 'balancer': "Harmonic Damper",
+                'crank': "Forged", 'conrods': "Forged", 'pistons': "Forged", 'balancer': "Harmonic Damper",
                 'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "All", 'vvl': False, 'cam_profile': 30, 'comp_ratio': 8.8,
-                'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Twin", 'intercooler': 70, 'turb_size': 40, 'boost': 0.50, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
+                'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Twin", 'intercooler': 70, 'turb_size': 40, 'boost': 0.58, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "Direct Injection", 'intake_conf': "Twin", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 14.5, 'ignition': 35, 'rpm_limit': 6800,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 65.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Straight",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1950.0, 'veh_cd': 0.35, 'tire_grip': 1.2, 'gears': 7, 'final_drive': 3.2, 'drivetrain': "AWD",
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1950.0, 'veh_cd': 0.35, 'veh_area': 2.36, 'wheel_radius': 0.350, 'speed_limiter': 250.0, 'downforce_cla': 0.0, 'tire_grip': 1.2, 'gears': 7, 'final_drive': 3.2, 'drivetrain': "AWD",
                 'tech_level': 98
             },
             "Mercedes-Benz C63 AMG (M156)": {
                 'config': "V", 'cylinders': 8, 'v_angle': 90, 'block_mat': "Aluminium",
                 'bore': 102.2, 'stroke': 94.6, 'radiator': 85,
                 'crank': "Forged", 'conrods': "Forged", 'pistons': "Forged", 'balancer': "Harmonic Damper",
-                'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "All", 'vvl': False, 'cam_profile': 30, 'comp_ratio': 11.3,
+                'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "All", 'vvl': False, 'cam_profile': 45, 'comp_ratio': 11.3,
                 'aspiration': "NA", 'turbo_bearing': "Journal", 'turbo_config': "Single", 'intercooler': 50, 'turb_size': 50, 'boost': 0.5, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
-                'fuel_deliv': "EFI Multi", 'intake_conf': "Twin", 'manifold': "Standard", 'fuel_type': "Premium 95", 'afr': 13.0, 'ignition': 45, 'rpm_limit': 7200,
+                'fuel_deliv': "EFI Multi", 'intake_conf': "Twin", 'manifold': "Standard", 'fuel_type': "Premium 95", 'afr': 13.0, 'ignition': 30, 'rpm_limit': 7200,
                 'exh_arch': "Dual", 'headers': "Cast", 'exh_diam': 65.0, 'cat': "High Flow", 'muffler1': "Straight", 'muffler2': "Straight",
-                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1730.0, 'veh_cd': 0.32, 'tire_grip': 1.0, 'gears': 7, 'final_drive': 3.06, 'drivetrain': "RWD",
-                'tech_level': 90
+                'veh_preset': "Vlastní (Custom)", 'veh_weight': 1730.0, 'veh_cd': 0.32, 'veh_area': 2.20, 'wheel_radius': 0.335, 'speed_limiter': 250.0, 'downforce_cla': 0.0, 'tire_grip': 1.0, 'gears': 7, 'final_drive': 3.06, 'drivetrain': "RWD",
+                'tech_level': 88
             },
             "Bugatti Veyron 16.4 Super Sport": {
                 'config': "V", 'cylinders': 16, 'v_angle': 90, 'block_mat': "Aluminium",
                 'bore': 86.0, 'stroke': 86.0, 'radiator': 100,
                 'crank': "Billet", 'conrods': "Titanium", 'pistons': "Forged", 'balancer': "Full Balancers",
                 'head_mat': "Aluminium", 'valvetrain': "DOHC", 'valves': 4, 'vvt': "All", 'vvl': False, 'cam_profile': 25, 'comp_ratio': 9.0,
-                'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Quad", 'intercooler': 100, 'turb_size': 50, 'boost': 0.50, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
+                'aspiration': "Turbo", 'turbo_bearing': "Ball Bearings", 'turbo_config': "Quad", 'intercooler': 100, 'turb_size': 50, 'boost': 0.67, 'sc_type': "Roots", 'comp_size': 50, 'sc_pulley': 0.8,
                 'fuel_deliv': "EFI Multi", 'intake_conf': "Twin", 'manifold': "Performance", 'fuel_type': "Ultimate 100", 'afr': 12.0, 'ignition': 55, 'rpm_limit': 6500,
                 'exh_arch': "Dual", 'headers': "Tubular", 'exh_diam': 90.0, 'cat': "High Flow", 'muffler1': "None", 'muffler2': "Straight",
-                'veh_preset': "Moderní Supersport", 'veh_weight': 1888.0, 'veh_cd': 0.36, 'tire_grip': 1.5, 'gears': 7, 'final_drive': 2.7, 'drivetrain': "AWD",
+                'veh_preset': "Moderní Supersport", 'veh_weight': 1888.0, 'veh_cd': 0.36, 'veh_area': 2.07, 'wheel_radius': 0.365, 'speed_limiter': 415.0, 'downforce_cla': 0.10, 'tire_grip': 1.5, 'gears': 7, 'final_drive': 3.8, 'drivetrain': "AWD",
                 'tech_level': 100
             }
         }
@@ -975,7 +1327,10 @@ class EngineApp:
             self.update_dynamic_ui()
 
     def _set_var(self, k, v):
-        if isinstance(self.vars[k], tk.BooleanVar): self.vars[k].set(bool(v))
+        if isinstance(self.vars[k], tk.BooleanVar):
+            if not isinstance(v, bool):
+                raise TypeError(f"{k} must be a JSON boolean")
+            self.vars[k].set(v)
         elif isinstance(self.vars[k], tk.DoubleVar): self.vars[k].set(float(v))
         elif isinstance(self.vars[k], tk.IntVar): self.vars[k].set(int(v))
         else: self.vars[k].set(str(v))
@@ -1014,7 +1369,7 @@ class EngineApp:
         self.vars['vvl_prof'] = tk.IntVar(value=60)
         self.vars['vvl_rpm'] = tk.IntVar(value=4000)
         self.vars['springs'] = tk.IntVar(value=50)
-        self.vars['cam_profile'] = tk.IntVar(value=25)
+        self.vars['cam_profile'] = tk.IntVar(value=55)
         self.vars['comp_ratio'] = tk.DoubleVar(value=10.0)
         
         self.vars['aspiration'] = tk.StringVar(value="NA")
@@ -1035,7 +1390,7 @@ class EngineApp:
         self.vars['fuel_type'] = tk.StringVar(value="Premium 95")
         self.vars['fuel_map'] = tk.IntVar(value=50)
         self.vars['afr'] = tk.DoubleVar(value=14.7)
-        self.vars['ignition'] = tk.IntVar(value=30)
+        self.vars['ignition'] = tk.IntVar(value=25)
         self.vars['rpm_limit'] = tk.IntVar(value=6500)
         
         self.vars['headers'] = tk.StringVar(value="Cast")
@@ -1050,10 +1405,18 @@ class EngineApp:
         self.vars['veh_preset'] = tk.StringVar(value="Mazda 6 (2002)")
         self.vars['veh_weight'] = tk.DoubleVar(value=1350.0)
         self.vars['veh_cd'] = tk.DoubleVar(value=0.30)
+        self.vars['veh_area'] = tk.DoubleVar(value=2.20)
+        self.vars['wheel_radius'] = tk.DoubleVar(value=0.315)
+        self.vars['speed_limiter'] = tk.DoubleVar(value=0.0)
+        self.vars['downforce_cla'] = tk.DoubleVar(value=0.0)
         self.vars['tire_grip'] = tk.DoubleVar(value=0.9)
         self.vars['gears'] = tk.IntVar(value=5)
-        self.vars['final_drive'] = tk.DoubleVar(value=4.9)
+        self.vars['final_drive'] = tk.DoubleVar(value=4.3)
         self.vars['drivetrain'] = tk.StringVar(value="FWD")
+        self.vars['custom_gears'] = tk.BooleanVar(value=False)
+        default_custom_ratios = [3.3, 1.9, 1.3, 1.0, 0.8, 0.65, 0.55, 0.45]
+        for index, ratio in enumerate(default_custom_ratios, start=1):
+            self.vars[f'gear_{index}'] = tk.DoubleVar(value=ratio)
 
     def create_menu(self):
         self.menubar = tk.Menu(self.root)
@@ -1072,28 +1435,61 @@ class EngineApp:
         ttk.Radiobutton(lang_frame, text="🇬🇧 English", variable=self.vars['app_lang'], value='en', command=self.apply_language).pack(side=tk.RIGHT, padx=5)
 
     def save_engine(self):
-        file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")], initialfile=f"{self.vars['engine_name'].get()}.json")
-        if file_path:
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json")],
+            initialfile=f"{self.vars['engine_name'].get()}.json"
+        )
+        if not file_path:
+            return
+        try:
             data = {k: v.get() for k, v in self.vars.items() if k not in ['calc_disp', 'app_lang']}
-            with open(file_path, 'w', encoding='utf-8') as f: json.dump(data, f, indent=4, ensure_ascii=False)
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+        except (OSError, TypeError, tk.TclError) as exc:
+            messagebox.showerror(self.tr('msg_file_error'), str(exc))
 
     def load_engine(self):
         file_path = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
-        if file_path:
-            with open(file_path, 'r', encoding='utf-8') as f: data = json.load(f)
-            # Stejný důvod jako u apply_master_preset: pokud starší uložený motor
-            # nějaký (novější) parametr vůbec neobsahuje, nesmí zůstat hodnota
-            # z dřívějška - nejdřív reset na tovární default, pak overlay uložených dat.
-            for k, default_v in self.factory_defaults.items():
-                self._set_var(k, default_v)
-            for k, v in data.items():
-                if k in self.vars:
-                    if k == 'vvl' and isinstance(v, bool):
-                        self.vars[k].set("VVL" if v else "None")
+        if not file_path:
+            return
+        backup = {k: v.get() for k, v in self.vars.items() if k != 'calc_disp'}
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            if not isinstance(data, dict):
+                raise ValueError("JSON root must be an object")
+
+            self._suspend_vehicle_preset_callback = True
+            try:
+                for k, default_v in self.factory_defaults.items():
+                    self._set_var(k, default_v)
+                if 'veh_preset' in data:
+                    self._set_var('veh_preset', data['veh_preset'])
+                    self.apply_vehicle_preset_values(self.vars['veh_preset'].get())
+                for k, value in data.items():
+                    if k not in self.vars or k in ('calc_disp', 'app_lang', 'veh_preset'):
+                        continue
+                    if k == 'vvl' and isinstance(value, bool):
+                        self.vars[k].set("VVL" if value else "None")
                     else:
-                        self._set_var(k, v)
+                        self._set_var(k, value)
+            finally:
+                self._suspend_vehicle_preset_callback = False
+            self.collect_parameters()  # validace typů, rozsahů a povolených voleb
             self.update_dynamic_ui()
             self.update_displacement()
+        except (OSError, ValueError, TypeError, json.JSONDecodeError, tk.TclError) as exc:
+            self._suspend_vehicle_preset_callback = True
+            try:
+                for k, value in backup.items():
+                    if k in self.vars:
+                        self._set_var(k, value)
+            finally:
+                self._suspend_vehicle_preset_callback = False
+            self.update_dynamic_ui()
+            self.update_displacement()
+            messagebox.showerror(self.tr('msg_file_error'), str(exc))
 
     def create_widgets(self):
         top_frame = ttk.Frame(self.root, padding="10 10 10 0")
@@ -1109,6 +1505,7 @@ class EngineApp:
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
         
         def make_combo(parent, r, lbl_key, var_name, options, tt_key):
+            self.allowed_values[var_name] = tuple(options)
             lbl = ttk.Label(parent, textvariable=self.lang_vars[lbl_key])
             lbl.grid(row=r, column=0, sticky=tk.W, pady=3)
             cb = ttk.Combobox(parent, textvariable=self.vars[var_name], values=options, state="readonly", width=22)
@@ -1119,7 +1516,19 @@ class EngineApp:
         def make_slider(parent, r, lbl_key, var_name, f_, t_, res, unit, tt_key):
             lbl = ttk.Label(parent, textvariable=self.lang_vars[lbl_key])
             lbl.grid(row=r, column=0, sticky=tk.W, pady=3)
-            scale = ttk.Scale(parent, variable=self.vars[var_name], from_=f_, to=t_, orient=tk.HORIZONTAL)
+
+            decimals = max(0, len(str(res).split('.')[1].rstrip('0'))) if '.' in str(res) else 0
+            def snap_scale(raw_value):
+                raw = float(raw_value)
+                snapped = f_ + round((raw - f_) / res) * res
+                snapped = clamp(snapped, f_, t_)
+                var = self.vars[var_name]
+                if isinstance(var, tk.IntVar):
+                    var.set(int(round(snapped)))
+                else:
+                    var.set(round(snapped, decimals))
+
+            scale = ttk.Scale(parent, variable=self.vars[var_name], from_=f_, to=t_, orient=tk.HORIZONTAL, command=snap_scale)
             scale.grid(row=r, column=1, sticky=tk.EW, pady=3, padx=5)
             entry = ttk.Entry(parent, textvariable=self.vars[var_name], width=8, justify=tk.CENTER)
             entry.grid(row=r, column=2, sticky=tk.W, padx=2)
@@ -1130,7 +1539,7 @@ class EngineApp:
                 try:
                     float(self.vars[var_name].get())
                     if var_name in ['bore', 'stroke', 'cylinders']: self.update_displacement()
-                except ValueError: pass
+                except (ValueError, TypeError, tk.TclError): pass
             self.vars[var_name].trace_add("write", update_lbl)
             update_lbl()
             ToolTip(lbl, self.lang_vars[tt_key]); ToolTip(scale, self.lang_vars[tt_key]); ToolTip(entry, self.lang_vars[tt_key])
@@ -1221,29 +1630,54 @@ class EngineApp:
         tab7 = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(tab7, text=self.tr("tab_7"))
         def apply_veh_preset(*args):
-            preset = self.vars['veh_preset'].get()
-            if preset == "Mazda 6 (2002)":
-                self.vars['veh_weight'].set(1350.0); self.vars['veh_cd'].set(0.30); self.vars['tire_grip'].set(0.9); self.vars['gears'].set(5); self.vars['drivetrain'].set("FWD")
-            elif preset == "Muscle Car (1969)":
-                self.vars['veh_weight'].set(1750.0); self.vars['veh_cd'].set(0.45); self.vars['tire_grip'].set(0.7); self.vars['gears'].set(4); self.vars['drivetrain'].set("RWD")
-            elif preset == "Lehký sporťák":
-                self.vars['veh_weight'].set(1050.0); self.vars['veh_cd'].set(0.33); self.vars['tire_grip'].set(1.1); self.vars['gears'].set(6); self.vars['drivetrain'].set("RWD")
-            elif preset == "Moderní Supersport":
-                self.vars['veh_weight'].set(1550.0); self.vars['veh_cd'].set(0.28); self.vars['tire_grip'].set(1.4); self.vars['gears'].set(8); self.vars['drivetrain'].set("AWD")
+            if self._suspend_vehicle_preset_callback:
+                return
+            self.apply_vehicle_preset_values(self.vars['veh_preset'].get())
         self.vars['veh_preset'].trace_add("write", apply_veh_preset)
         make_combo(tab7, 0, "lbl_veh", 'veh_preset', ["Vlastní (Custom)", "Mazda 6 (2002)", "Muscle Car (1969)", "Lehký sporťák", "Moderní Supersport"], "tt_veh")
         make_slider(tab7, 1, "lbl_weight", 'veh_weight', 500.0, 3000.0, 10.0, "kg", "tt_weight")
         make_slider(tab7, 2, "lbl_cd", 'veh_cd', 0.20, 0.60, 0.01, "", "tt_cd")
-        make_slider(tab7, 3, "lbl_grip", 'tire_grip', 0.5, 2.0, 0.1, "µ", "tt_grip")
-        make_combo(tab7, 4, "lbl_gears", 'gears', [4, 5, 6, 7, 8], "tt_gears")
-        make_slider(tab7, 5, "lbl_fd", 'final_drive', 2.0, 6.0, 0.1, ": 1", "tt_fd")
-        make_combo(tab7, 6, "lbl_drive", 'drivetrain', ["FWD", "RWD", "AWD"], "tt_drive")
+        make_slider(tab7, 3, "lbl_area", 'veh_area', 1.2, 4.0, 0.01, "m²", "tt_area")
+        make_slider(tab7, 4, "lbl_wheel", 'wheel_radius', 0.20, 0.55, 0.005, "m", "tt_wheel")
+        make_slider(tab7, 5, "lbl_speed_limit", 'speed_limiter', 0.0, 450.0, 5.0, "km/h", "tt_speed_limit")
+        make_slider(tab7, 6, "lbl_downforce", 'downforce_cla', 0.0, 4.0, 0.05, "m²", "tt_downforce")
+        make_slider(tab7, 7, "lbl_grip", 'tire_grip', 0.5, 2.0, 0.1, "µ", "tt_grip")
+        make_combo(tab7, 8, "lbl_gears", 'gears', [4, 5, 6, 7, 8], "tt_gears")
+        make_slider(tab7, 9, "lbl_fd", 'final_drive', 2.0, 6.0, 0.1, ": 1", "tt_fd")
+        make_combo(tab7, 10, "lbl_drive", 'drivetrain', ["FWD", "RWD", "AWD"], "tt_drive")
+
+        self.chk_custom_gears = ttk.Checkbutton(
+            tab7, textvariable=self.lang_vars['lbl_custom_gears'], variable=self.vars['custom_gears']
+        )
+        self.chk_custom_gears.grid(row=11, column=0, columnspan=4, sticky=tk.W, pady=(8, 2))
+        ToolTip(self.chk_custom_gears, self.lang_vars['tt_custom_gears'])
+
+        self.frame_custom_gears = ttk.LabelFrame(tab7, padding=6)
+        self.frame_custom_gears.grid(row=12, column=0, columnspan=4, sticky=tk.EW, pady=3)
+        self.gear_ratio_rows = []
+        for index in range(1, 9):
+            holder = ttk.Frame(self.frame_custom_gears)
+            grid_row = (index - 1) % 4
+            grid_col = 0 if index <= 4 else 2
+            holder.grid(row=grid_row, column=grid_col, columnspan=2, sticky=tk.EW, padx=(0, 12) if index <= 4 else (12, 0), pady=2)
+            ttk.Label(holder, textvariable=self.lang_vars[f'lbl_gear_{index}'], width=11).pack(side=tk.LEFT)
+            entry = ttk.Entry(holder, textvariable=self.vars[f'gear_{index}'], width=8, justify=tk.CENTER)
+            entry.pack(side=tk.LEFT)
+            ttk.Label(holder, text=": 1").pack(side=tk.LEFT, padx=(3, 0))
+            ToolTip(holder, self.lang_vars['tt_custom_gears'])
+            ToolTip(entry, self.lang_vars['tt_custom_gears'])
+            self.gear_ratio_rows.append(holder)
+        ttk.Button(
+            self.frame_custom_gears, textvariable=self.lang_vars['btn_reset_gears'], command=self.reset_custom_gear_ratios
+        ).grid(row=4, column=0, columnspan=4, pady=(6, 0))
 
         # Bind traces for dynamic updates
         self.vars['config'].trace_add("write", self.update_dynamic_ui)
         self.vars['aspiration'].trace_add("write", self.update_dynamic_ui)
         self.vars['balancer'].trace_add("write", self.update_dynamic_ui)
         self.vars['vvl'].trace_add("write", self.update_dynamic_ui)
+        self.vars['custom_gears'].trace_add("write", self.update_dynamic_ui)
+        self.vars['gears'].trace_add("write", self.on_gear_count_change)
 
         # --- SPODNÍ ČÁST (Konzole a tlačítka) ---
         bottom_frame = ttk.Frame(self.root, padding=10)
@@ -1268,6 +1702,92 @@ class EngineApp:
             self.btn_rev = ttk.Button(btn_frame, textvariable=self.lang_vars["btn_no_snd"], state=tk.DISABLED)
             self.btn_rev.pack(side=tk.LEFT, padx=5)
 
+        self.btn_track = ttk.Button(btn_frame, textvariable=self.lang_vars['btn_track'], command=self.open_track_window, state=tk.DISABLED)
+        self.btn_track.pack(side=tk.LEFT, padx=5)
+
+    def apply_vehicle_preset_values(self, preset):
+        if preset == "Mazda 6 (2002)":
+            values = (1350.0, 0.30, 2.20, 0.315, 0.0, 0.0, 0.9, 5, "FWD")
+        elif preset == "Muscle Car (1969)":
+            values = (1750.0, 0.45, 2.35, 0.345, 0.0, 0.0, 0.7, 4, "RWD")
+        elif preset == "Lehký sporťák":
+            values = (1050.0, 0.33, 1.85, 0.305, 0.0, 0.05, 1.1, 6, "RWD")
+        elif preset == "Moderní Supersport":
+            values = (1550.0, 0.28, 2.00, 0.345, 0.0, 0.25, 1.4, 8, "AWD")
+        else:
+            return
+        self.vars['custom_gears'].set(False)
+        keys = ('veh_weight', 'veh_cd', 'veh_area', 'wheel_radius', 'speed_limiter', 'downforce_cla', 'tire_grip', 'gears', 'drivetrain')
+        for key, value in zip(keys, values):
+            self._set_var(key, value)
+
+    def reset_custom_gear_ratios(self):
+        gear_count = int(self.vars['gears'].get())
+        automatic = get_gear_ratios(gear_count)
+        tail_defaults = {
+            4: [0.65, 0.55, 0.45, 0.35],
+            5: [0.65, 0.55, 0.45],
+            6: [0.50, 0.40],
+            7: [0.45],
+            8: [],
+        }
+        values = automatic + tail_defaults[gear_count]
+        for index, value in enumerate(values, start=1):
+            self.vars[f'gear_{index}'].set(value)
+
+    def on_gear_count_change(self, *args):
+        if not self.vars['custom_gears'].get():
+            self.reset_custom_gear_ratios()
+        self.update_dynamic_ui()
+
+    def get_selected_gear_ratios(self):
+        gear_count = int(self.vars['gears'].get())
+        if not self.vars['custom_gears'].get():
+            return None
+        return [float(self.vars[f'gear_{index}'].get()) for index in range(1, gear_count + 1)]
+
+    def build_vehicle_params(self):
+        params = self.collect_parameters()
+        return {
+            'weight': float(params['veh_weight']),
+            'cd': float(params['veh_cd']),
+            'area': float(params['veh_area']),
+            'wheel_radius': float(params['wheel_radius']),
+            'speed_limiter': float(params['speed_limiter']),
+            'downforce_cla': float(params['downforce_cla']),
+            'grip': float(params['tire_grip']),
+            'gears': int(params['gears']),
+            'final_drive': float(params['final_drive']),
+            'drivetrain': params['drivetrain'],
+            'gear_ratios': self.get_selected_gear_ratios(),
+        }
+
+    def bind_dyno_invalidation_traces(self):
+        vehicle_keys = {
+            'veh_preset', 'veh_weight', 'veh_cd', 'veh_area', 'wheel_radius',
+            'speed_limiter', 'downforce_cla', 'tire_grip', 'gears', 'final_drive',
+            'drivetrain', 'custom_gears',
+            *(f'gear_{index}' for index in range(1, 9)),
+        }
+        for key, var in self.vars.items():
+            if key not in vehicle_keys and key not in ('calc_disp', 'app_lang'):
+                var.trace_add('write', self.invalidate_dyno)
+
+    def invalidate_dyno(self, *args):
+        if self._dyno_running:
+            self._dyno_changed_during_run = True
+            return
+        self.dyno_results = {}
+        self.dyno_params = None
+        if hasattr(self, 'btn_graph'):
+            self.btn_graph.config(state=tk.DISABLED)
+        if hasattr(self, 'btn_track'):
+            self.btn_track.config(state=tk.DISABLED)
+        if SOUND_AVAILABLE and hasattr(self, 'btn_rev'):
+            self.btn_rev.config(state=tk.DISABLED)
+        if SOUND_AVAILABLE and hasattr(self, 'btn_drive'):
+            self.btn_drive.config(state=tk.DISABLED)
+
     def update_dynamic_ui(self, *args):
         if self.vars['config'].get() == "V": self.frame_v.grid()
         else: self.frame_v.grid_remove()
@@ -1283,13 +1803,26 @@ class EngineApp:
         if self.vars['vvl'].get() == "None": self.frame_vvl_set.grid_remove()
         else: self.frame_vvl_set.grid()
 
+        if hasattr(self, 'frame_custom_gears'):
+            if self.vars['custom_gears'].get():
+                self.frame_custom_gears.grid()
+                gear_count = int(self.vars['gears'].get())
+                for index, holder in enumerate(self.gear_ratio_rows, start=1):
+                    if index <= gear_count:
+                        holder.grid()
+                    else:
+                        holder.grid_remove()
+            else:
+                self.frame_custom_gears.grid_remove()
+
     def update_displacement(self):
         try:
             b, s, c = self.vars['bore'].get(), self.vars['stroke'].get(), self.vars['cylinders'].get()
             disp = math.pi * ((b/20)**2) * (s/10) * c
             self.vars['calc_disp'].set(f"{disp:.0f} cc")
             return disp
-        except: return 2000
+        except (ValueError, TypeError, tk.TclError):
+            return 2000
 
     def safe_log(self, msg):
         self.root.after(0, self._write_log, msg)
@@ -1318,70 +1851,153 @@ class EngineApp:
         self.txt_output.insert(tk.END, f"{self.tr('msg_rpm')}: {rpm:04d} | {self.tr('msg_trq')}: {trq:4.0f} Nm | {self.tr('msg_hp')}: {hp:4.0f} HP")
         self.txt_output.config(state=tk.DISABLED)
 
+    def collect_parameters(self):
+        params = {'lang': self.vars['app_lang'].get()}
+        errors = []
+        for key, var in self.vars.items():
+            if key in ('calc_disp', 'app_lang'):
+                continue
+            try:
+                params[key] = var.get()
+            except tk.TclError:
+                errors.append(key)
+
+        limits = {
+            'bore': (50.0, 120.0), 'stroke': (50.0, 120.0), 'radiator': (10.0, 100.0),
+            'tech_level': (50.0, 150.0), 'balancer_mass': (0.0, 50.0), 'vvl_prof': (0.0, 100.0),
+            'vvl_rpm': (500.0, 12000.0), 'springs': (0.0, 100.0), 'cam_profile': (0.0, 100.0),
+            'comp_ratio': (7.0, 22.0), 'intercooler': (0.0, 100.0), 'turb_size': (10.0, 100.0),
+            'boost': (0.1, 3.0), 'comp_size': (10.0, 100.0), 'sc_pulley': (0.1, 3.0),
+            'carb_size': (0.0, 100.0), 'man_size': (0.0, 100.0), 'fuel_map': (0.0, 100.0),
+            'afr': (10.0, 20.0), 'ignition': (0.0, 100.0), 'rpm_limit': (3000.0, 12000.0),
+            'head_size': (0.0, 100.0), 'exh_diam': (25.0, 150.0), 'veh_weight': (500.0, 3000.0),
+            'veh_cd': (0.20, 0.60), 'veh_area': (1.2, 4.0), 'wheel_radius': (0.20, 0.55),
+            'speed_limiter': (0.0, 450.0), 'downforce_cla': (0.0, 4.0), 'tire_grip': (0.5, 2.0),
+            'final_drive': (2.0, 6.0),
+        }
+        for key, (low, high) in limits.items():
+            if key not in params:
+                continue
+            try:
+                value = float(params[key])
+                if not math.isfinite(value) or value < low or value > high:
+                    errors.append(f"{key} [{low}, {high}]")
+            except (TypeError, ValueError):
+                errors.append(key)
+        for key, options in self.allowed_values.items():
+            if key in params and params[key] not in options:
+                errors.append(f"{key}: {params[key]!r}")
+        if int(params.get('cylinders', 0)) not in (3, 4, 5, 6, 8, 10, 12, 16):
+            errors.append('cylinders')
+        if int(params.get('gears', 0)) not in (4, 5, 6, 7, 8):
+            errors.append('gears')
+        if bool(params.get('custom_gears', False)):
+            try:
+                gear_count = int(params['gears'])
+                ratios = [float(params[f'gear_{index}']) for index in range(1, gear_count + 1)]
+                get_gear_ratios(gear_count, ratios)
+            except (KeyError, TypeError, ValueError) as exc:
+                errors.append(str(exc))
+        if errors:
+            raise ValueError(", ".join(dict.fromkeys(errors)))
+        return params
+
     def start_dyno(self):
         self.btn_run.config(state=tk.DISABLED)
         self.btn_graph.config(state=tk.DISABLED)
-        if SOUND_AVAILABLE: 
+        self.btn_track.config(state=tk.DISABLED)
+        if SOUND_AVAILABLE:
             self.btn_rev.config(state=tk.DISABLED)
             self.btn_drive.config(state=tk.DISABLED)
-        
-        self.safe_clear_console()
-        params = {'lang': self.vars['app_lang'].get()}
-        for k, v in self.vars.items():
-            if k not in ['calc_disp', 'app_lang']:
-                try: params[k] = v.get()
-                except tk.TclError:
-                    if isinstance(v, tk.DoubleVar): params[k] = 0.0
-                    elif isinstance(v, tk.IntVar): params[k] = 0
-                    else: params[k] = ""
+        self._clear_console()
+        self.dyno_results = {}
+        self.dyno_params = None
+        self._dyno_changed_during_run = False
+
+        try:
+            params = self.collect_parameters()
+            results = run_engine_simulation(params)
+            if (not np.all(np.isfinite(results['hp'])) or not np.all(np.isfinite(results['torque']))
+                    or float(np.max(results['hp'])) <= 0.0 or float(np.max(results['torque'])) <= 0.0):
+                if params.get('lang') == 'cz':
+                    raise ValueError("Motor nevytváří použitelný výkon ani točivý moment")
+                raise ValueError("Engine produces no usable power or torque")
+        except (ValueError, TypeError, tk.TclError, FloatingPointError) as exc:
+            messagebox.showerror(self.tr('msg_invalid'), str(exc))
+            self.btn_run.config(state=tk.NORMAL)
+            return
 
         self.dyno_params = params
-        self.dyno_results = run_engine_simulation(params)
-        threading.Thread(target=self.pull_thread, args=(params,), daemon=True).start()
+        self.dyno_results = results
+        self._dyno_running = True
+        name = str(params.get('engine_name', ''))
+        disp = math.pi * ((float(params['bore']) / 20.0) ** 2) * (float(params['stroke']) / 10.0) * int(params['cylinders'])
+        spec = f"{disp:.0f} cc {params.get('config', '')}{params.get('cylinders', '')}"
+        self._dyno_header = f"{self.tr('msg_dyno_hdr')} {name} ({spec}) ---"
+        self._dyno_index = 0
+        self._dyno_step_ms = 80
+        self._dyno_temp_path = None
 
-    def pull_thread(self, params):
-        name = self.vars['engine_name'].get()
-        spec = f"{self.vars['calc_disp'].get()} {self.vars['config'].get()}{self.vars['cylinders'].get()}"
-        header = f"{self.tr('msg_dyno_hdr')} {name} ({spec}) ---"
-        
-        step_duration = 0.08
         if is_windows:
             try:
-                generate_engine_wav(self.dyno_results["rpm"], self.vars['cylinders'].get(), self.vars['aspiration'].get(), params.get('crank', 'Cast'), "dyno_temp.wav", step_duration)
-                winsound.PlaySound("dyno_temp.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
-            except: pass
+                fd, path = tempfile.mkstemp(prefix='automation_dyno_', suffix='.wav')
+                os.close(fd)
+                self._dyno_temp_path = path
+                generate_engine_wav(results['rpm'], int(params['cylinders']), params['aspiration'], params.get('crank', 'Cast'), path, self._dyno_step_ms / 1000.0)
+                winsound.PlaySound(path, winsound.SND_FILENAME | winsound.SND_ASYNC)
+            except (OSError, wave.Error, ValueError):
+                self._dyno_temp_path = None
 
-        time.sleep(0.5)
+        self.root.after(500, self._dyno_tick)
 
-        for i, rpm in enumerate(self.dyno_results["rpm"]):
-            hp, trq = self.dyno_results["hp"][i], self.dyno_results["torque"][i]
-            self.safe_update_pull(header, rpm, trq, hp)
-            time.sleep(step_duration)
+    def _dyno_tick(self):
+        if self._dyno_index < len(self.dyno_results['rpm']):
+            i = self._dyno_index
+            self._write_pull(
+                self._dyno_header,
+                int(self.dyno_results['rpm'][i]),
+                float(self.dyno_results['torque'][i]),
+                float(self.dyno_results['hp'][i])
+            )
+            self._dyno_index += 1
+            self.root.after(self._dyno_step_ms, self._dyno_tick)
+            return
+        self._finish_dyno()
 
+    def _finish_dyno(self):
         if is_windows:
             winsound.PlaySound(None, winsound.SND_PURGE)
-            if self.dyno_results["blew_up"]: winsound.MessageBeep(winsound.MB_ICONHAND) 
-            try: os.remove("dyno_temp.wav")
-            except: pass
+            if self.dyno_results.get('blew_up'):
+                winsound.MessageBeep(winsound.MB_ICONHAND)
+            if self._dyno_temp_path:
+                try:
+                    os.remove(self._dyno_temp_path)
+                except OSError:
+                    pass
 
-        self.safe_log(self.tr('msg_done'))
-        if self.dyno_results["blew_up"]:
-            self.safe_log(f"{self.tr('msg_blown')} {self.dyno_results['reason']}")
-            self.safe_log(f"{self.tr('msg_fix')} {self.dyno_results['fix']}")
+        self._write_log(self.tr('msg_done'))
+        if self.dyno_results['blew_up']:
+            self._write_log(f"{self.tr('msg_blown')} {self.dyno_results['reason']}")
+            self._write_log(f"{self.tr('msg_fix')} {self.dyno_results['fix']}")
         else:
-            max_hp = np.max(self.dyno_results["hp"])
-            max_hp_rpm = self.dyno_results["rpm"][np.argmax(self.dyno_results["hp"])]
-            max_trq = np.max(self.dyno_results["torque"])
-            max_trq_rpm = self.dyno_results["rpm"][np.argmax(self.dyno_results["torque"])]
-            self.safe_log(f"{self.tr('msg_max_hp')}  {max_hp:.0f} HP @ {max_hp_rpm} RPM")
-            self.safe_log(f"{self.tr('msg_max_trq')} {max_trq:.0f} Nm @ {max_trq_rpm} RPM")
-            self.safe_log(self.tr('msg_ready'))
+            max_hp = float(np.max(self.dyno_results['hp']))
+            max_hp_rpm = int(self.dyno_results['rpm'][int(np.argmax(self.dyno_results['hp']))])
+            max_trq = float(np.max(self.dyno_results['torque']))
+            max_trq_rpm = int(self.dyno_results['rpm'][int(np.argmax(self.dyno_results['torque']))])
+            self._write_log(f"{self.tr('msg_max_hp')}  {max_hp:.0f} HP @ {max_hp_rpm} RPM")
+            self._write_log(f"{self.tr('msg_max_trq')} {max_trq:.0f} Nm @ {max_trq_rpm} RPM")
+            self._write_log(self.tr('msg_ready'))
 
-        self.root.after(0, lambda: self.btn_run.config(state=tk.NORMAL))
-        self.root.after(0, lambda: self.btn_graph.config(state=tk.NORMAL))
-        if not self.dyno_results.get("blew_up", True) and SOUND_AVAILABLE:
-            self.root.after(0, lambda: self.btn_rev.config(state=tk.NORMAL))
-            self.root.after(0, lambda: self.btn_drive.config(state=tk.NORMAL))
+        self._dyno_running = False
+        self.btn_run.config(state=tk.NORMAL)
+        self.btn_graph.config(state=tk.NORMAL)
+        if not self.dyno_results.get('blew_up', True):
+            self.btn_track.config(state=tk.NORMAL)
+            if SOUND_AVAILABLE:
+                self.btn_rev.config(state=tk.NORMAL)
+                self.btn_drive.config(state=tk.NORMAL)
+        if self._dyno_changed_during_run:
+            self.invalidate_dyno()
 
     def plot_graph(self):
         if not self.dyno_results: return
@@ -1409,6 +2025,11 @@ class EngineApp:
     # --- OKNO 1: RUČNÍ PLYN ---
     def open_throttle_window(self):
         if not self.dyno_results or self.dyno_results.get("blew_up", True): return
+        try:
+            self.collect_parameters()
+        except (ValueError, TypeError, tk.TclError, FloatingPointError) as exc:
+            messagebox.showerror(self.tr('msg_invalid'), str(exc))
+            return
         
         self.rev_window = tk.Toplevel(self.root)
         self.rev_window.title(self.tr("win_rev_title"))
@@ -1430,8 +2051,8 @@ class EngineApp:
         self.coolant_temp = 90.0
         self.engine_blown = False
         self.blow_timer = 0.0
-        self.radiator_eff = float(self.vars['radiator'].get()) / 100.0
-        limit_rpm = float(self.vars['rpm_limit'].get())
+        self.radiator_eff = float(self.dyno_params['radiator']) / 100.0
+        limit_rpm = float(self.dyno_params['rpm_limit'])
         
         self.tacho_rev = AnalogTachometer(self.rev_window, max_rpm=limit_rpm+1000, redline_rpm=limit_rpm, size=280)
         self.tacho_rev.pack(pady=10)
@@ -1453,7 +2074,7 @@ class EngineApp:
 
     def update_throttle_physics(self):
         if not hasattr(self, 'rev_window') or not self.rev_window.winfo_exists(): return
-        limit_rpm = float(self.vars['rpm_limit'].get())
+        limit_rpm = float(self.dyno_params['rpm_limit'])
         
         if not self.engine_blown:
             target_rpm = limit_rpm if self.throttle_active else 1000.0
@@ -1494,6 +2115,11 @@ class EngineApp:
     # --- OKNO 2: ZKUŠEBNÍ JÍZDA ---
     def open_drive_window(self):
         if not self.dyno_results or self.dyno_results.get("blew_up", True): return
+        try:
+            self.drive_vehicle_params = self.build_vehicle_params()
+        except (ValueError, TypeError, tk.TclError, FloatingPointError) as exc:
+            messagebox.showerror(self.tr('msg_invalid'), str(exc))
+            return
         
         self.drive_win = tk.Toplevel(self.root)
         self.drive_win.title(self.tr("win_drv_title"))
@@ -1504,7 +2130,7 @@ class EngineApp:
         self.drive_win.transient(self.root)
         self.drive_win.grab_set()
 
-        limit_rpm = float(self.vars['rpm_limit'].get())
+        limit_rpm = float(self.dyno_params['rpm_limit'])
         
         left_frame = tk.Frame(self.drive_win, bg='#111111')
         left_frame.pack(side=tk.LEFT, padx=20, pady=20)
@@ -1572,6 +2198,7 @@ class EngineApp:
         self.a_prev = 0.0
         self.shift_delay = 0.0
         self.top_speed_timer = 0
+        self.no_speed_gain_time = 0.0
         self.drive_time = 0.0
         self.time_100 = None
         
@@ -1583,30 +2210,24 @@ class EngineApp:
         if not self.drive_running: return
         self.btn_skip.config(state=tk.DISABLED)
         
-        veh_params = {
-            'weight': float(self.vars['veh_weight'].get()),
-            'cd': float(self.vars['veh_cd'].get()),
-            'grip': float(self.vars['tire_grip'].get()),
-            'gears': int(self.vars['gears'].get()),
-            'final_drive': float(self.vars['final_drive'].get()),
-            'drivetrain': self.vars['drivetrain'].get()
-        }
-
-        res = run_vehicle_kinematics(veh_params, self.dyno_results)
+        try:
+            veh_params = self.build_vehicle_params()
+            res = run_vehicle_kinematics(veh_params, self.dyno_results)
+        except (ValueError, TypeError, tk.TclError, FloatingPointError) as exc:
+            messagebox.showerror(self.tr('msg_invalid'), str(exc), parent=self.drive_win)
+            self.btn_skip.config(state=tk.NORMAL)
+            return
         
         self.v = res["top_speed"]
         self.max_achieved_speed = res["top_speed"]
         self.gear = res["final_gear"]
         
-        r = 0.33
+        r = veh_params['wheel_radius']
         wheel_rpm = (self.v / (2 * math.pi * r)) * 60
         fd = veh_params['final_drive']
         
         gear_count = veh_params['gears']
-        if gear_count <= 4: ratios = [2.8, 1.5, 1.0, 0.8]
-        elif gear_count == 5: ratios = [3.3, 1.9, 1.3, 1.0, 0.8]
-        elif gear_count == 6: ratios = [3.5, 2.0, 1.4, 1.0, 0.8, 0.6]
-        else: ratios = [4.0, 2.5, 1.7, 1.2, 0.9, 0.7, 0.55, 0.45][:gear_count]
+        ratios = get_gear_ratios(gear_count, veh_params.get('gear_ratios'))
         
         max_rpm = self.dyno_results['rpm'][-1]
         self.current_rpm = min(max_rpm, max(1000.0, wheel_rpm * ratios[self.gear] * fd))
@@ -1639,20 +2260,20 @@ class EngineApp:
         max_hp_idx = np.argmax(self.dyno_results["hp"])
         ideal_shift_rpm = min(max_rpm - 50, self.dyno_results["rpm"][max_hp_idx] + 400)
 
-        mass = float(self.vars['veh_weight'].get())
-        cd = float(self.vars['veh_cd'].get())
-        grip = float(self.vars['tire_grip'].get())
-        gear_count = int(self.vars['gears'].get())
-        fd = float(self.vars['final_drive'].get())
-        drivetrain = self.vars['drivetrain'].get()
+        veh_params = self.drive_vehicle_params
+        mass = veh_params['weight']
+        cd = veh_params['cd']
+        area = veh_params['area']
+        r = veh_params['wheel_radius']
+        speed_limiter = veh_params['speed_limiter']
+        downforce_cla = veh_params['downforce_cla']
+        grip = veh_params['grip']
+        gear_count = veh_params['gears']
+        fd = veh_params['final_drive']
+        drivetrain = veh_params['drivetrain']
 
-        if gear_count <= 4: ratios = [2.8, 1.5, 1.0, 0.8]
-        elif gear_count == 5: ratios = [3.3, 1.9, 1.3, 1.0, 0.8]
-        elif gear_count == 6: ratios = [3.5, 2.0, 1.4, 1.0, 0.8, 0.6]
-        else: ratios = [4.0, 2.5, 1.7, 1.2, 0.9, 0.7, 0.55, 0.45][:gear_count]
-
-        r = 0.33 
-        area = 2.2 
+        ratios = get_gear_ratios(gear_count, veh_params.get('gear_ratios'))
+        drivetrain_eff = {"FWD": 0.90, "RWD": 0.88, "AWD": 0.82}.get(drivetrain, 0.88)
         rho = 1.2 
         g = 9.81
         wheelbase = 2.7
@@ -1672,7 +2293,12 @@ class EngineApp:
             self.drive_win.after(30, self.drive_step)
             return
 
+        previous_max_speed = self.max_achieved_speed
         self.max_achieved_speed = max(self.max_achieved_speed, self.v)
+        if self.max_achieved_speed > previous_max_speed + 0.01:
+            self.no_speed_gain_time = 0.0
+        else:
+            self.no_speed_gain_time += dt
         a = 0.0
         self.slip_active = False
         is_shifting_now = False
@@ -1707,24 +2333,25 @@ class EngineApp:
                     is_shifting_now = True
                     a = (-0.5 * rho * cd * area * self.v**2 - mass * g * 0.015) / mass
                 else:
-                    calc_rpm = max_rpm
+                    calc_rpm = engine_rpm
 
             if not is_shifting_now:
-                current_trq = np.interp(calc_rpm, rpm_arr, trq_arr)
-                force_wheel = (current_trq * ratios[self.gear] * fd * 0.86) / r
+                over_redline = self.gear == gear_count - 1 and engine_rpm > max_rpm
+                electronically_limited = speed_limiter > 0.0 and self.v * 3.6 >= speed_limiter
+                if over_redline or electronically_limited:
+                    force_wheel = 0.0
+                    calc_rpm = min(engine_rpm, max_rpm)
+                else:
+                    calc_rpm = min(calc_rpm, max_rpm)
+                    current_trq = np.interp(calc_rpm, rpm_arr, trq_arr)
+                    force_wheel = (current_trq * ratios[self.gear] * fd * drivetrain_eff) / r
                 
                 # 1. Vypočítáme aerodynamický odpor dřív, abychom z něj určili přítlak
                 drag = 0.5 * rho * cd * area * self.v**2
                 roll = mass * g * 0.015
                 
-                # 2. Simulace přítlaku (Downforce). Reálný přítlak dělá funkční aero paket
-                # (křídla, difuzor, spoiler) - ne odpor vzduchu (Cd) samotný, ten o přítomnosti
-                # aera nic neříká (hranaté auto s vysokým Cd nemá přítlak o nic víc než áčko).
-                # Jako proxy bereme grip pneumatik - u aut v presetech roste právě se sportovním/
-                # závodním laděním. Běžné auto (grip <= 1.0) tak nemá žádný umělý přítlak,
-                # závodně laděné auto ho má, ale v reálných, ne přehnaných hodnotách.
-                aero_factor = max(0.0, min(1.0, (grip - 1.0) / 0.5))
-                aero_downforce = drag * aero_factor * 0.8
+                # Přítlak je samostatný aerodynamický parametr; směs pneumatik ho neurčuje.
+                aero_downforce = 0.5 * rho * downforce_cla * self.v**2
                 
                 # 3. Rozložení umělé váhy na nápravy vč. aerodynamiky
                 transfer = (mass * self.a_prev * cg_height) / wheelbase
@@ -1752,7 +2379,11 @@ class EngineApp:
                 
         self.a_prev = a
         self.v += a * dt
-        self.v = max(self.v, 0.0) 
+        self.v = max(self.v, 0.0)
+        if speed_limiter > 0.0 and self.v * 3.6 >= speed_limiter:
+            self.v = speed_limiter / 3.6
+            self.max_achieved_speed = max(self.max_achieved_speed, self.v)
+            a = 0.0
 
         self.tacho_drive.set_rpm(self.current_rpm)
         self.lbl_speed.config(text=f"{int(self.v * 3.6)}")
@@ -1767,17 +2398,18 @@ class EngineApp:
         else:
             self.lbl_tcs.config(text="TCS OK", fg="gray", bg="#222222")
 
+        reached_terminal_state = self.no_speed_gain_time >= 5.0 or self.drive_time >= 300.0
         if not is_shifting_now and a < 0.01 and self.v > 15.0:
             self.top_speed_timer += 1
-            if self.top_speed_timer > 10:  
-                self.drive_running = False 
-                self.lbl_tcs.config(text=f"MAX: {int(self.max_achieved_speed * 3.6)} km/h", fg="black", bg="lime")
-                self.btn_launch.config(state=tk.NORMAL, text=self.tr("btn_retry"))
-                self.btn_skip.config(state=tk.DISABLED)
-                if self.time_100 is None:
-                    self.lbl_0_100.config(text=f"0-100: {self.tr('msg_not_reached')}", fg="red")
         else:
             self.top_speed_timer = 0
+        if self.top_speed_timer > 10 or reached_terminal_state:
+            self.drive_running = False
+            self.lbl_tcs.config(text=f"MAX: {int(self.max_achieved_speed * 3.6)} km/h", fg="black", bg="lime")
+            self.btn_launch.config(state=tk.NORMAL, text=self.tr("btn_retry"))
+            self.btn_skip.config(state=tk.DISABLED)
+            if self.time_100 is None:
+                self.lbl_0_100.config(text=f"0-100: {self.tr('msg_not_reached')}", fg="red")
             
         self.drive_win.after(30, self.drive_step)
 
@@ -1786,10 +2418,177 @@ class EngineApp:
         self.drive_win.grab_release()
         self.drive_win.destroy()
 
+    # --- OKNO 3: TESTOVACÍ DRÁHA ---
+    def open_track_window(self):
+        if not self.dyno_results or self.dyno_results.get('blew_up', True):
+            return
+        if hasattr(self, 'track_win') and self.track_win.winfo_exists():
+            self.track_win.lift()
+            return
+
+        self.lang_vars['btn_track_start'].set(T[self.vars['app_lang'].get()]['btn_track_start'])
+        self.track_win = tk.Toplevel(self.root)
+        self.track_win.title(self.tr('win_track_title'))
+        self.track_win.geometry('790x500')
+        self.track_win.configure(bg='#111111')
+        self.track_win.resizable(False, False)
+        self.track_win.protocol('WM_DELETE_WINDOW', self.on_track_close)
+        self.track_win.transient(self.root)
+        self.track_win.grab_set()
+
+        left = tk.Frame(self.track_win, bg='#111111')
+        left.pack(side=tk.LEFT, padx=15, pady=15)
+        self.track_canvas = tk.Canvas(left, width=560, height=410, bg='#0b4d20', highlightthickness=0)
+        self.track_canvas.pack()
+        self.track_canvas_points = self._build_track_canvas_points(TEST_TRACK_GEOMETRY['points'])
+        flat_points = [coord for point in self.track_canvas_points for coord in point]
+        self.track_canvas.create_line(*flat_points, fill='#2f2f2f', width=28, smooth=False, joinstyle=tk.ROUND)
+        self.track_canvas.create_line(*flat_points, fill='#676767', width=22, smooth=False, joinstyle=tk.ROUND)
+        self.track_canvas.create_line(*flat_points, fill='#d8d8d8', width=2, smooth=False, joinstyle=tk.ROUND)
+
+        # Startovní čára je kolmá na lokální tečnu skutečné geometrie.
+        p0 = np.asarray(self.track_canvas_points[0], dtype=float)
+        p1 = np.asarray(self.track_canvas_points[1], dtype=float)
+        tangent = p1 - p0
+        tangent /= max(np.linalg.norm(tangent), 1e-9)
+        normal = np.asarray((-tangent[1], tangent[0]))
+        start_a = p0 - normal * 13.0
+        start_b = p0 + normal * 13.0
+        self.track_canvas.create_line(start_a[0], start_a[1], start_b[0], start_b[1], fill='white', width=5)
+        self.track_canvas.create_text(p0[0] + 8, p0[1] - 18, text='START / FINISH', fill='white', font=('Arial', 9, 'bold'))
+        x0, y0 = self.track_canvas_points[0]
+        self.track_car = self.track_canvas.create_oval(x0 - 7, y0 - 7, x0 + 7, y0 + 7, fill='#00ffff', outline='white', width=2)
+
+        right = tk.Frame(self.track_win, bg='#111111')
+        right.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 15), pady=15)
+        self.lbl_track_status = tk.Label(right, text=self.tr('msg_track_ready'), font=('Arial', 12, 'bold'), bg='#111111', fg='gray', wraplength=180)
+        self.lbl_track_status.pack(pady=(8, 14))
+        self.lbl_track_lap = tk.Label(right, text=f"{self.tr('lbl_lap_time')}: --:--.---", font=('Courier', 17, 'bold'), bg='#111111', fg='#00ffff')
+        self.lbl_track_lap.pack(pady=5)
+        self.lbl_track_live_speed = tk.Label(right, text=f"{self.tr('lbl_track_speed')}: 0 km/h", font=('Courier', 11), bg='#111111', fg='white')
+        self.lbl_track_live_speed.pack(pady=3)
+        self.lbl_track_live_gear = tk.Label(right, text=f"{self.tr('lbl_track_gear')}: N", font=('Courier', 11), bg='#111111', fg='white')
+        self.lbl_track_live_gear.pack(pady=3)
+        self.lbl_track_live_sector = tk.Label(right, text=f"{self.tr('lbl_track_sector')}: 1", font=('Courier', 11), bg='#111111', fg='white')
+        self.lbl_track_live_sector.pack(pady=3)
+        self.lbl_track_stats = tk.Label(right, text=f"{self.tr('lbl_track_length')}: 3.605 km", justify=tk.LEFT, font=('Courier', 10), bg='#111111', fg='gray', wraplength=190)
+        self.lbl_track_stats.pack(pady=12)
+        self.lbl_track_sectors = tk.Label(right, text='S1: --.-- s\nS2: --.-- s\nS3: --.-- s', justify=tk.LEFT, font=('Courier', 10), bg='#111111', fg='white')
+        self.lbl_track_sectors.pack(pady=5)
+        self.btn_track_start = ttk.Button(right, textvariable=self.lang_vars['btn_track_start'], command=self.start_track_lap)
+        self.btn_track_start.pack(pady=16, ipadx=8, ipady=5)
+
+        self.track_running = False
+        self.track_result = None
+        self.track_sim_elapsed = 0.0
+        self.track_last_real_time = None
+
+    def _format_lap_time(self, seconds):
+        minutes = int(seconds // 60)
+        remaining = seconds - minutes * 60
+        return f"{minutes}:{remaining:06.3f}"
+
+    def _build_track_canvas_points(self, world_points):
+        """Převede fyzikální geometrii na plátno bez změny jejího tvaru."""
+        points = np.asarray(world_points, dtype=float)
+        min_xy = np.min(points, axis=0)
+        max_xy = np.max(points, axis=0)
+        span = np.maximum(max_xy - min_xy, 1.0)
+        margin = 28.0
+        scale = min((560.0 - 2.0 * margin) / span[0], (410.0 - 2.0 * margin) / span[1])
+        centred = (points - (min_xy + max_xy) * 0.5) * scale
+        canvas = centred + np.asarray((280.0, 205.0))
+        canvas[:, 1] = 410.0 - canvas[:, 1]
+        return [tuple(point) for point in canvas]
+
+    def _track_map_position(self, distance):
+        """Interpoluje polohu přímo mezi stejnými body, které používá fyzika."""
+        result = self.track_result
+        distances = result['distances']
+        points = np.asarray(self.track_canvas_points + [self.track_canvas_points[0]], dtype=float)
+        distance = float(distance) % result['track_length']
+        index = int(np.searchsorted(distances, distance, side='right') - 1)
+        index = int(clamp(index, 0, len(distances) - 2))
+        d0, d1 = distances[index], distances[index + 1]
+        fraction = 0.0 if d1 <= d0 else (distance - d0) / (d1 - d0)
+        point = points[index] + (points[index + 1] - points[index]) * fraction
+        return float(point[0]), float(point[1])
+
+    def start_track_lap(self):
+        if self.track_running:
+            return
+        try:
+            veh_params = self.build_vehicle_params()
+            self.track_result = run_track_simulation(veh_params, self.dyno_results)
+        except (ValueError, TypeError, tk.TclError, FloatingPointError) as exc:
+            messagebox.showerror(self.tr('msg_invalid'), str(exc), parent=self.track_win)
+            return
+
+        self.track_running = True
+        self.track_sim_elapsed = 0.0
+        self.track_last_real_time = time.perf_counter()
+        self.track_playback_rate = max(1.0, self.track_result['lap_time'] / 10.0)
+        self.lbl_track_status.config(text=self.tr('msg_track_running'), fg='yellow')
+        self.lbl_track_lap.config(text=f"{self.tr('lbl_lap_time')}: 0:00.000")
+        self.lbl_track_sectors.config(text='S1: --.-- s\nS2: --.-- s\nS3: --.-- s')
+        self.btn_track_start.config(state=tk.DISABLED)
+        self.track_win.after(30, self.track_tick)
+
+    def track_tick(self):
+        if not self.track_running or not hasattr(self, 'track_win') or not self.track_win.winfo_exists():
+            return
+        now = time.perf_counter()
+        real_dt = max(0.0, now - self.track_last_real_time)
+        self.track_last_real_time = now
+        self.track_sim_elapsed += real_dt * self.track_playback_rate
+        lap_time = self.track_result['lap_time']
+        shown_time = min(self.track_sim_elapsed, lap_time)
+
+        cumulative = self.track_result['cumulative_time']
+        index = int(np.searchsorted(cumulative, shown_time, side='right') - 1)
+        index = int(clamp(index, 0, len(cumulative) - 2))
+        t0, t1 = cumulative[index], cumulative[index + 1]
+        fraction = 0.0 if t1 <= t0 else (shown_time - t0) / (t1 - t0)
+        distances = self.track_result['distances']
+        distance = distances[index] + (distances[index + 1] - distances[index]) * fraction
+        x, y = self._track_map_position(distance)
+        self.track_canvas.coords(self.track_car, x - 7, y - 7, x + 7, y + 7)
+
+        speed = float(self.track_result['speed_profile'][index]) * 3.6
+        gear = int(self.track_result['gear_profile'][index]) + 1
+        sector = int(self.track_result['sector_profile'][index])
+        self.lbl_track_lap.config(text=f"{self.tr('lbl_lap_time')}: {self._format_lap_time(shown_time)}")
+        self.lbl_track_live_speed.config(text=f"{self.tr('lbl_track_speed')}: {speed:.0f} km/h")
+        self.lbl_track_live_gear.config(text=f"{self.tr('lbl_track_gear')}: {gear}")
+        self.lbl_track_live_sector.config(text=f"{self.tr('lbl_track_sector')}: {sector}")
+
+        if self.track_sim_elapsed < lap_time:
+            self.track_win.after(30, self.track_tick)
+            return
+
+        self.track_running = False
+        sectors = self.track_result['sector_times']
+        self.lbl_track_status.config(text=self.tr('msg_track_finished'), fg='lime')
+        self.lbl_track_lap.config(text=f"{self.tr('lbl_lap_time')}: {self._format_lap_time(lap_time)}")
+        self.lbl_track_stats.config(
+            text=(f"{self.tr('lbl_track_length')}: {self.track_result['track_length'] / 1000.0:.3f} km\n"
+                  f"{self.tr('lbl_track_avg')}: {self.track_result['average_speed'] * 3.6:.1f} km/h\n"
+                  f"{self.tr('lbl_track_max')}: {self.track_result['max_speed'] * 3.6:.1f} km/h")
+        )
+        self.lbl_track_sectors.config(text=f"S1: {sectors[0]:.3f} s\nS2: {sectors[1]:.3f} s\nS3: {sectors[2]:.3f} s")
+        self.btn_track_start.config(state=tk.NORMAL)
+        self.lang_vars['btn_track_start'].set(T[self.vars['app_lang'].get()]['btn_track_retry'])
+
+    def on_track_close(self):
+        self.track_running = False
+        self.lang_vars['btn_track_start'].set(T[self.vars['app_lang'].get()]['btn_track_start'])
+        self.track_win.grab_release()
+        self.track_win.destroy()
+
     def start_audio_stream(self, is_drive=False):
-        cylinders = self.vars['cylinders'].get()
-        aspiration = self.vars['aspiration'].get()
-        crank = self.vars['crank'].get()
+        cylinders = int(self.dyno_params['cylinders'])
+        aspiration = self.dyno_params['aspiration']
+        crank = self.dyno_params['crank']
         fs = 44100 
         
         def audio_callback(outdata, frames, time_info, status):
@@ -1834,12 +2633,20 @@ class EngineApp:
             self.stream = sd.OutputStream(samplerate=fs, channels=1, callback=audio_callback, blocksize=2048)
             self.stream.start()
         except Exception as e:
-            self.safe_log(f"Chyba při startu zvuku: {e}")
+            self.root.after(0, self._write_log, f"Chyba při startu zvuku: {e}")
 
     def stop_audio_stream(self):
-        if hasattr(self, 'stream') and self.stream.active:
-            self.stream.stop()
-            self.stream.close()
+        stream = getattr(self, 'stream', None)
+        if stream is None:
+            return
+        try:
+            if stream.active:
+                stream.stop()
+            stream.close()
+        except Exception:
+            pass
+        finally:
+            self.stream = None
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -2,112 +2,251 @@
 
 *[Návod v češtině](NAVOD.md)*
 
-This guide walks through every part of the app in the order you'd typically use them. In-app tooltips (hover over any label or field) give quick per-parameter explanations — this document is the bigger-picture reference.
+This guide walks through the simulator in the order it is normally used. In-app tooltips provide quick per-parameter explanations; this document explains how the systems fit together.
+
+The guide applies to **Automation DIY v4.7 — Custom Gearing & Test Track**.
 
 ## 1. Overall Workflow
 
 1. Pick a starting point from the preset dropdown at the top of the window, or start from the defaults.
-2. Configure your engine across the **7 tabs**.
-3. Click **"1. Dyno Pull"** to run the virtual dyno test.
-4. Click **"Graph"** to view the torque/HP curve.
-5. Optionally, click **"2. Manual Throttle"** for a hands-on telemetry test with cooling behavior.
-6. Click **"3. Test Drive"** to see how the engine performs in an actual car (0–100 time, top speed).
-7. Name your engine and use **File → Save Engine As...** to store your build as a `.json` file you can reload or share later.
+2. Configure the engine and vehicle across the **7 tabs**.
+3. Click **1. Dyno Pull** to generate the torque and power curves.
+4. Click **Graph** to inspect the result.
+5. Optionally click **2. Manual Throttle** for a live cooling and telemetry test.
+6. Click **3. Test Drive** for 0–100 km/h and top-speed testing.
+7. Click **4. Test Track** for a flying lap around the shared 3.605 km benchmark circuit.
+8. Name the build and use **File → Save Engine As...** to save it as a portable `.json` file.
 
-Changing your language (CZ/EN radio buttons at the top) can be done at any time and doesn't affect your current build.
+The CZ/EN language selector can be changed at any time without resetting the current build.
 
 ## 2. The 7 Tabs
 
 ### Tab 1 — Block
-Sets the fundamental layout of the engine.
-- **Configuration**: Inline (cheap, smooth, gets impractically long with many cylinders) / V (compact, great for 6–8 cylinders) / Boxer (opposed pistons, lowest center of gravity).
-- **V-angle**: only relevant for V engines — 60° suits V6, 90° is the classic V8 angle for balance, 120° is very flat but very wide.
-- **Cylinders**: 3–5 for small, cheap builds; 6–8 as the performance standard; 10–16 for exotic hypercar-tier builds.
-- **Block material**: Cast Iron (heavy, indestructible) through Aluminium (standard, with Heavy/Light sub-variants for a weight-vs-durability trade-off) and AlSi (Heavy/Light — no cylinder liners, lower friction) to Aluminium Billet (machined from a single block, race-grade) and Magnesium (lowest friction, motorsport-grade).
-- **Bore / Stroke**: bore controls piston diameter (bigger bore → bigger valves → better high-RPM airflow); stroke controls piston travel (bigger stroke → strong low-end torque, but physically caps how high the engine can rev).
-- **Radiator efficiency**: how effectively the engine sheds heat — this is your buffer against overheating in the Manual Throttle test.
+
+Sets the engine's fundamental architecture.
+
+- **Configuration**: Inline / V / Boxer.
+- **V-angle**: shown only for V engines. The available choices are 60°, 90°, and 120°.
+- **Cylinders**: 3, 4, 5, 6, 8, 10, 12, or 16.
+- **Block material**: ranges from heavy cast iron through aluminium and AlSi variants to billet aluminium and magnesium.
+- **Bore**: larger bore supports larger valves and stronger high-RPM breathing.
+- **Stroke**: longer stroke favors low-end torque but raises mean piston speed and limits high-RPM operation.
+- **Radiator efficiency**: affects heat removal in Manual Throttle mode.
+- **Technology level**: globally influences efficiency, breathing, friction, and knock resistance.
+
+The calculated displacement is updated automatically from bore, stroke, and cylinder count.
 
 ### Tab 2 — Bottom End
-This is where the engine's mechanical RPM ceiling is decided.
-- **Crankshaft / Conrods / Pistons materials** each carry their own independent RPM limit, now with finer Heavy/Light tiers within each material family (e.g. Cast crank ≈ 6500 RPM, Forged Steel Light ≈ 8800 RPM, Billet ≈ 11500 RPM; similar tiers exist for conrods and pistons, including a Hypereutectic Cast piston option for a durable, emissions-friendly middle ground). On the dyno, the **weakest of the three** determines the actual mechanical limit — upgrading just one part won't help if another is still the bottleneck.
-- **Balancer**: None / Harmonic Damper (+200 RPM, small friction cost) / Full Balancers (+500 RPM, bigger friction cost). Choosing Harmonic Damper or Full Balancers reveals an extra **balancer weight slider (0–50 kg)** for continuous fine-tuning: more added weight pushes the mechanical RPM limit further up, but increases internal friction and slows the engine's throttle response.
+
+Determines the mechanical RPM ceiling.
+
+- **Crankshaft**, **connecting rods**, and **pistons** each have their own material-dependent RPM limit.
+- The weakest of the three is the actual mechanical limit.
+- **Balancer** options trade added friction and rotating mass for a higher mechanical RPM ceiling.
+- When a harmonic damper or full balancer system is selected, the **balancer-mass slider** becomes visible.
+
+Setting the RPM limiter above the weakest mechanical component intentionally destroys the engine during the dyno pull.
 
 ### Tab 3 — Top End
-Head and valvetrain configuration — this heavily influences knock risk.
-- **Head material**: Cast Iron (Eco/Std/Perf tiers — Eco is cheap but knock-prone, Perf has better flow) retains heat and increases detonation risk; Aluminium (Eco/Std/Perf) dissipates heat and lowers it; Aluminium Billet Race is the race-grade option with the best heat dissipation and lowest friction.
-- **Valvetrain**: Pushrod (OHV, chokes past ~4200 RPM) / SOHC / DOHC (best for high RPM) / DAOHC (race-only, direct actuation).
-- **Valves per cylinder**: 2 (strong low-end, chokes up top) to 5 (extreme top-end, race-oriented).
-- **VVT**: variable valve *timing* — None (fixed) / Intake (smooths delivery) / All (broadens the curve across the whole rev range).
-- **VVL**: variable valve *lift*, now a 3-state choice — None (fixed lift) / VVL (switches to a sharper cam profile above a set RPM) / CVVL (continuously variable, smoothest and most efficient blend). Selecting VVL or CVVL reveals two extra sliders: **VVL Profile** (how aggressive the secondary cam profile is) and **VVL Switch RPM** (exactly where the engine transitions to it).
-- **Valve spring stiffness**: a new slider — stiffer springs (higher values) let the engine safely rev higher without valve float (valves "bouncing" instead of closing properly), at the cost of a bit more friction and slightly reduced power.
-- **Cam profile**: low values bias torque low in the rev range; high values push an aggressive, top-end-biased, rougher-idling character.
-- **Compression ratio**: more compression means more power, but sharply increases knock risk (unless you're running Diesel, which ignores these limits).
+
+Controls the cylinder head, airflow behavior, valve float, and part of the knock model.
+
+- **Head material** affects heat retention, friction, airflow tier, and knock tendency.
+- **Valvetrain**: Pushrod/OHV, SOHC, DOHC, or DAOHC.
+- **Valves per cylinder**: 2–5.
+- **VVT** changes valve timing and broadens the usable powerband.
+- **VVL** can be disabled, switched at a chosen RPM, or run as CVVL.
+- Selecting VVL or CVVL reveals **VVL Profile** and **VVL RPM** controls.
+- **Springs and lifters** raise the valve-float limit but increase friction.
+- **Cam profile** shifts the volumetric-efficiency curve through the rev range.
+- **Compression ratio** increases torque and efficiency but also raises knock risk on spark-ignition fuels.
 
 ### Tab 4 — Aspiration
-- **Type**: NA (naturally aspirated, immediate throttle response) / Turbo (exhaust-driven, has lag) / Supercharger (belt-driven, instant response).
-- **Turbo bearing**: Journal (cheap, slower spool) vs. Ball Bearing (drastically cuts turbo lag).
-- **Turbo configuration**: Single (most lag) / Twin (faster spool) / Quad (fastest spool on big engines).
-- **Intercooler size**: bigger protects against knock but adds a bit of lag.
-- **Turbo/Supercharger size & boost pressure**: bigger units flow more air but take longer to spool (turbo) or sap more parasitic power (supercharger) just to spin up.
+
+- **NA**: immediate response and no boost.
+- **Turbo**: exhaust-driven boost with spool behavior based on turbo size, engine displacement, bearing type, configuration, and intercooler size.
+- **Supercharger**: immediate boost with parasitic losses.
+
+Turbo controls include bearing type, Single/Twin/Quad configuration, intercooler size, turbo size, and boost pressure.
+
+Supercharger controls include Roots, Twin-screw, or Centrifugal type, compressor size, and pulley/boost setting.
 
 ### Tab 5 — Fuel & Tune
-This tab, together with Tab 3, drives the **knock/detonation** failure model.
-- **Fuel delivery**: Carburetor (worse atomization, more knock risk) / Mechanical Fuel Injection (race-style, high fuel consumption) / Single Point EFI (basic single-injector setup) / EFI Multi-point (modern standard) / Direct Injection (cools cylinders internally, cuts knock risk, adds power). A new **carburetor/throttle body size slider** lets you fine-tune between low-RPM torque (smaller) and high-RPM breathing (larger).
-- **Intake configuration**: Single / Twin / ITB (independent throttle bodies — sharp response, strong top-end).
-- **Manifold**: now spans Standard (with Low/Mid sub-tiers), Performance (with Mid/High sub-tiers), Race, Compact, and Variable (broadens the effective rev range) — trading peak power for packaging or midrange. A **manifold size slider** fine-tunes intake runner width alongside the preset choice.
-- **Fuel type**: octane rating, now with more granularity — Low Quality 85 and Regular 91 at the bottom, Premium 95 and Super 98 as solid middle choices, Ultimate 100/E85/Methanol/Compressed Gas/Leaded Gasoline for high-boost builds, Diesel (never detonates), and **Nitromethane** — an extreme, high-risk/high-reward fuel that unlocks a much higher power ceiling than anything else, at real risk to engine longevity.
-- **Fuel map**: a new slider separate from AFR — leaning it out (0–40) trims fuel consumption but sharply raises knock risk and slightly hurts power, while richening it (60–100) helps cool the cylinders and slightly boosts power.
-- **AFR (air-fuel ratio)**: 14.7 is stoichiometric/"perfect" combustion; 12.5–13.0 is a rich mixture for max power; 15+ is lean and sharply raises knock risk.
-- **Ignition timing**: more advance = more power, but aggressive timing combined with high compression is a fast route to melted pistons.
-- **RPM limiter**: this is the number the dyno actually enforces. If you set it above the mechanical limit from Tab 2, the engine **will** blow up on the pull — that's intentional, not a bug.
+
+Works together with the Top End and Aspiration tabs to determine output and knock risk.
+
+- **Fuel delivery**: Carburetor, Mechanical Fuel Injection, Single Point EFI, EFI Multi, or Direct Injection.
+- **Throttle/carburetor size** trades low-RPM response for high-RPM airflow.
+- **Intake configuration**: Single, Twin, or ITB.
+- **Intake manifold** and **manifold size** shape the torque curve and effective rev range.
+- **Fuel type** supplies the knock-resistance baseline.
+- **Fuel map** changes mixture richness separately from AFR.
+- **AFR** affects power, efficiency, and lean-mixture knock risk.
+- **Ignition timing** increases power but raises detonation risk when pushed too far.
+- **RPM limiter** is the requested dyno redline and must remain within the mechanical limits unless failure is intended.
+
+Diesel bypasses the gasoline knock calculation, while Nitromethane receives a much higher potential power ceiling without removing the rest of the engine's physical limitations.
 
 ### Tab 6 — Exhaust
-- **Architecture**: Single vs. Dual (dual effectively doubles total exhaust cross-section).
-- **Headers**: now a finer spectrum from Compact Cast (most restrictive) through Cast (Low/Mid/Standard tiers) to Tubular (Standard/Mid/Long/Race tiers, progressively less restrictive). A **header size slider** lets you fine-tune within whichever tier you pick.
-- **Pipe diameter**: too small a diameter for a high-power engine chokes the top of the curve.
-- **Exhaust bypass valves**: a new option — with valves fitted, the exhaust bypasses the mufflers entirely above 3500 RPM for maximum flow at high RPM, at the cost of being louder there; below that threshold the mufflers work normally.
-- **Catalytic converter**: None (max flow) through 2-way/3-way (some restriction), an Exhaust Reactor, and up to sport-oriented High Flow and Pre-Cat combinations (Three-Way + Pre-Cat, High Flow 3-Way + Pre-Cat) that recover most of the flow a plain catalytic converter would cost.
-- **Mufflers (x2)**: None (straight-through, no restriction) → Straight → Baffled → Reverse Flow (quietest, most restrictive).
+
+- **Architecture**: Single or Dual.
+- **Headers** range from restrictive compact cast manifolds to race-oriented tubular systems.
+- **Header size** and **pipe diameter** affect gas velocity and high-output flow capacity.
+- **Bypass valves** open above 3500 RPM and bypass the mufflers.
+- **Catalytic converter** choices trade emissions hardware for restriction.
+- **Two muffler slots** allow combinations from no muffler to reverse-flow systems.
+
+An undersized exhaust progressively chokes the upper part of the torque curve.
 
 ### Tab 7 — Drivetrain
-Everything here only matters for the **Test Drive** simulation, not the dyno.
-- **Vehicle preset**: quickly sets chassis values to a typical example of a vehicle category.
-- **Weight**: total car + driver + fluids mass — the core F = m·a term for acceleration.
-- **Drag coefficient (Cd)**: aerodynamic drag, mainly caps top speed.
-- **Tire grip**: how much force the tires can put down before spinning — this limits your launch, not raw horsepower. This value also acts as an indicator for aerodynamic downforce; sporty cars (grip > 1.0) will dynamically generate downforce at high speeds, improving stability and high-speed grip.
-- **Gears / Final drive**: more gears keep the engine in its ideal RPM band longer; a higher final drive ratio means shorter gearing (better acceleration, lower top speed, more shifting).
-- **Drivetrain layout**: FWD (loses traction under acceleration due to weight transfer) / RWD (gains traction under acceleration) / AWD (best overall traction).
+
+These settings affect **Test Drive** and **Test Track**, but not the dyno curve.
+
+- **Vehicle preset** fills the chassis fields with representative values. Selecting a vehicle preset also disables custom gear ratios so the preset retains its automatic gearing.
+- **Weight**: total vehicle mass including driver and fluids.
+- **Drag coefficient (Cd)**: dimensionless aerodynamic drag coefficient.
+- **Frontal area**: reference area used together with Cd in the drag calculation.
+- **Wheel radius**: affects wheel force and road speed at a given engine RPM.
+- **Speed limiter**: electronic top-speed limit; `0` disables it.
+- **Downforce (Cl·A)**: aerodynamic downforce coefficient-area product. It is independent from tire grip.
+- **Tire grip**: the base friction coefficient available for acceleration, braking, and cornering.
+- **Gear count**: 4–8 speeds.
+- **Final drive**: multiplies every transmission ratio.
+- **Drivetrain**:
+  - FWD has efficient power transmission but loses driven-axle load under acceleration.
+  - RWD gains rear-axle load under acceleration.
+  - AWD uses all four tires for traction but has the largest drivetrain losses.
+
+#### Optional individual gear ratios
+
+The **Fine-tune individual gear ratios** checkbox is disabled by default.
+
+When it is disabled:
+
+- the ratio editor stays hidden
+- the simulator uses its built-in automatic ratio set for the selected gear count
+- existing presets retain their established 0–100 km/h and top-speed behavior
+
+When it is enabled:
+
+- one ratio field appears for every active gear
+- 4–8-speed transmissions are supported
+- **Load automatic ratios** restores the default set
+- ratios affect Test Drive and Test Track immediately after the next dyno/test run
+
+For a sensible transmission, every higher gear should normally use a numerically smaller ratio than the gear before it.
 
 ## 3. Running the Dyno Pull
 
-Click **"1. Dyno Pull"**. The simulator sweeps RPM and computes torque/HP at each point. Two independent things can end the pull early with a failure:
+Click **1. Dyno Pull**. The simulator validates the current inputs, sweeps through the permitted RPM range, and calculates torque and HP at each point.
 
-- **Mechanical over-rev**: if your RPM limiter (Tab 5) is set above the weakest of crank/conrod/piston limits (Tab 2), the pull stops there and tells you exactly which part failed and how to fix it (upgrade that part, or lower the limiter).
-- **Knock/detonation**: a "knock index" is computed from compression, ignition timing, AFR, fuel map, fuel octane, and head material. Past a threshold, the engine detonates and melts a piston — even at RPM well below the mechanical limit. The failure message tells you which levers to pull back (lower compression/boost/ignition, use higher octane, richer AFR/fuel map). Running Nitromethane raises the power ceiling dramatically but doesn't relax this model — it's a genuine high-risk choice, not a free upgrade.
+Two independent failure paths can stop the build:
 
-Click **"Graph"** afterward to see the resulting torque/HP curve.
+- **Mechanical over-rev**: the RPM limiter exceeds the weakest crankshaft, conrod, or piston limit.
+- **Knock/detonation**: the calculated knock index becomes excessive due to an unsafe combination of compression, boost, ignition timing, AFR, fuel map, octane, injection system, head material, or technology level.
 
-## 4. Manual Throttle (Telemetry)
+The console explains both the failure and the main changes that can fix it.
 
-This is a live, hands-on test rather than an instant sweep. Hold the throttle button down and watch coolant temperature climb in real time. Your **radiator efficiency** (Tab 1) is what determines how long you can hold wide-open throttle before overheating. If coolant temperature goes too high, you get a blown head gasket — a separate failure mode from anything on the dyno.
+After a successful pull:
+
+- **Graph** becomes available
+- Manual Throttle becomes available when the audio backend is present
+- **Test Drive** and **Test Track** become available
+
+## 4. Manual Throttle
+
+Manual Throttle is a live free-revving telemetry test.
+
+Hold the throttle button to move toward the RPM limiter. Heat generation follows engine load and output, while radiator efficiency determines how quickly heat is rejected. If coolant temperature reaches the failure threshold, the head gasket fails.
+
+This mode is separate from dyno knock and mechanical over-rev failures.
 
 ## 5. Test Drive
 
-Simulates a 0–100 km/h run and top speed using your Tab 7 chassis settings combined with your engine's torque curve:
-- **Launch control** manages the initial RPM to avoid bogging down.
-- **Weight transfer and Aerodynamics** shifts load onto the front or rear axle under acceleration, and computes downforce at higher speeds based on the vehicle's grip and aerodynamic drag. This changes how much force your drive wheels can put down before slipping — watch the **TCS/slip indicator**.
-- **Gear shifts** happen automatically near the ideal shift RPM, with a short shift-delay penalty.
-- The run ends automatically once acceleration flattens out, reporting your 0–100 time and top speed.
+Test Drive simulates a launch from rest, automatic shifting, 0–100 km/h, and maximum speed.
 
-## 6. Engine Sound
+The model uses:
 
-If `sounddevice` and a working PortAudio backend are available, the engine note is synthesized live — frequency and harmonic content are derived from RPM, cylinder count, and crank type, with a flutter effect on throttle lift-off for turbocharged engines. If the sound backend isn't available on your system, the sound button is disabled and everything else works exactly the same, just silently.
+- the engine's complete torque curve
+- automatic or custom transmission ratios
+- final drive and wheel radius
+- drivetrain efficiency
+- longitudinal weight transfer
+- tire-traction limits
+- aerodynamic drag from Cd and frontal area
+- rolling resistance
+- aerodynamic downforce
+- RPM and electronic speed limits
 
-## 7. Save / Load
+The TCS indicator reports wheel slip. Maximum speed can be limited by available power, drag, the highest gear and redline, or the electronic limiter.
 
-Use **File → Save Engine As...** to write your current build (every parameter across all 7 tabs) to a `.json` file, and **File → Load Engine...** to bring it back later or share it with someone else running the app. Engine files saved with older app versions (including the old on/off VVL setting) load correctly — they're automatically converted to the current format.
+**Skip to Top Speed** runs the same vehicle model faster and moves the display directly to the calculated result.
 
-## 8. Troubleshooting
+## 6. Test Track
 
-- **A one-off `ModuleNotFoundError` on first launch of the prebuilt `.exe`**: this is caused by antivirus software briefly locking a file during its first-time scan of the unsigned executable. Just relaunch the app — it will not recur once the antivirus has scanned and cached the file.
-- **No sound at all**: confirm `sounddevice` and PortAudio are installed if running from source, or check your system's default audio output device.
+Test Track calculates a deterministic **flying lap**, not a standing-start lap.
+
+### Circuit
+
+- Length: **3.605 km**
+- Three timed sectors
+- A technical layout with straights, hairpins, medium-speed corners, faster bends, and linked direction changes
+- The displayed track and simulated track are the same geometry
+
+The circuit is generated from one closed curve, resampled into short distance steps. Local curvature is calculated from that geometry and converted into corner-radius information. The same points are then scaled for the on-screen map without changing the track's shape.
+
+### Lap calculation
+
+The lap model uses:
+
+- the dyno torque curve
+- automatic or custom gear ratios
+- final drive, wheel radius, redline, and speed limiter
+- mass and drivetrain losses
+- Cd, frontal area, and rolling resistance
+- tire grip and aerodynamic downforce
+- the tire friction circle, so cornering reduces the grip available for acceleration or braking
+- backward passes to build braking zones before corners
+- forward passes to limit acceleration between track points
+- fixed shift-time penalties for upshifts and downshifts
+
+The animation is accelerated so a long simulated lap does not require the same amount of real waiting time.
+
+After the lap, the window reports:
+
+- total lap time
+- sector 1, sector 2, and sector 3 times
+- average speed
+- maximum speed
+
+Because the model is deterministic, identical builds produce identical lap times. This makes the circuit useful as a common benchmark for comparing cars inside the simulator.
+
+## 7. Engine Sound
+
+When `sounddevice` and a working PortAudio backend are available, engine sound is synthesized live from RPM, cylinder count, aspiration, throttle, and crank type.
+
+Turbo engines include spool noise and lift-off flutter. Supercharged engines receive a speed-dependent whine.
+
+If the audio backend is unavailable, the simulator remains usable without live sound.
+
+## 8. Save and Load
+
+Use **File → Save Engine As...** to store the current build as JSON.
+
+The saved file includes engine settings, chassis settings, the custom-gearing toggle, and all individual gear-ratio values.
+
+When loading:
+
+- the simulator first restores safe factory defaults
+- saved values are then applied
+- older files that do not contain newer parameters receive sensible defaults
+- the old Boolean VVL format is converted automatically
+- invalid or malformed files show an error instead of partially corrupting the active build
+
+## 9. Troubleshooting
+
+- **One-off launch error in the prebuilt executable**: antivirus software may briefly lock an unsigned single-file executable during its first scan. Relaunch after the scan completes.
+- **No live sound**: check that `sounddevice`, PortAudio, and a working default output device are available.
+- **Test Drive or Test Track is disabled**: run a successful Dyno Pull first. A destroyed engine cannot be tested.
+- **Custom ratios are not visible**: enable **Fine-tune individual gear ratios** in the Drivetrain tab.
+- **A saved preset produces different performance after editing gears**: disable custom gearing or press **Load automatic ratios** to restore the original automatic set.
