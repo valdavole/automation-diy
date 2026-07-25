@@ -4,20 +4,29 @@
 
 Tento návod prochází simulátor v pořadí, v jakém se běžně používá. Tooltips přímo v aplikaci poskytují rychlé vysvětlení jednotlivých parametrů; tento dokument ukazuje, jak do sebe jednotlivé systémy zapadají.
 
-Návod platí pro **Automation DIY v4.7 — Custom Gearing & Test Track**.
+Návod platí pro **Automation DIY v4.8.5 — Fullscreen & Settings Update + Tweaks**.
 
 ## 1. Celkový postup práce
 
-1. Vyber startovní bod z rozbalovacího seznamu presetů nahoře, nebo začni od výchozích hodnot.
-2. Nastav motor a vozidlo napříč **7 záložkami**.
-3. Klikni na **1. Dyno Pull** a nech vygenerovat křivku točivého momentu a výkonu.
-4. Klikni na **Graf** a výsledek si prohlédni.
-5. Volitelně spusť **2. Ruční plyn** pro živý test chlazení a telemetrie.
-6. Spusť **3. Zkušební jízdu** pro měření 0–100 km/h a maximální rychlosti.
-7. Spusť **4. Testovací dráhu** pro letmé kolo na společném okruhu dlouhém 3,605 km.
-8. Build pojmenuj a přes **Soubor → Uložit motor jako...** ho ulož do přenositelného `.json` souboru.
+Simulátor se otevírá v režimu celé obrazovky a všechny hlavní režimy drží uvnitř jediného okna. Levé menu přepíná mezi obrazovkami Garáž, Dyno & Graf, Ruční plyn, Zkušební jízda a Testovací dráha.
 
-Přepínač jazyka CZ/EN lze změnit kdykoliv bez resetování rozpracovaného buildu.
+- Klávesou **F11** zapneš nebo vypneš fullscreen.
+- Klávesa **Esc** zavře Nastavení nebo chybový overlay, vrátí tě z jiného režimu do Garáže, případně při otevřené Garáži opustí fullscreen.
+- V **Nastavení** můžeš načíst nebo uložit build, změnit jazyk, vybrat km/h či mph nebo ukončit simulátor.
+- Kompaktní tlačítko vpravo nahoře ukazuje aktuální jazyk a jednotku rychlosti a otevírá stejný panel Nastavení.
+
+Typický postup:
+
+1. Vyber startovní bod z rozbalovacího seznamu presetů nahoře ve stavbě motoru, nebo začni od výchozích hodnot.
+2. Nastav motor a vozidlo napříč **7 záložkami**.
+3. Klikni na **Spustit Dyno / 1. Dyno Pull** a nech vygenerovat křivku točivého momentu a výkonu.
+4. Sleduj živý graf a telemetrii a poté si na obrazovce Dyna prohlédni dokončené křivky.
+5. Volitelně otevři **Ruční plyn** pro živý test chlazení a telemetrie.
+6. Otevři **Zkušební jízdu** pro měření 0–100 km/h nebo 0–60 mph a maximální rychlosti.
+7. Otevři **Testovací dráhu** pro letmé kolo na společném okruhu dlouhém 3,605 km.
+8. Build pojmenuj a přes **Nastavení → Uložit motor / vozidlo jako...** ho ulož do přenositelného `.json` souboru.
+
+Jazyk a jednotky rychlosti lze změnit za chodu bez resetování rozpracovaného buildu nebo změny fyziky vozidla. Po každém spuštění jsou jako výchozí zvoleny km/h.
 
 ## 2. Přehled 7 záložek
 
@@ -43,7 +52,7 @@ Určuje mechanický strop otáček.
 - **Kliková hřídel**, **ojnice** a **písty** mají vlastní limity podle zvoleného materiálu.
 - Skutečný mechanický limit určuje nejslabší z těchto tří částí.
 - **Vyvažováky** mění poměr mezi vyšším limitem otáček, třením a rotační hmotou.
-- Při zvolení harmonic damperu nebo plných vyvažováků se zobrazí **slider hmotnosti vyvažováků**.
+- Při zvolení harmonic damperu nebo plných vyvažováků se zobrazí **slider hmotnosti vyvažováků**. Při volbě **None** fyzika skrytou hodnotu hmotnosti vyvažováků ignoruje.
 
 Nastavení omezovače nad limit nejslabší mechanické části motor při Dyno Pullu záměrně zničí.
 
@@ -102,12 +111,12 @@ Příliš malý výfuk postupně dusí horní část křivky momentu.
 
 Tato nastavení ovlivňují **Zkušební jízdu** a **Testovací dráhu**, nikoliv dyno křivku.
 
-- **Předvolba vozu** vyplní hodnoty šasi reprezentativním nastavením. Zvolení předvolby současně vypne vlastní převody, aby preset zachoval automatickou převodovou sadu.
+- **Předvolba vozu** vyplní hodnoty šasi včetně zamýšleného stálého převodu reprezentativním nastavením. Zvolení předvolby současně vypne vlastní převody, aby preset zachoval automatickou převodovou sadu.
 - **Váha**: celková hmotnost vozidla včetně řidiče a náplní.
 - **Odpor vzduchu (Cd)**: bezrozměrný součinitel aerodynamického odporu.
 - **Čelní plocha**: referenční plocha používaná společně s Cd ve výpočtu odporu.
 - **Poloměr kola**: ovlivňuje sílu na kole i rychlost při daných otáčkách motoru.
-- **Omezovač rychlosti**: elektronická maximální rychlost; hodnota `0` jej vypne.
+- **Omezovač rychlosti**: elektronická maximální rychlost; hodnota `0` jej vypne. Zobrazená hodnota a rozsah slideru se řídí zvolenými km/h nebo mph, zatímco uložený build používá jednu kanonickou hodnotu.
 - **Přítlak (Cl·A)**: součin součinitele přítlaku a plochy. Je oddělený od přilnavosti pneumatik.
 - **Trakce pneumatik**: základní koeficient tření dostupný pro akceleraci, brzdění a zatáčení.
 - **Počet převodů**: 4–8 stupňů.
@@ -125,7 +134,7 @@ Když je vypnuté:
 
 - editor převodů zůstává skrytý
 - simulátor používá vestavěnou automatickou sadu pro zvolený počet stupňů
-- existující presety si zachovávají své zavedené výsledky 0–100 km/h a maximální rychlosti
+- existující presety si zachovávají své zavedené výsledky zrychlení a maximální rychlosti
 
 Když je zapnuté:
 
@@ -138,7 +147,7 @@ U rozumně odstupňované převodovky má každý vyšší stupeň zpravidla num
 
 ## 3. Spuštění Dyno Pullu
 
-Klikni na **1. Dyno Pull**. Simulátor zkontroluje vstupní hodnoty, projede povolený rozsah otáček a v každém bodě spočítá točivý moment a výkon.
+Klikni na **Spustit Dyno** ve stavbě motoru nebo na **1. Dyno Pull** na obrazovce Dyna. Simulátor zkontroluje vstupní hodnoty, přepne se na obrazovku Dyna, projede povolený rozsah otáček a v každém bodě spočítá točivý moment a výkon. Vložený graf, otáčky, moment a výkon se během měření průběžně aktualizují.
 
 Build mohou zastavit dvě nezávislé cesty selhání:
 
@@ -149,21 +158,24 @@ Konzole vysvětlí příčinu selhání i hlavní úpravy, které jej mohou odst
 
 Po úspěšném pullu:
 
-- zpřístupní se **Graf**
+- dokončený graf zůstane přímo na obrazovce Dyna
+- tlačítko **Graf** tě na tuto obrazovku vrátí z jiného režimu
 - při dostupném zvukovém backendu se zpřístupní Ruční plyn
 - zpřístupní se **Zkušební jízda** a **Testovací dráha**
 
+Výsledek Dyna je snímek motoru v okamžiku měření. Změna motorového parametru výsledek zneplatní a závislé režimy znovu zamkne, dokud neproběhne nový pull. Parametry samotného vozidla můžeš měnit bez nového výpočtu motorové křivky. Opuštění obrazovky Dyna během nedokončeného pullu měření bezpečně zruší a neúplný výsledek zahodí.
+
 ## 4. Ruční plyn
 
-Ruční plyn je živý test vytáčení motoru a chlazení.
+Ruční plyn je živý test vytáčení motoru a chlazení zobrazený uvnitř hlavního okna aplikace.
 
 Držením tlačítka se motor přibližuje k omezovači. Produkce tepla závisí na zatížení a výkonu motoru, zatímco účinnost chladiče určuje rychlost odvodu tepla. Při dosažení mezní teploty selže těsnění pod hlavou.
 
-Tento režim je oddělený od dyno selhání způsobeného klepáním nebo mechanickým přetočením.
+Tento režim je oddělený od dyno selhání způsobeného klepáním nebo mechanickým přetočením. Režim opustíš přes levé menu nebo klávesou **Esc**; naplánované fyzikální aktualizace a zvukový stream se bezpečně zastaví.
 
 ## 5. Zkušební jízda
 
-Zkušební jízda simuluje start z místa, automatické řazení, zrychlení 0–100 km/h a maximální rychlost.
+Zkušební jízda simuluje start z místa, automatické řazení, zrychlení 0–100 km/h nebo 0–60 mph podle zvolených jednotek a maximální rychlost.
 
 Model používá:
 
@@ -180,7 +192,9 @@ Model používá:
 
 Indikátor TCS ukazuje prokluz kol. Maximální rychlost může omezit dostupný výkon, odpor vzduchu, nejvyšší převod a redline nebo elektronický omezovač.
 
-Tlačítko **Přeskočit na max** použije stejný model vozidla, ale urychlí výpočet a přesune zobrazení přímo na výsledek.
+Živá jízda a tlačítko **Přeskočit na max** sdílejí jeden autoritativní výpočet vozidla, takže obě cesty skončí stejným časem zrychlení, maximální rychlostí a výsledným převodem. Po zaznamenání výsledku živé zobrazení pustí plyn a nechá auto přirozeně dojíždět, zatímco naměřená maximálka zůstane viditelná.
+
+Přepnutí mezi km/h a mph okamžitě upraví zobrazenou rychlost, text maximálky, omezovač rychlosti a cíl měření zrychlení, aniž by změnilo fyziku.
 
 ## 6. Testovací dráha
 
@@ -216,8 +230,10 @@ Po dokončení se zobrazí:
 
 - celkový čas kola
 - časy sektoru 1, sektoru 2 a sektoru 3
-- průměrná rychlost
-- maximální rychlost
+- průměrná rychlost ve zvolených jednotkách
+- maximální rychlost ve zvolených jednotkách
+
+Délka okruhu zůstává v obou režimech pevným benchmarkem 3,605 km.
 
 Model je deterministický, takže shodný build vytvoří shodný čas. Okruh je proto vhodný jako společný benchmark pro porovnávání aut uvnitř simulátoru.
 
@@ -231,22 +247,27 @@ Pokud zvukový backend není dostupný, simulátor zůstává plně použitelný
 
 ## 8. Uložení a načtení
 
-Přes **Soubor → Uložit motor jako...** ulož aktuální build do JSON souboru.
+Otevři **Nastavení** a přes **Uložit motor / vozidlo jako...** ulož aktuální build do JSON souboru. Volbou **Načíst motor / vozidlo...** ve stejném panelu jej obnovíš.
 
-Uložený soubor obsahuje nastavení motoru, šasi, přepínač vlastních převodů i hodnoty všech jednotlivých převodových poměrů.
+Uložený soubor obsahuje nastavení motoru, šasi, zvolený preset vozidla, přepínač vlastních převodů i hodnoty všech jednotlivých převodových poměrů. Jazyk a volba km/h/mph jsou nastavení rozhraní, nikoliv data vozidla. Omezovač rychlosti se ukládá v kanonické hodnotě a při volbě mph se pouze převádí pro zobrazení.
 
 Při načítání:
 
 - simulátor nejprve obnoví bezpečné tovární hodnoty
-- následně aplikuje hodnoty ze souboru
+- uložený preset vozidla se použije jako základ a explicitní hodnoty šasi ze souboru se aplikují až nad něj
+- uložené hodnoty se ověří proti číselným rozsahům a povoleným volbám rozbalovacích seznamů
+- Boolean položky musí obsahovat skutečné JSON hodnoty `true` nebo `false`, ne text či číslo
 - starší soubory bez novějších parametrů dostanou rozumné výchozí hodnoty
 - starý Boolean formát VVL se převede automaticky
-- neplatný nebo poškozený soubor zobrazí chybu místo částečného poškození aktivního buildu
+- neplatný nebo poškozený soubor obnoví předchozí aktivní build a zobrazí chybový overlay místo částečně aplikovaných hodnot
 
 ## 9. Řešení problémů
 
 - **Jednorázová chyba při spuštění předkompilovaného exe**: antivirus může během prvního skenu krátce zamknout nepodepsaný single-file spustitelný soubor. Po dokončení kontroly aplikaci spusť znovu.
+- **Aplikace zůstala ve fullscreenu**: stiskni **F11**. Z Garáže fullscreen opustíš také klávesou **Esc**.
 - **Nefunguje živý zvuk**: zkontroluj `sounddevice`, PortAudio a funkční výchozí výstupní zařízení.
+- **Ruční plyn nebo Zkušební jízda jsou vypnuté, ale Testovací dráha funguje**: není dostupný backend živého zvuku. Výpočet dráhy jej nepotřebuje.
 - **Zkušební jízda nebo Testovací dráha jsou vypnuté**: nejprve dokonči úspěšný Dyno Pull. Zničený motor nelze testovat.
+- **Dyno hlásí, že byl motor změněn**: po posledním pullu se upravil motorový parametr. Před otevřením závislých režimů spusť nové měření.
 - **Vlastní převody nejsou vidět**: v záložce Drivetrain zapni **Jemné nastavení jednotlivých převodů**.
 - **Preset po změně převodů dává jiné výsledky**: vlastní převody vypni nebo stiskni **Načíst automatické převody**.

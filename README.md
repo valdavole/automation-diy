@@ -4,26 +4,29 @@
 
 A homemade, open-source engine-building, dyno, vehicle, and lap-time simulator inspired by the "Automation"-style car tycoon genre.
 
-Build an engine from the crankshaft up, run it on a virtual dyno, test its cooling under manual throttle, measure 0–100 km/h and top speed, then send the car around a fully simulated 3.605 km test track. Engine sound is generated procedurally and reacts live to RPM, throttle, cylinder count, aspiration, and crank type.
+Build an engine from the crankshaft up, run it on a virtual dyno, test its cooling under manual throttle, measure 0–100 km/h or 0–60 mph and top speed, then send the car around a fully simulated 3.605 km test track. Engine sound is generated procedurally and reacts live to RPM, throttle, cylinder count, aspiration, and crank type.
 
-> **Current release: v4.7 — Custom Gearing & Test Track**
+> **Current release: v4.8.5 — Fullscreen & Settings Update + Tweaks**
 
-![screenshot placeholder](docs/screenshot.png)
+![screenshot placeholder](docs/screenshot1.png)
 
 ## Features
 
+- **Fullscreen single-window interface** with a permanent sidebar, embedded simulation screens, in-app error overlays, and F11/ESC navigation
+- **Central Settings panel** for loading and saving builds, changing language, switching between km/h and mph, and safely quitting the simulator
 - **7-tab engine and vehicle builder**: Block, Bottom End, Top End, Aspiration, Fuel & Tune, Exhaust, Drivetrain
-- **Physics-based dyno simulation** with generated torque and HP curves
+- **Physics-based dyno simulation** with a live embedded torque/HP graph and real-time RPM, torque, and power telemetry
 - **Independent engine failure models**:
   - mechanical over-rev, determined by the weakest crankshaft, connecting rod, or piston limit
   - knock/detonation, influenced by compression, boost, ignition timing, AFR, fuel map, octane, injection, head material, and technology level
 - **Manual throttle telemetry mode** with live coolant temperature and head-gasket failure from overheating
-- **0–100 km/h and top-speed simulation** with:
+- **0–100 km/h / 0–60 mph and top-speed simulation** with:
   - drivetrain losses and FWD/RWD/AWD traction behavior
   - longitudinal weight transfer
   - tire-grip limits
   - frontal area, drag coefficient, wheel radius, rolling resistance, and aerodynamic downforce
   - electronic speed limiting and RPM/gearing-limited top speed
+  - live unit conversion that changes presentation and the acceleration target without changing the vehicle physics
 - **Optional individual gear-ratio tuning** for 4–8-speed transmissions
   - leave it disabled to retain the original automatic ratio sets
   - enable it to edit every ratio independently
@@ -35,9 +38,16 @@ Build an engine from the crankshaft up, run it on a virtual dyno, test its cooli
   - one shared track geometry for both physics and rendering, so the displayed circuit is the circuit being simulated
 - **Procedurally generated engine audio** with no prerecorded engine samples
 - **Built-in tooltips** explaining the engineering effect of each parameter
-- **Safe Save/Load** of portable JSON engine configurations, including compatibility defaults for older files
+- **Safe Save/Load** of portable JSON engine and vehicle configurations, including compatibility defaults and stricter validation for older or malformed files
 - **Real-world-inspired presets** for quick starting points
-- **Bilingual UI**: English and Czech, switchable at runtime
+- **Bilingual UI**: English and Czech, switchable at runtime from Settings
+- **Selectable speed units**: km/h with 0–100 km/h timing, or mph with 0–60 mph timing
+
+![screenshot placeholder](docs/screenshot2.png)
+
+![screenshot placeholder](docs/screenshot3.png)
+
+![screenshot placeholder](docs/screenshot4.png)
 
 ## Getting Started
 
@@ -60,18 +70,20 @@ python engine_sim.py
 
 `sounddevice` and its PortAudio backend are optional. If they are unavailable, the simulator still runs normally, but live engine-audio controls are disabled.
 
+The app starts in fullscreen mode. Press **F11** to toggle fullscreen and use **Esc** to close an overlay, return to the builder from another screen, or leave fullscreen when already in the builder. Load/Save, language, speed units, and Quit are available from **Settings** in the sidebar.
+
 ## Typical Workflow
 
 1. Select a preset or start from the default build.
 2. Configure the engine across the seven tabs.
-3. Run **1. Dyno Pull**.
-4. Inspect the torque and power graph.
+3. Run **1. Dyno Pull** and watch the live graph and telemetry.
+4. Inspect the completed torque and power curves on the Dyno screen.
 5. Optionally run **2. Manual Throttle**.
-6. Run **3. Test Drive** for 0–100 km/h and top speed.
+6. Run **3. Test Drive** for 0–100 km/h or 0–60 mph and top speed.
 7. Run **4. Test Track** for a comparable flying-lap result.
-8. Save the build as JSON when you are happy with it.
+8. Open **Settings → Save engine / vehicle as...** when you are happy with the build.
 
-For a complete explanation of every tab, simulation mode, failure model, custom gearing, and the test track, see **[USER_GUIDE.md](docs/USER_GUIDE.md)**.
+For a complete explanation of the interface, Settings, speed units, every tab, simulation mode, failure model, custom gearing, and the test track, see **[USER_GUIDE.md](docs/USER_GUIDE.md)**.
 
 ## Simulation Scope
 

@@ -4,20 +4,29 @@
 
 This guide walks through the simulator in the order it is normally used. In-app tooltips provide quick per-parameter explanations; this document explains how the systems fit together.
 
-The guide applies to **Automation DIY v4.7 — Custom Gearing & Test Track**.
+The guide applies to **Automation DIY v4.8.5 — Fullscreen & Settings Update + Tweaks**.
 
 ## 1. Overall Workflow
 
-1. Pick a starting point from the preset dropdown at the top of the window, or start from the defaults.
-2. Configure the engine and vehicle across the **7 tabs**.
-3. Click **1. Dyno Pull** to generate the torque and power curves.
-4. Click **Graph** to inspect the result.
-5. Optionally click **2. Manual Throttle** for a live cooling and telemetry test.
-6. Click **3. Test Drive** for 0–100 km/h and top-speed testing.
-7. Click **4. Test Track** for a flying lap around the shared 3.605 km benchmark circuit.
-8. Name the build and use **File → Save Engine As...** to save it as a portable `.json` file.
+The simulator opens in fullscreen mode and keeps all main modes inside one application window. The left sidebar switches between the Garage, Dyno & Graph, Manual Throttle, Test Drive, and Test Track screens.
 
-The CZ/EN language selector can be changed at any time without resetting the current build.
+- Press **F11** to toggle fullscreen.
+- Press **Esc** to close Settings or an error overlay, return from another mode to the Garage, or leave fullscreen when the Garage is already active.
+- Open **Settings** to Load/Save a build, switch language, choose km/h or mph, or quit the simulator.
+- The compact button in the top-right corner shows the current language and speed unit and opens the same Settings panel.
+
+Typical workflow:
+
+1. Pick a starting point from the preset dropdown at the top of the builder, or start from the defaults.
+2. Configure the engine and vehicle across the **7 tabs**.
+3. Click **Run Dyno / 1. Dyno Pull** to generate the torque and power curves.
+4. Watch the live graph and telemetry, then inspect the completed curves on the Dyno screen.
+5. Optionally open **Manual Throttle** for a live cooling and telemetry test.
+6. Open **Test Drive** for 0–100 km/h or 0–60 mph and top-speed testing.
+7. Open **Test Track** for a flying lap around the shared 3.605 km benchmark circuit.
+8. Name the build and use **Settings → Save engine / vehicle as...** to store it as a portable `.json` file.
+
+Language and speed units can be changed at runtime without resetting the current build or changing the vehicle physics. The speed-unit preference defaults to km/h on each launch.
 
 ## 2. The 7 Tabs
 
@@ -43,7 +52,7 @@ Determines the mechanical RPM ceiling.
 - **Crankshaft**, **connecting rods**, and **pistons** each have their own material-dependent RPM limit.
 - The weakest of the three is the actual mechanical limit.
 - **Balancer** options trade added friction and rotating mass for a higher mechanical RPM ceiling.
-- When a harmonic damper or full balancer system is selected, the **balancer-mass slider** becomes visible.
+- When a harmonic damper or full balancer system is selected, the **balancer-mass slider** becomes visible. When **None** is selected, the hidden balancer-mass value is ignored by the physics.
 
 Setting the RPM limiter above the weakest mechanical component intentionally destroys the engine during the dyno pull.
 
@@ -102,12 +111,12 @@ An undersized exhaust progressively chokes the upper part of the torque curve.
 
 These settings affect **Test Drive** and **Test Track**, but not the dyno curve.
 
-- **Vehicle preset** fills the chassis fields with representative values. Selecting a vehicle preset also disables custom gear ratios so the preset retains its automatic gearing.
+- **Vehicle preset** fills the chassis fields, including the intended final drive, with representative values. Selecting a vehicle preset also disables custom gear ratios so the preset retains its automatic gearing.
 - **Weight**: total vehicle mass including driver and fluids.
 - **Drag coefficient (Cd)**: dimensionless aerodynamic drag coefficient.
 - **Frontal area**: reference area used together with Cd in the drag calculation.
 - **Wheel radius**: affects wheel force and road speed at a given engine RPM.
-- **Speed limiter**: electronic top-speed limit; `0` disables it.
+- **Speed limiter**: electronic top-speed limit; `0` disables it. Its displayed value and slider range follow the selected km/h or mph setting, while the saved build keeps one canonical value.
 - **Downforce (Cl·A)**: aerodynamic downforce coefficient-area product. It is independent from tire grip.
 - **Tire grip**: the base friction coefficient available for acceleration, braking, and cornering.
 - **Gear count**: 4–8 speeds.
@@ -125,7 +134,7 @@ When it is disabled:
 
 - the ratio editor stays hidden
 - the simulator uses its built-in automatic ratio set for the selected gear count
-- existing presets retain their established 0–100 km/h and top-speed behavior
+- existing presets retain their established acceleration and top-speed behavior
 
 When it is enabled:
 
@@ -138,7 +147,7 @@ For a sensible transmission, every higher gear should normally use a numerically
 
 ## 3. Running the Dyno Pull
 
-Click **1. Dyno Pull**. The simulator validates the current inputs, sweeps through the permitted RPM range, and calculates torque and HP at each point.
+Click **Run Dyno** in the builder or **1. Dyno Pull** on the Dyno screen. The simulator validates the current inputs, switches to the Dyno screen, sweeps through the permitted RPM range, and calculates torque and HP at each point. The embedded graph, RPM counter, torque value, and power value update throughout the pull.
 
 Two independent failure paths can stop the build:
 
@@ -149,21 +158,24 @@ The console explains both the failure and the main changes that can fix it.
 
 After a successful pull:
 
-- **Graph** becomes available
+- the completed graph remains embedded on the Dyno screen
+- **Graph** can return you to that screen from elsewhere
 - Manual Throttle becomes available when the audio backend is present
 - **Test Drive** and **Test Track** become available
 
+The dyno result is a snapshot of the engine at the time of the pull. Changing an engine parameter invalidates that result and locks the dependent modes until a new pull is completed. Vehicle-only settings can still be adjusted without regenerating the engine curve. Leaving the Dyno screen during an unfinished pull safely cancels the measurement and discards the incomplete result.
+
 ## 4. Manual Throttle
 
-Manual Throttle is a live free-revving telemetry test.
+Manual Throttle is a live free-revving telemetry test displayed inside the main application window.
 
 Hold the throttle button to move toward the RPM limiter. Heat generation follows engine load and output, while radiator efficiency determines how quickly heat is rejected. If coolant temperature reaches the failure threshold, the head gasket fails.
 
-This mode is separate from dyno knock and mechanical over-rev failures.
+This mode is separate from dyno knock and mechanical over-rev failures. Use the sidebar or **Esc** to leave it; the scheduled physics updates and audio stream are stopped safely.
 
 ## 5. Test Drive
 
-Test Drive simulates a launch from rest, automatic shifting, 0–100 km/h, and maximum speed.
+Test Drive simulates a launch from rest, automatic shifting, either 0–100 km/h or 0–60 mph depending on the selected unit, and maximum speed.
 
 The model uses:
 
@@ -180,7 +192,9 @@ The model uses:
 
 The TCS indicator reports wheel slip. Maximum speed can be limited by available power, drag, the highest gear and redline, or the electronic limiter.
 
-**Skip to Top Speed** runs the same vehicle model faster and moves the display directly to the calculated result.
+The live run and **Skip to Top Speed** share one authoritative vehicle calculation, so both paths finish with the same acceleration time, top speed, and final gear. After the result is recorded, the live display releases the throttle and lets the vehicle coast down naturally while the measured maximum remains visible.
+
+Switching between km/h and mph updates the visible speed, maximum-speed text, speed limiter, and acceleration target without changing the underlying physics.
 
 ## 6. Test Track
 
@@ -212,12 +226,14 @@ The lap model uses:
 
 The animation is accelerated so a long simulated lap does not require the same amount of real waiting time.
 
-After the lap, the window reports:
+After the lap, the screen reports:
 
 - total lap time
 - sector 1, sector 2, and sector 3 times
-- average speed
-- maximum speed
+- average speed in the selected speed unit
+- maximum speed in the selected speed unit
+
+The circuit length remains the fixed 3.605 km benchmark in either display mode.
 
 Because the model is deterministic, identical builds produce identical lap times. This makes the circuit useful as a common benchmark for comparing cars inside the simulator.
 
@@ -231,22 +247,27 @@ If the audio backend is unavailable, the simulator remains usable without live s
 
 ## 8. Save and Load
 
-Use **File → Save Engine As...** to store the current build as JSON.
+Open **Settings** and use **Save engine / vehicle as...** to store the current build as JSON. Use **Load engine / vehicle...** in the same panel to restore one.
 
-The saved file includes engine settings, chassis settings, the custom-gearing toggle, and all individual gear-ratio values.
+The saved file includes engine settings, chassis settings, the selected vehicle preset, the custom-gearing toggle, and all individual gear-ratio values. Language and the km/h/mph display preference are interface settings rather than vehicle data. The speed limiter is stored canonically and converted for display when mph is selected.
 
 When loading:
 
 - the simulator first restores safe factory defaults
-- saved values are then applied
+- a saved vehicle preset is applied as a base before the file's explicit chassis values are overlaid
+- saved values are validated against numeric ranges and allowed dropdown choices
+- Boolean fields must contain real JSON Boolean values rather than strings or numbers
 - older files that do not contain newer parameters receive sensible defaults
 - the old Boolean VVL format is converted automatically
-- invalid or malformed files show an error instead of partially corrupting the active build
+- invalid or malformed files restore the previous active build and show an in-app error overlay instead of leaving partially applied values
 
 ## 9. Troubleshooting
 
 - **One-off launch error in the prebuilt executable**: antivirus software may briefly lock an unsigned single-file executable during its first scan. Relaunch after the scan completes.
+- **The app is stuck in fullscreen**: press **F11**. Pressing **Esc** from the Garage also leaves fullscreen.
 - **No live sound**: check that `sounddevice`, PortAudio, and a working default output device are available.
+- **Manual Throttle or Test Drive is disabled while Test Track works**: the live audio backend is unavailable. Track simulation does not require it.
 - **Test Drive or Test Track is disabled**: run a successful Dyno Pull first. A destroyed engine cannot be tested.
+- **The Dyno screen says the engine changed**: an engine parameter was edited after the last pull. Run a new Dyno Pull before opening dependent modes.
 - **Custom ratios are not visible**: enable **Fine-tune individual gear ratios** in the Drivetrain tab.
 - **A saved preset produces different performance after editing gears**: disable custom gearing or press **Load automatic ratios** to restore the original automatic set.
