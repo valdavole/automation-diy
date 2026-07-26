@@ -1,0 +1,10 @@
+# Core numerical and plotting dependencies
+numpy>=1.24
+matplotlib>=3.7
+
+# Optional live engine audio. The simulator also works without it.
+sounddevice>=0.4.6
+
+# tkinter ships with standard Python on Windows and macOS.
+# On Linux, install it through your system package manager (often python3-tk).
+# sounddevice also requires a working PortAudio backend and output device.
