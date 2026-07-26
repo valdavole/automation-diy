@@ -1,22 +1,39 @@
 # Changelog
 
-## v4.8.5 (Fullscreen & Settings Update + Tweaks)
+## v4.9.1 (Localization & Tooltip Stability Update)
 
-* **Fullscreen single-window interface:** Rebuilt the GUI around one fullscreen application shell with a permanent sidebar, top status bar, embedded mode screens, a consistent dark theme, and larger responsive layouts.
-* **Keyboard navigation:** Added **F11** fullscreen toggling and context-aware **Esc** behavior for closing overlays, returning to the Garage, and leaving fullscreen.
-* **Central Settings panel:** Replaced the native menu bar and top-level language selector with an in-app Settings overlay containing Load, Save, language, speed-unit, Close, and Quit controls.
-* **Selectable speed units:** Added live km/h ↔ mph display switching for Test Drive, Test Track, top-speed results, and the speed-limiter control. The mph mode reports **0–60 mph**, while metric mode reports **0–100 km/h**.
-* **Canonical limiter storage:** The speed limiter remains stored internally in km/h and is converted safely for display and editing in mph.
-* **Embedded live dyno graph:** Added an in-app Matplotlib canvas with torque and HP curves drawn progressively during the pull, plus live RPM, torque, power, status, and console telemetry.
-* **Stale-result protection:** Editing an engine parameter now invalidates the previous dyno result and disables dependent modes until a fresh pull completes. Vehicle-only changes do not unnecessarily regenerate the engine curve.
-* **Safe screen lifecycle:** Replaced separate modal Toplevel windows with embedded screens and added centralized cleanup for scheduled callbacks, audio streams, temporary dyno WAV files, and interrupted runs.
-* **Unified Test Drive result:** The live animation and **Skip to Top Speed** now share one authoritative vehicle calculation, producing the same acceleration time, top speed, and final gear.
-* **Drive presentation fixes:** Added unit-aware acceleration labels, natural coast-down after measurement, and a clutch/RPM wobble that is visual and audible only, so it no longer changes performance results.
-* **Stronger validation:** Added allowed-value checks for dropdowns, strict JSON Boolean handling, finite/positive engine-curve checks, and rollback-safe loading of malformed configurations.
-* **Preset loading fix:** Vehicle presets now apply their intended final drive, disable custom gearing, and load as a base before explicit saved chassis values are restored.
-* **Engine calculation fixes:** Hidden balancer mass is ignored when no balancer is fitted, and the RPM array now always includes the exact requested or mechanical limiter even when it is not divisible by 100.
+* **Complete runtime localization:** Finished Czech and English translation coverage across the builder, dyno graph, live telemetry, Test Drive, Track Simulation, result panels, status messages, buttons, and keyboard hints.
+* **Live language switching:** Dynamic and already-completed screens now refresh immediately when the language changes, including the builder's **Run Dyno** button.
+* **Stable tooltip lifecycle:** Only one tooltip can exist at a time. Tooltips are now reliably closed when the pointer leaves a control, another tooltip opens, the language changes, an overlay appears, or the active screen changes.
+* **Version alignment:** Updated the application title, sidebar version label, and documentation for the public v4.9.1 release.
 
-## v4.7 (Custom Gearing & Test Track Update)
+## v4.9 (High-RPM Motorsport Calibration Update)
+
+* **High-RPM race-engine support:** Added a narrowly targeted motorsport model for extreme naturally aspirated, short-stroke, high-technology engines instead of applying a global power multiplier.
+* **Manual RPM entry up to 20,000 RPM:** The normal slider remains focused on 3,000–12,000 RPM, while suitable race builds may enter a higher limiter manually.
+* **Motorsport architecture detection:** High-RPM capability depends on a demanding combination of technology level, cam profile, oversquare geometry, DAOHC valvetrain, ITBs, race intake, NA aspiration, billet crankshaft, titanium connecting rods, and lightweight forged pistons.
+* **Race-specific mechanical limits:** Qualifying motorsport builds receive progressive component and piston-speed limits suitable for engines approaching Formula-style RPM levels.
+* **High-RPM breathing calibration:** Extreme race engines retain volumetric efficiency and power closer to the limiter, producing a realistic high-revving curve rather than peaking like a conventional road engine.
+* **Expert manual ranges:** Slider ranges remain convenient for ordinary builds, while manual entry supports special values such as 20–150 mm stroke, 0.3–2.5 tire grip, and 1.5–10.0 final drive.
+* **F1-style reference build:** Added support for a 3.0-litre V10 configuration producing roughly 940 HP near 19,000 RPM when correctly configured.
+* **Road-car compatibility:** Existing built-in presets retain their established engine curves and vehicle performance.
+
+## v4.8.x (Fullscreen, Responsiveness & Accessibility Updates)
+
+* **Fullscreen single-window interface:** Rebuilt the GUI around one application shell with a permanent sidebar, embedded simulation screens, a consistent dark theme, and F11/Esc navigation.
+* **Central Settings panel:** Added in-app Load, Save, language, speed-unit, audio-status, Close, and Quit controls.
+* **Selectable speed units:** Added live km/h ↔ mph switching, including 0–100 km/h / 0–60 mph timing and canonical speed-limiter storage.
+* **Embedded live dyno graph:** Torque and horsepower curves now draw progressively during the pull alongside live telemetry and the dyno console.
+* **Unified Test Drive physics:** The live run and **Skip to Top Speed** use the same authoritative calculation, with matching acceleration, top speed, final gear, launch behavior, and natural coast-down.
+* **Safe screen lifecycle:** Screen changes now cancel callbacks, audio, temporary files, interrupted pulls, active laps, and running vehicle simulations cleanly.
+* **Responsive builder:** All seven tabs use adaptive vertical scrolling only when their content no longer fits the available height.
+* **Responsive Track Simulation:** The circuit canvas scales to the available space; on narrow windows the information panel moves below the map and scroll activates only when required.
+* **Silent audio fallback:** Manual Throttle and Test Drive remain usable when `sounddevice` or PortAudio is unavailable, with a visible installation guide and `requirements.txt`.
+* **Stronger save/load and validation:** Added rollback-safe loading, dropdown and Boolean validation, exact limiter handling, preset final-drive fixes, and compatibility with older configurations.
+* **Expert-value loading:** Special manually entered values are no longer rejected merely because they sit outside a slider's ordinary convenience range.
+* **Presentation cleanup:** Renamed the automated circuit mode to **Track Simulation** and expanded Czech localization across the builder.
+
+## v4.7.x (Custom Gearing & Test Track Update)
 
 * **Optional individual gear ratios:** Added a hidden-by-default fine-tuning panel for 4–8-speed transmissions. When disabled, the simulator uses the original automatic ratio sets exactly as before.
 * **Preset-safe gearing:** Selecting a built-in vehicle preset disables custom ratios, preserving the preset's established acceleration and top-speed behavior.
@@ -60,7 +77,7 @@
 * **Dynamic V-Angle:** The V-angle selector is hidden correctly for Inline and Boxer engines.
 * **Improved Base Curves:** Adjusted base volumetric-efficiency curves to respond more consistently to tuning changes.
 
-## v4.3.1 (Material & Tuning Expansion)
+## v4.3.x (Material & Tuning Expansion)
 
 * **Expanded component options:** Added Heavy/Light variants for the block, crankshaft, connecting rods, and pistons. Added Eco/Std/Perf tiers for cast-iron and aluminium heads, plus Aluminium Billet Race.
 * **New mechanical systems:** Added continuously adjustable balancer mass, valve-spring stiffness, and exhaust bypass valves.

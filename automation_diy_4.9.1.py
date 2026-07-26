@@ -18,16 +18,17 @@ if is_windows:
     import winsound
 
 SOUND_AVAILABLE = False
+SOUND_ERROR = ""
 try:
     import sounddevice as sd
     SOUND_AVAILABLE = True
-except (ImportError, OSError):
-    pass
+except (ImportError, OSError) as exc:
+    SOUND_ERROR = str(exc)
 
 # --- LOKALIZAČNÍ SLOVNÍK (CZ / EN) ---
 T = {
     "cz": {
-        "app_title": "Automation DIY - Verze 4.8.5 (Fullscreen & Settings Update + Tweaks)",
+        "app_title": "Automation DIY - Verze 4.9.1 (Localization & Tooltip Stability Update)",
         "menu_file": "Soubor",
         "menu_settings": "⚙  NASTAVENÍ",
         "settings_title": "NASTAVENÍ SIMULÁTORU",
@@ -38,21 +39,45 @@ T = {
         "settings_quit": "UKONČIT SIMULÁTOR",
         "settings_kmh": "Kilometry za hodinu (km/h)",
         "settings_mph": "Míle za hodinu (mph)",
+        "settings_audio": "ZVUK A VOLITELNÉ MODULY",
+        "sound_ready": "Živý zvuk motoru je připraven.",
+        "sound_missing": "Zvukový modul není dostupný. Ruční plyn i zkušební jízda fungují dál v tichém režimu.",
+        "sound_help": "NÁVOD K INSTALACI ZVUKU",
+        "sound_help_title": "ŽIVÝ ZVUK MOTORU",
+        "sound_help_body": "Simulátor je plně použitelný i bez zvuku. Pro živý zvuk otevři terminál ve složce projektu a spusť:\n\npip install -r requirements.txt\n\nPokud je sounddevice už nainstalovaný, ověř funkční PortAudio a výchozí výstupní zvukové zařízení. Potom simulátor restartuj.",
+        "sound_silent_sidebar": "⚠  ZVUK: TICHÝ REŽIM",
+        "ui_dyno_ready": "Připraveno k měření",
+        "ui_live_telemetry": "ŽIVÁ TELEMETRIE",
+        "ui_ready": "Připraveno",
+        "ui_dyno_running": "Měření probíhá…",
+        "ui_dyno_cancelled": "Měření bylo přerušeno",
+        "ui_engine_control": "OVLÁDÁNÍ MOTORU",
+        "ui_throttle_instruction": "Podrž tlačítko pro plný plyn. Uvolněním motor necháš spadnout na volnoběh.",
+        "ui_mode_exit_hint": "ESC nebo levé menu bezpečně ukončí režim.",
+        "ui_speed": "RYCHLOST",
+        "ui_gear": "PŘEVOD",
+        "ui_tcs_ready": "TCS PŘIPRAVENO",
+        "ui_tcs_ok": "TCS OK",
+        "ui_slip": "PROKLUZ",
+        "ui_max": "MAX",
+        "ui_track_start_finish": "START / CÍL",
+        "ui_fullscreen_hint": "F11  CELÁ OBRAZOVKA",
+        "ui_back_hint": "ESC  ZPĚT",
         "menu_load": "Načíst motor / vozidlo (.json)...",
         "menu_save": "Uložit motor / vozidlo jako (.json)...",
         "menu_quit": "Ukončit",
         "lbl_engine_name": "Název vozu/motoru:",
-        "tab_1": "1. Block", "tab_2": "2. Bottom End", "tab_3": "3. Top End",
-        "tab_4": "4. Aspiration", "tab_5": "5. Fuel & Tune", "tab_6": "6. Exhaust", "tab_7": "7. Drivetrain",
+        "tab_1": "1. Blok motoru", "tab_2": "2. Spodek motoru", "tab_3": "3. Hlava a rozvody",
+        "tab_4": "4. Plnění", "tab_5": "5. Palivo a ladění", "tab_6": "6. Výfuk", "tab_7": "7. Pohon",
         
         "lbl_config": "Konfigurace:", "lbl_vangle": "Úhel V:", "lbl_cyl": "Počet válců:", "lbl_block": "Materiál bloku:",
-        "lbl_bore": "Vrtání (Bore):", "lbl_stroke": "Zdvih (Stroke):", "lbl_rad": "Účinnost chladiče:", "lbl_tech": "Technologická úroveň:", "lbl_calc_disp": "Vypočítaný objem:",
+        "lbl_bore": "Vrtání:", "lbl_stroke": "Zdvih:", "lbl_rad": "Účinnost chladiče:", "lbl_tech": "Technologická úroveň:", "lbl_calc_disp": "Vypočítaný objem:",
         "tt_config": "Inline (Řadový): Levný, plynulý chod, ale u mnoha válců je moc dlouhý.\nV (Vidlicový): Kompaktní, krátký, skvělý pro 6 a 8 válců.\nBoxer (Plochý): Protiběžné písty. Dokonalé vyvážení a nízké těžiště.",
         "tt_vangle": "60°: Vhodný pro V6, motor je užší.\n90°: Klasika pro V8, skvělé vyvážení rotujících hmot.\n120°: Velmi plochý motor, snižuje těžiště, ale je extrémně široký.",
         "tt_cyl": "3 až 5: Levnější, vhodné pro malé objemy.\n6 až 8: Výkonný standard, kultivovaný chod.\n10 až 16: Exotické superauta. Obrovský výkon a spotřeba.",
         "tt_block": "Cast Iron: Těžká, nezničitelná.\nAluminium (Light/Heavy/Billet): Hliník je standard. Heavy je pevnější, Light lehčí. Billet je frézovaný z jednoho kusu pro závodní nasazení.\nAlSi (Light/Heavy): Slitina bez vložek, snižuje tření.\nMagnesium: Motorsport, nejlehčí, nejnižší tření.",
         "tt_bore": "Určuje průměr pístu.\nVětší vrtání = umožňuje instalaci větších ventilů pro lepší průtok vzduchu ve vysokých otáčkách.",
-        "tt_stroke": "Určuje vzdálenost, kterou píst urazí.\nVětší zdvih = masivní nárůst točivého momentu v nízkých otáčkách, ale fyzicky brání motoru dosáhnout vysokých RPM.",
+        "tt_stroke": "Určuje vzdálenost, kterou píst urazí.\nVětší zdvih = masivní nárůst točivého momentu v nízkých otáčkách, ale fyzicky brání motoru dosáhnout vysokých RPM.\nSlider pokrývá běžných 50–120 mm; do pole lze pro speciální motory ručně zadat 20–150 mm.",
         "tt_rad": "Větší chladič (vysoká účinnost v %) dokáže mnohem efektivněji odvádět teplo z bloku.\nUdrží tak motor déle v zátěži bez uvaření kapaliny a destrukce těsnění.",
         "tt_tech": "Určuje technologickou éru motoru.\n60 = 70. léta (karburátory).\n100 = moderní standard (beze změny).\n115+ = špičkové high-tech motory.\nOvlivňuje celkovou účinnost, dýchání motoru, tření a odolnost proti klepání.",
 
@@ -78,8 +103,8 @@ T = {
         "tt_cam": "Určuje dýchání motoru. Vyšší profil přesouvá výkon k omezovači a volnoběh je neklidný.",
         "tt_comp": "Vyšší komprese (10+): Motor je silnější, ale ROSTE RIZIKO DETONACE!\nNízká komprese (7-9): Nutná pro přeplňování obřím turbem.\nNafta (Diesel) tyto limity ignoruje.",
 
-        "lbl_asp": "Typ plnění:", "lbl_tb": "Ložiska turba:", "lbl_tc": "Konfigurace:", "lbl_ic": "Velikost Intercooleru:",
-        "lbl_tsize": "Velikost Turba:", "lbl_tboost": "Tlak (Boost):", "lbl_sct": "Typ kompresoru:", "lbl_scp": "Tlak (Max Boost):",
+        "lbl_asp": "Typ plnění:", "lbl_tb": "Ložiska turba:", "lbl_tc": "Konfigurace:", "lbl_ic": "Velikost mezichladiče:",
+        "lbl_tsize": "Velikost turba:", "lbl_tboost": "Plnicí tlak:", "lbl_sct": "Typ kompresoru:", "lbl_scp": "Řemenice / max. tlak:",
         "lbl_csize": "Velikost kompresoru:",
         "tt_asp": "NA (Atmosféra): Plynulá reakce.\nTurbo: Poháněné výfukem (má Lag).\nSupercharger: Kompresor hnaný řemenem. Okamžitá reakce.",
         "tt_tb": "Journal (Kluzná): Levná, pomalejší náběh.\nBall Bearings (Kuličková): Razantně zkracují Turbo Lag.",
@@ -92,7 +117,7 @@ T = {
         "tt_csize": "Větší jednotka zvládne tlačit mnohem víc vzduchu ve vysokých RPM, ale odebere si obří množství výkonu motoru (parazitní ztráta) jen na to, abys s ní vůbec pootočil.",
 
         "lbl_fdeliv": "Vstřikování:", "lbl_inconf": "Konfig. sání:", "lbl_man": "Sací svody:", "lbl_fuel": "Druh paliva:", "lbl_afr": "Směs (AFR):",
-        "lbl_ign": "Předstih (Ignition):", "lbl_lim": "Omezovač RPM:",
+        "lbl_ign": "Předstih:", "lbl_lim": "Omezovač RPM:",
         "lbl_carb_size": "Velikost klapky/karb.:", "lbl_fuel_map": "Mapa paliva (Směs):", "lbl_man_size": "Velikost sání:",
         "tt_fdeliv": "Carburetor: Klasika, horší odpařování (klepání).\nMechanical Injection: Závodní, obří spotřeba.\nSingle Point EFI: Základní stříkačka (1 tryska).\nEFI Multi: Moderní nepřímý vstřik.\nDirect Injection: Chladí válce zevnitř, brutálně brání detonacím.",
         "tt_inconf": "Single: Úsporné.\nTwin: Dvě klapky.\nITB (Nezávislé klapky): Šílená odezva a brutální výkon nahoře.",
@@ -100,12 +125,12 @@ T = {
         "tt_fuel": "Odolnost proti klepání. Low Quality 85/Regular 91: Hrozné palivo. Premium 95/Super 98: Standard. Ultimate 100/E85/Methanol: Pro velká turba. Nitromethane: Absolutní šílenost, masivní výkon. Diesel: Nikdy nezdetonuje.",
         "tt_afr": "14.7 = Dokonalé spalování.\n12.5 - 13.0 = Bohatá směs, největší výkon.\n15+ = Chudá směs. Spotřeba padá, ale drasticky ROSTE RIZIKO DETONACÍ.",
         "tt_ign": "Víc předstihu = vyšší výkon.\nAle bacha: Agresivní předstih u vysoké komprese rychle roztaví písty (Klepání).\nIgnorováno u Dieselu.",
-        "tt_lim": "NIKDY nedávej výš, než co vydrží tvé ojnice, jinak motor vybuchne!",
+        "tt_lim": "NIKDY nedávej výš, než co vydrží tvé ojnice, jinak motor vybuchne!\nPosuvník pokrývá běžných 3000–12000 RPM. Extrémní závodní motory lze ručně zadat až do 20000 RPM, ale pouze odpovídající krátkozdvihová high-tech architektura takové otáčky přežije.",
         "tt_carb_size": "Určuje velikost karburátoru nebo škrtící klapky. Menší (0-40) pomáhá průtoku a krouťáku v nízkých otáčkách. Větší (60-100) je nutný pro vysoké otáčky, aby se motor nezadusil.",
         "tt_man_size": "Šířka sacích kanálů. Malá přidává tah dole, velká odemyká vysoké otáčky, ale zhorší odezvu plynu v nízkých.",
         "tt_fuel_map": "Nastavení palivové mapy. 0-40 (Lean): Snižuje spotřebu, ale rapidně roste riziko klepání a klesá výkon. 60-100 (Rich): Více paliva chladí válec a mírně zvedne výkon.",
 
-        "lbl_arch": "Architektura:", "lbl_head_exh": "Svody (Headers):", "lbl_diam": "Průměr potrubí:", "lbl_cat": "Katalyzátor:",
+        "lbl_arch": "Architektura:", "lbl_head_exh": "Výfukové svody:", "lbl_diam": "Průměr potrubí:", "lbl_cat": "Katalyzátor:",
         "lbl_muf1": "Tlumič 1:", "lbl_muf2": "Tlumič 2:", "lbl_head_size": "Velikost svodů:", "lbl_bypass": "Výfuk. klapky:",
         "tt_arch": "Dual efektivně ohromně zvětšuje celkový průřez výfuku.",
         "tt_head_exh": "Compact Cast: Obrovská restrikce.\nCast (Low/Mid/Std): Litina, brzdí výkon.\nTubular (Std/Mid/Long/Race): Plynulý odvod plynů. Long/Race dají max výkon u omezovače, ale uberou spodek.",
@@ -115,7 +140,7 @@ T = {
         "tt_head_size": "Průměr svodového potrubí. Velký pomáhá extrémním výkonům, malý pomáhá rychlosti výfukových plynů pro lepší krouťák dole.",
         "tt_bypass": "No Valves: Výfuk jde vždy přes tlumiče.\nBypass Valves: Klapky se v 3500 RPM otevřou a zcela obejdou tlumiče, čímž uvolní maximální výkon za cenu hluku.",
 
-        "lbl_veh": "Předvolba vozu:", "lbl_weight": "Váha:", "lbl_cd": "Odpor vzduchu (Cd):", "lbl_grip": "Trakce (Tire Grip):",
+        "lbl_veh": "Předvolba vozu:", "lbl_weight": "Váha:", "lbl_cd": "Odpor vzduchu (Cd):", "lbl_grip": "Přilnavost pneumatik:",
         "lbl_area": "Čelní plocha:", "lbl_wheel": "Poloměr kola:", "lbl_speed_limit": "Omezovač rychlosti:", "lbl_downforce": "Přítlak (Cl·A):",
         "lbl_gears": "Počet převodů:", "lbl_fd": "Stálý převod:", "lbl_drive": "Pohon nápravy:",
         "lbl_custom_gears": "Jemné nastavení jednotlivých převodů", "btn_reset_gears": "Načíst automatické převody",
@@ -124,18 +149,18 @@ T = {
         "tt_veh": "Přednastaví hodnoty šasi podle typických zástupců daných kategorií.\nUšetří ti čas při testování různých motorů v různých typech aut.",
         "tt_weight": "Celková hmotnost vozu s řidičem a náplněmi.\nZásadní parametr pro zrychlení z místa podle Newtonova druhého zákona (F=m*a).",
         "tt_cd": "Koeficient aerodynamického odporu.\nKlíčový pro maximální rychlost. Běžná auta mají kolem 0.30, supersporty méně.",
-        "tt_grip": "Přilnavost pneumatik (bezrozměrný koeficient).\nOmezuje maximální podélnou sílu na hnaných kolech. Sama o sobě nevytváří aerodynamický přítlak.",
+        "tt_grip": "Přilnavost pneumatik (bezrozměrný koeficient).\nOmezuje maximální podélnou sílu na hnaných kolech. Sama o sobě nevytváří aerodynamický přítlak.\nSlider nabízí běžných 0,5–2,0; do pole lze ručně zadat 0,3–2,5.",
         "tt_area": "Čelní referenční plocha vozu v m². Aerodynamický odpor je úměrný součinu Cd × plocha.",
         "tt_wheel": "Dynamický poloměr hnaného kola v metrech. Ovlivňuje převod síly i rychlost při daných otáčkách.",
         "tt_speed_limit": "Elektronický omezovač maximální rychlosti. 0 znamená bez elektronického omezení.",
         "tt_downforce": "Součin součinitele přítlaku a referenční plochy (Cl·A) v m². 0 = žádný modelovaný přítlak.",
         "tt_gears": "Počet rychlostních stupňů v převodovce.\nVíc rychlostí udrží motor déle v ideálním spektru otáček.",
-        "tt_fd": "Stálý převod na hnané nápravě (diferenciál).\nVětší číslo = kratší kvalty, lepší zrychlení, ale nižší maximálka a víc řazení.",
+        "tt_fd": "Stálý převod na hnané nápravě (diferenciál).\nVětší číslo = kratší kvalty, lepší zrychlení, ale nižší maximálka a víc řazení.\nSlider nabízí běžných 2,0–6,0; do pole lze ručně zadat 1,5–10,0.",
         "tt_drive": "FWD: Náhon na přední. Ztrácí trakci při zrychlení.\nRWD: Náhon na zadní. Trakce roste při zrychlení.\nAWD: Náhon na všechna kola. Maximální využití váhy pro trakci.",
         "tt_custom_gears": "Volitelné přesné převody. Když není zaškrtnuto, simulátor používá stejné automatické sady jako doposud. Počet viditelných převodů odpovídá zvolenému počtu rychlostí.",
 
-        "btn_dyno": "1. Dyno Pull", "btn_graph": "Graf", "btn_rev": "2. Ruční plyn", "btn_drive": "3. Zkušební Jízda", "btn_track": "4. Testovací dráha", "btn_no_snd": "Zvuk Nedostupný",
-        "msg_dyno_hdr": "--- DYNO PULL (Měření výkonu):", "msg_rpm": "Otáčky", "msg_trq": "Točák", "msg_hp": "Výkon",
+        "btn_dyno": "1. Spustit dyno", "btn_graph": "Zobrazit graf", "btn_rev": "2. Ruční plyn", "btn_drive": "3. Zkušební jízda", "btn_track": "4. Simulace okruhu", "btn_no_snd": "Zvuk není dostupný",
+        "msg_dyno_hdr": "--- MĚŘENÍ NA DYNU:", "msg_rpm": "Otáčky", "msg_trq": "Točák", "msg_hp": "Výkon",
         "msg_done": "\nHotovo!", "msg_blown": "💥 ZNIČENO!", "msg_fix": "🔧 JAK TO OPRAVIT:", 
         "msg_max_hp": "Max Výkon:", "msg_max_trq": "Max Moment:", "msg_ready": "-> Připraveno na Zkušební jízdu!",
 
@@ -143,15 +168,15 @@ T = {
         "msg_hg_blown": "💥 PRASKLÉ TĚSNĚNÍ POD HLAVOU! 💥",
         "msg_invalid": "Neplatné vstupní hodnoty",
         "msg_file_error": "Chyba souboru",
-        "win_drv_title": "Zkušební Jízda (0 - Max)", "btn_launch": "START LAUNCH", "btn_skip": "PŘESKOČIT NA MAX",
+        "win_drv_title": "Zkušební jízda (0–max)", "btn_launch": "SPUSTIT JÍZDU", "btn_skip": "PŘESKOČIT NA MAX",
         "btn_retry": "NOVÝ POKUS", "btn_accel": "ZRYCHLUJEME...", "msg_not_reached": "Nedosaženo",
-        "win_track_title": "Testovací dráha - měřené kolo", "btn_track_start": "START MĚŘENÉHO KOLA", "btn_track_retry": "NOVÉ KOLO",
+        "win_track_title": "Simulace okruhu – měřené kolo", "btn_track_start": "SPUSTIT MĚŘENÉ KOLO", "btn_track_retry": "NOVÉ KOLO",
         "lbl_lap_time": "Čas kola", "lbl_track_speed": "Rychlost", "lbl_track_gear": "Převod", "lbl_track_sector": "Sektor",
         "lbl_track_length": "Délka dráhy", "lbl_track_avg": "Průměrná rychlost", "lbl_track_max": "Maximální rychlost",
         "msg_track_ready": "Připraveno na start", "msg_track_running": "Měřené kolo probíhá...", "msg_track_finished": "Kolo dokončeno"
     },
     "en": {
-        "app_title": "Automation DIY - Version 4.8.5 (Fullscreen & Settings Update + Tweaks)",
+        "app_title": "Automation DIY - Version 4.9.1 (Localization & Tooltip Stability Update)",
         "menu_file": "File",
         "menu_settings": "⚙  SETTINGS",
         "settings_title": "SIMULATOR SETTINGS",
@@ -162,6 +187,30 @@ T = {
         "settings_quit": "QUIT SIMULATOR",
         "settings_kmh": "Kilometres per hour (km/h)",
         "settings_mph": "Miles per hour (mph)",
+        "settings_audio": "AUDIO AND OPTIONAL MODULES",
+        "sound_ready": "Live engine audio is ready.",
+        "sound_missing": "The audio module is unavailable. Manual Throttle and Test Drive still work in silent mode.",
+        "sound_help": "AUDIO INSTALLATION GUIDE",
+        "sound_help_title": "LIVE ENGINE AUDIO",
+        "sound_help_body": "The simulator remains fully usable without audio. For live engine sound, open a terminal in the project folder and run:\n\npip install -r requirements.txt\n\nIf sounddevice is already installed, check PortAudio and the default output device, then restart the simulator.",
+        "sound_silent_sidebar": "⚠  AUDIO: SILENT MODE",
+        "ui_dyno_ready": "Ready for dyno",
+        "ui_live_telemetry": "LIVE TELEMETRY",
+        "ui_ready": "Ready",
+        "ui_dyno_running": "Dyno pull in progress…",
+        "ui_dyno_cancelled": "Dyno run cancelled",
+        "ui_engine_control": "ENGINE CONTROL",
+        "ui_throttle_instruction": "Hold the button for full throttle. Release it to return to idle.",
+        "ui_mode_exit_hint": "ESC or the left menu safely closes this mode.",
+        "ui_speed": "SPEED",
+        "ui_gear": "GEAR",
+        "ui_tcs_ready": "TCS READY",
+        "ui_tcs_ok": "TCS OK",
+        "ui_slip": "SLIP",
+        "ui_max": "MAX",
+        "ui_track_start_finish": "START / FINISH",
+        "ui_fullscreen_hint": "F11  FULLSCREEN",
+        "ui_back_hint": "ESC  BACK",
         "menu_load": "Load engine / vehicle (.json)...",
         "menu_save": "Save engine / vehicle as (.json)...",
         "menu_quit": "Quit",
@@ -176,7 +225,7 @@ T = {
         "tt_cyl": "3 to 5: Cheaper, suitable for small displacements.\n6 to 8: Powerful standard, refined running.\n10 to 16: Exotic supercars. Massive power and consumption.",
         "tt_block": "Cast Iron: Heavy, indestructible.\nAluminium (Light/Heavy/Billet): Standard. Heavy is stronger, Light is lighter. Billet is CNC machined for racing.\nAlSi (Light/Heavy): Sleeveless alloy, reduces friction.\nMagnesium: Motorsport, lightest, lowest friction.",
         "tt_bore": "Determines the piston diameter.\nLarger bore = allows installing bigger valves for better airflow at high RPM.",
-        "tt_stroke": "Determines the distance the piston travels.\nLarger stroke = massive increase in low-end torque, but physically limits the engine from reaching high RPM.",
+        "tt_stroke": "Determines the distance the piston travels.\nLarger stroke = massive increase in low-end torque, but physically limits the engine from reaching high RPM.\nThe slider covers the usual 50–120 mm range; special engines may use 20–150 mm by typing the value manually.",
         "tt_rad": "A larger radiator (high efficiency in %) can dissipate heat from the block much more effectively.\nIt keeps the engine under load longer without boiling the coolant and destroying the head gasket.",
         "tt_tech": "Determines the technological era of the engine.\n60 = 1970s era.\n100 = modern standard (unchanged).\n115+ = cutting-edge high-tech engines.\nAffects overall efficiency, breathing, friction, and knock resistance.",
 
@@ -224,7 +273,7 @@ T = {
         "tt_fuel": "Knock resistance. Low Quality 85/Regular 91: Terrible fuel. Premium 95/Super 98: Standard. Ultimate 100/E85/Methanol: For big turbos. Nitromethane: Absolute insanity, massive power boost. Diesel: Never knocks.",
         "tt_afr": "14.7 = Perfect combustion.\n12.5 - 13.0 = Rich mixture, highest power.\n15+ = Lean mixture. MPG goes up, but DETONATION RISK skyrockets.",
         "tt_ign": "More advance = higher power.\nBut beware: Aggressive timing with high compression quickly melts pistons (Knock).\nIgnored for Diesel.",
-        "tt_lim": "NEVER set higher than what your conrods can handle, otherwise the engine will explode!",
+        "tt_lim": "NEVER set higher than what your conrods can handle, otherwise the engine will explode!\nThe slider covers the usual 3000–12000 RPM range. Extreme race engines may be entered manually up to 20000 RPM, but only a suitable short-stroke high-tech architecture can survive it.",
         "tt_carb_size": "Sets the carburetor or throttle body size. Smaller (0-40) helps low-end torque. Larger (60-100) is necessary for high RPMs to prevent choking.",
         "tt_man_size": "Width of the intake runners. Small adds low-end grunt, large unlocks high RPMs but hurts throttle response down low.",
         "tt_fuel_map": "Fuel map tuning. 0-40 (Lean): Lowers consumption but massively increases knock risk and drops power. 60-100 (Rich): More fuel cools the cylinder and slightly boosts power.",
@@ -248,17 +297,17 @@ T = {
         "tt_veh": "Pre-sets chassis values according to typical representatives of the given categories.\nSaves you time when testing different engines in different types of cars.",
         "tt_weight": "Total weight of the vehicle with driver and fluids.\nCrucial parameter for acceleration from a standstill according to Newton's second law (F=m*a).",
         "tt_cd": "Aerodynamic drag coefficient.\nKey for top speed. Normal cars have around 0.30, supercars less.",
-        "tt_grip": "Tire grip (dimensionless coefficient).\nLimits longitudinal force at the driven wheels. It does not create aerodynamic downforce by itself.",
+        "tt_grip": "Tire grip (dimensionless coefficient).\nLimits longitudinal force at the driven wheels. It does not create aerodynamic downforce by itself.\nThe slider covers the usual 0.5–2.0 range; 0.3–2.5 can be entered manually.",
         "tt_area": "Vehicle frontal reference area in m². Aerodynamic drag is proportional to Cd × area.",
         "tt_wheel": "Dynamic driven-wheel radius in metres. It affects both wheel force and road speed at a given RPM.",
         "tt_speed_limit": "Electronic maximum-speed limiter. 0 disables electronic limiting.",
         "tt_downforce": "Lift-coefficient-area product (Cl·A) in m². 0 means no modelled downforce.",
         "tt_gears": "Number of gears in the transmission.\nMore gears keep the engine longer in the ideal RPM spectrum.",
-        "tt_fd": "Final drive ratio on the driven axle (differential).\nHigher number = shorter gears, better acceleration, but lower top speed and more shifting.",
+        "tt_fd": "Final drive ratio on the driven axle (differential).\nHigher number = shorter gears, better acceleration, but lower top speed and more shifting.\nThe slider covers the usual 2.0–6.0 range; 1.5–10.0 can be entered manually.",
         "tt_drive": "FWD: Front-Wheel Drive. Loses traction under acceleration.\nRWD: Rear-Wheel Drive. Traction increases under acceleration.\nAWD: All-Wheel Drive. Maximum use of weight for traction.",
         "tt_custom_gears": "Optional exact ratios. When unchecked, the simulator uses the same automatic ratio sets as before. The number of visible ratios follows the selected gear count.",
 
-        "btn_dyno": "1. Dyno Pull", "btn_graph": "Show Graph", "btn_rev": "2. Manual Throttle", "btn_drive": "3. Test Drive", "btn_track": "4. Test Track", "btn_no_snd": "Sound N/A",
+        "btn_dyno": "1. Dyno Pull", "btn_graph": "Show Graph", "btn_rev": "2. Manual Throttle", "btn_drive": "3. Test Drive", "btn_track": "4. Track Simulation", "btn_no_snd": "Sound N/A",
         "msg_dyno_hdr": "--- DYNO PULL:", "msg_rpm": "RPM", "msg_trq": "Torque", "msg_hp": "Power",
         "msg_done": "\nDone!", "msg_blown": "💥 DESTROYED!", "msg_fix": "🔧 HOW TO FIX:", 
         "msg_max_hp": "Max Power:", "msg_max_trq": "Max Torque:", "msg_ready": "-> Ready for Test Drive!",
@@ -269,7 +318,7 @@ T = {
         "msg_file_error": "File error",
         "win_drv_title": "Test Drive (0 - Max)", "btn_launch": "START LAUNCH", "btn_skip": "SKIP TO TOP SPEED",
         "btn_retry": "RETRY LAUNCH", "btn_accel": "ACCELERATING...", "msg_not_reached": "Not Reached",
-        "win_track_title": "Test Track - Timed Lap", "btn_track_start": "START TIMED LAP", "btn_track_retry": "NEW LAP",
+        "win_track_title": "Track Simulation - Timed Lap", "btn_track_start": "START TIMED LAP", "btn_track_retry": "NEW LAP",
         "lbl_lap_time": "Lap time", "lbl_track_speed": "Speed", "lbl_track_gear": "Gear", "lbl_track_sector": "Sector",
         "lbl_track_length": "Track length", "lbl_track_avg": "Average speed", "lbl_track_max": "Maximum speed",
         "msg_track_ready": "Ready to start", "msg_track_running": "Timed lap in progress...", "msg_track_finished": "Lap complete"
@@ -572,7 +621,7 @@ def run_track_simulation(veh_params, engine_data, geometry=None):
     speed_limiter_kmh = max(0.0, float(veh_params.get('speed_limiter', 0.0)))
     downforce_cla = clamp(float(veh_params.get('downforce_cla', 0.0)), 0.0, 4.0)
     gear_count = int(clamp(int(veh_params.get('gears', 5)), 4, 8))
-    final_drive = clamp(float(veh_params.get('final_drive', 4.1)), 1.5, 7.0)
+    final_drive = clamp(float(veh_params.get('final_drive', 4.1)), 1.5, 10.0)
     drivetrain = veh_params.get('drivetrain', 'FWD')
     ratios = get_gear_ratios(gear_count, veh_params.get('gear_ratios'))
 
@@ -722,11 +771,26 @@ def run_engine_simulation(params):
     tech_level = clamp(float(params.get('tech_level', 100)), 50.0, 150.0)
     tech_factor = tech_level / 100.0
     b = clamp(float(params.get('bore', 87.5)), 50.0, 120.0)
-    s = clamp(float(params.get('stroke', 83.1)), 50.0, 120.0)
+    s = clamp(float(params.get('stroke', 83.1)), 20.0, 150.0)
     c = int(clamp(int(params.get('cylinders', 4)), 3, 16))
     disp_cc = math.pi * ((b/20)**2) * (s/10) * c
     
-    rpm_limit = int(clamp(int(params.get('rpm_limit', 6500)), 3000, 12000))
+    rpm_limit = int(clamp(int(params.get('rpm_limit', 6500)), 3000, 20000))
+
+    oversquare_ratio = b / max(s, 1e-6)
+    race_architecture = (
+        clamp((tech_level - 120.0) / 30.0, 0.0, 1.0)
+        * clamp((float(params.get('cam_profile', 30)) - 80.0) / 20.0, 0.0, 1.0)
+        * clamp((rpm_limit - 12000.0) / 7000.0, 0.0, 1.0)
+        * clamp((oversquare_ratio - 1.60) / 0.70, 0.0, 1.0)
+        * (1.0 if params.get('valvetrain', 'DOHC') == 'DAOHC' else 0.0)
+        * (1.0 if params.get('intake_conf', 'Single') == 'ITB' else 0.0)
+        * (1.0 if 'Race' in params.get('manifold', 'Standard') else 0.0)
+        * (1.0 if params.get('aspiration', 'NA') == 'NA' else 0.0)
+        * (1.0 if params.get('crank', 'Cast') in ('Billet', 'Billet Steel Heavy') else 0.0)
+        * (1.0 if params.get('conrods', 'Heavy Duty') == 'Titanium' else 0.0)
+        * (1.0 if params.get('pistons', 'Cast') == 'LW Forged' else 0.0)
+    )
     blow_up = False
     blow_up_reason = ""
     blow_up_fix = ""
@@ -764,6 +828,12 @@ def run_engine_simulation(params):
               "Forged": 8500, "Forged Heavy": 8000, "Forged Light": 9000,
               "LW Forged": 12000, "Hypereutectic Cast": 7200, "Low Friction": 7500}
     piston_lim = pt_map.get(params.get('pistons', 'Cast'), 6500)
+
+    if race_architecture > 0.0:
+        motorsport_limit = 12000.0 + 7000.0 * race_architecture
+        crank_lim = max(crank_lim, motorsport_limit)
+        conrod_lim = max(conrod_lim, motorsport_limit)
+        piston_lim = max(piston_lim, motorsport_limit)
     
     part_limits = {"Kliková hřídel/Crankshaft": crank_lim, "Ojnice/Conrods": conrod_lim, "Písty/Pistons": piston_lim}
     weakest_part = min(part_limits, key=part_limits.get)
@@ -894,7 +964,19 @@ def run_engine_simulation(params):
             # aby byl realistický výkon ve vyšších otáčkách.
             left_side = 0.35 + 0.65 * np.exp(-0.5 * ((rpm_range - peak_rpm) / left_spread)**2)
             right_side = 0.35 + 0.65 * np.exp(-0.5 * ((rpm_range - peak_rpm) / right_spread)**2)
-            return np.where(rpm_range < peak_rpm, left_side, right_side)
+            road_curve = np.where(rpm_range < peak_rpm, left_side, right_side)
+            if race_architecture <= 0.0:
+                return road_curve
+
+            # Pneumatic-valvetrain-era F1-style engines trade low-RPM filling for
+            # breathing that remains strong almost to the limiter.
+            race_peak = actual_limit * 0.90
+            race_left = actual_limit * 0.28
+            race_right = actual_limit * 0.45
+            race_left_side = 0.12 + 0.62 * np.exp(-0.5 * ((rpm_range - race_peak) / race_left)**2)
+            race_right_side = 0.12 + 0.62 * np.exp(-0.5 * ((rpm_range - race_peak) / race_right)**2)
+            race_curve = np.where(rpm_range < race_peak, race_left_side, race_right_side)
+            return road_curve * (1.0 - race_architecture) + race_curve * race_architecture
 
     ve_curve = build_ve_curve(cam)
     ve_curve *= (0.55 + 0.45 * tech_factor)
@@ -913,7 +995,12 @@ def run_engine_simulation(params):
         ve_curve *= ohv_choke
 
     piston_speed = 2 * (s / 1000.0) * (rpm_range / 60.0)
-    speed_choke = np.where(piston_speed > 22.0, np.exp(-(piston_speed - 22.0) * 0.1), 1.0)
+    piston_speed_limit = 22.0 + 18.0 * race_architecture
+    speed_choke = np.where(
+        piston_speed > piston_speed_limit,
+        np.exp(-(piston_speed - piston_speed_limit) * 0.1),
+        1.0
+    )
     ve_curve *= speed_choke
     
     if is_diesel:
@@ -925,6 +1012,11 @@ def run_engine_simulation(params):
     vt_base = {"Pushrod (OHV)": 4500, "SOHC": 6000, "DOHC": 7500, "DAOHC": 8500}.get(valvetrain, 6000)
     springs = params.get('springs', 50)
     valve_float_lim = vt_base + (springs * 40)
+    if race_architecture > 0.0:
+        valve_float_lim = max(
+            valve_float_lim,
+            12500.0 + 7500.0 * race_architecture
+        )
     float_choke = np.where(rpm_range > valve_float_lim, np.exp(-(rpm_range - valve_float_lim) * 0.005), 1.0)
     ve_curve *= float_choke
     friction_mult *= (1.0 + (springs - 50) * 0.001)
@@ -1083,7 +1175,7 @@ def run_vehicle_kinematics(veh_params, engine_data):
     speed_limiter_kmh = max(0.0, float(veh_params.get('speed_limiter', 0.0)))
     downforce_cla = clamp(float(veh_params.get('downforce_cla', 0.0)), 0.0, 4.0)
     gear_count = int(clamp(int(veh_params.get('gears', 5)), 4, 8))
-    fd = clamp(float(veh_params.get('final_drive', 4.1)), 1.5, 7.0)
+    fd = clamp(float(veh_params.get('final_drive', 4.1)), 1.5, 10.0)
     drivetrain = veh_params.get('drivetrain', 'FWD')
     ratios = get_gear_ratios(gear_count, veh_params.get('gear_ratios'))
 
@@ -1169,13 +1261,26 @@ def run_vehicle_kinematics(veh_params, engine_data):
     }
 
 class ToolTip(object):
+    """One in-app tooltip at a time, with reliable cleanup across screen changes."""
+    _active_tooltip = None
+
     def __init__(self, widget, text_var):
         self.widget = widget
         self.text_var = text_var
         self.tipwindow = None
         self.id = None
-        self.widget.bind("<Enter>", self.enter)
-        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<Enter>", self.enter, add="+")
+        self.widget.bind("<Leave>", self.leave, add="+")
+        self.widget.bind("<ButtonPress>", self.leave, add="+")
+        self.widget.bind("<Unmap>", self.leave, add="+")
+        self.widget.bind("<Destroy>", self.leave, add="+")
+
+    @classmethod
+    def hide_active(cls):
+        active = cls._active_tooltip
+        if active is not None:
+            active.unschedule()
+            active.hidetip()
 
     def enter(self, event=None):
         self.schedule()
@@ -1186,35 +1291,165 @@ class ToolTip(object):
 
     def schedule(self):
         self.unschedule()
-        self.id = self.widget.after(500, self.showtip)
+        try:
+            self.id = self.widget.after(500, self.showtip)
+        except tk.TclError:
+            self.id = None
 
     def unschedule(self):
-        id = self.id
+        after_id = self.id
         self.id = None
-        if id: self.widget.after_cancel(id)
+        if after_id:
+            try:
+                self.widget.after_cancel(after_id)
+            except tk.TclError:
+                pass
+
+    def _pointer_is_inside_widget(self):
+        try:
+            if not self.widget.winfo_exists() or not self.widget.winfo_ismapped():
+                return False
+            px, py = self.widget.winfo_pointerxy()
+            x0, y0 = self.widget.winfo_rootx(), self.widget.winfo_rooty()
+            return x0 <= px < x0 + self.widget.winfo_width() and y0 <= py < y0 + self.widget.winfo_height()
+        except tk.TclError:
+            return False
 
     def showtip(self, event=None):
-        root = self.widget.winfo_toplevel()
-        txt = self.text_var.get() if isinstance(self.text_var, tk.StringVar) else self.text_var
-        label = tk.Label(root, text=txt, justify=tk.LEFT, wraplength=430,
-                         background="#202a35", foreground="white", relief=tk.SOLID,
-                         borderwidth=1, font=("tahoma", "9", "normal"), padx=8, pady=6)
-        root.update_idletasks()
-        x = self.widget.winfo_pointerx() - root.winfo_rootx() + 16
-        y = self.widget.winfo_pointery() - root.winfo_rooty() + 18
-        x = max(8, min(x, max(8, root.winfo_width() - 450)))
-        y = max(8, min(y, max(8, root.winfo_height() - 160)))
-        label.place(x=x, y=y)
-        label.lift()
-        self.tipwindow = label
+        self.id = None
+        if not self._pointer_is_inside_widget():
+            return
+        if ToolTip._active_tooltip is not None and ToolTip._active_tooltip is not self:
+            ToolTip._active_tooltip.hidetip()
+        self.hidetip()
+        try:
+            root = self.widget.winfo_toplevel()
+            txt = self.text_var.get() if isinstance(self.text_var, tk.StringVar) else self.text_var
+            label = tk.Label(root, text=txt, justify=tk.LEFT, wraplength=430,
+                             background="#202a35", foreground="white", relief=tk.SOLID,
+                             borderwidth=1, font=("tahoma", "9", "normal"), padx=8, pady=6)
+            root.update_idletasks()
+            x = self.widget.winfo_pointerx() - root.winfo_rootx() + 16
+            y = self.widget.winfo_pointery() - root.winfo_rooty() + 18
+            x = max(8, min(x, max(8, root.winfo_width() - 450)))
+            y = max(8, min(y, max(8, root.winfo_height() - 160)))
+            label.place(x=x, y=y)
+            label.lift()
+            self.tipwindow = label
+            ToolTip._active_tooltip = self
+        except tk.TclError:
+            self.tipwindow = None
 
     def hidetip(self):
         tw = self.tipwindow
         self.tipwindow = None
-        if tw and tw.winfo_exists():
-            tw.destroy()
+        if ToolTip._active_tooltip is self:
+            ToolTip._active_tooltip = None
+        if tw is not None:
+            try:
+                if tw.winfo_exists():
+                    tw.destroy()
+            except tk.TclError:
+                pass
+# --- FULLSCREEN OBRAZOVKY 4.9.1 ---
+class AutoScrollFrame(ttk.Frame):
+    """Obsah s automatickým svislým scrollováním pouze při skutečném přetečení."""
+    def __init__(self, parent, background="#101720", **kwargs):
+        super().__init__(parent, **kwargs)
+        self._background = background
+        self._overflow = False
+        self._refresh_pending = False
 
-# --- FULLSCREEN OBRAZOVKY 4.8.5 ---
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.canvas = tk.Canvas(
+            self, bg=background, highlightthickness=0, bd=0,
+            xscrollincrement=0, yscrollincrement=24
+        )
+        self.scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+
+        self.content = ttk.Frame(self.canvas, padding=18)
+        self._window_id = self.canvas.create_window((0, 0), window=self.content, anchor="nw")
+
+        self.content.bind("<Configure>", self._schedule_refresh, add="+")
+        self.canvas.bind("<Configure>", self._schedule_refresh, add="+")
+
+        # Kolečko funguje i nad vnořenými Entry/Combobox/Scale prvky. Každý
+        # scrollovací panel zareaguje jen tehdy, když je viditelný a kurzor je nad ním.
+        root = self.winfo_toplevel()
+        root.bind_all("<MouseWheel>", self._on_mousewheel, add="+")
+        root.bind_all("<Button-4>", self._on_mousewheel, add="+")
+        root.bind_all("<Button-5>", self._on_mousewheel, add="+")
+
+    def _schedule_refresh(self, event=None):
+        if self._refresh_pending:
+            return
+        self._refresh_pending = True
+        self.after_idle(self.refresh)
+
+    def refresh(self):
+        self._refresh_pending = False
+        if not self.winfo_exists():
+            return
+        self.update_idletasks()
+
+        viewport_width = max(1, self.canvas.winfo_width())
+        viewport_height = max(1, self.canvas.winfo_height())
+        requested_height = max(1, self.content.winfo_reqheight())
+        content_height = max(viewport_height, requested_height)
+
+        self.canvas.itemconfigure(
+            self._window_id, width=viewport_width, height=content_height
+        )
+        self.canvas.configure(scrollregion=(0, 0, viewport_width, content_height))
+
+        overflow = requested_height > viewport_height + 2
+        if overflow != self._overflow:
+            self._overflow = overflow
+            if overflow:
+                self.scrollbar.grid(row=0, column=1, sticky="ns")
+            else:
+                self.scrollbar.grid_remove()
+                self.canvas.yview_moveto(0.0)
+
+    def _pointer_is_inside(self):
+        try:
+            pointer_x = self.winfo_pointerx()
+            pointer_y = self.winfo_pointery()
+            left = self.canvas.winfo_rootx()
+            top = self.canvas.winfo_rooty()
+            right = left + self.canvas.winfo_width()
+            bottom = top + self.canvas.winfo_height()
+            return left <= pointer_x < right and top <= pointer_y < bottom
+        except tk.TclError:
+            return False
+
+    def _on_mousewheel(self, event):
+        if not self._overflow or not self.winfo_ismapped() or not self._pointer_is_inside():
+            return None
+
+        if getattr(event, "num", None) == 4:
+            steps = -1
+        elif getattr(event, "num", None) == 5:
+            steps = 1
+        else:
+            delta = getattr(event, "delta", 0)
+            if delta == 0:
+                return None
+            steps = -1 if delta > 0 else 1
+            magnitude = max(1, abs(int(delta / 120)))
+            steps *= magnitude
+
+        self.canvas.yview_scroll(steps, "units")
+        return "break"
+
+    def scroll_to_top(self):
+        self.canvas.yview_moveto(0.0)
+
+
 class EmbeddedScreen(tk.Frame):
     """Frame kompatibilní s původním rozhraním Toplevel, vložený do jediného okna."""
     def __init__(self, app, name, **kwargs):
@@ -1288,8 +1523,12 @@ class EngineApp:
         self._drive_after_id = None
         self._track_after_id = None
         self._screen_transitioning = False
-        self.track_canvas_width = 820
-        self.track_canvas_height = 610
+        self.track_canvas_width = 640
+        self.track_canvas_height = 500
+        self._track_layout_pending = False
+        self._track_redraw_pending = False
+        self._track_compact_layout = None
+        self.track_current_distance = 0.0
         
         self.setup_master_presets()
         self.create_variables()
@@ -1385,7 +1624,7 @@ class EngineApp:
             "dyno": ("DYNO & ŽIVÝ GRAF", "DYNO & LIVE GRAPH"),
             "throttle": ("RUČNÍ PLYN", "MANUAL THROTTLE"),
             "drive": ("ZKUŠEBNÍ JÍZDA", "TEST DRIVE"),
-            "track": ("TESTOVACÍ DRÁHA", "TEST TRACK"),
+            "track": ("SIMULACE OKRUHU", "TRACK SIMULATION"),
         }
         if self.current_screen in titles:
             self.screen_title.set(self._ui(*titles[self.current_screen]))
@@ -1404,7 +1643,7 @@ class EngineApp:
             self.speed_limiter_scale.configure(to=self._speed_limiter_display_max())
         self._sync_speed_limiter_display_from_canonical()
         self.update_settings_summary()
-        self._refresh_speed_displays()
+        self._refresh_localized_screen_texts()
 
     def _refresh_speed_displays(self):
         """Refresh visible values without restarting or altering any simulation."""
@@ -1415,7 +1654,7 @@ class EngineApp:
             if (hasattr(self, 'lbl_tcs') and getattr(self, 'max_achieved_speed', 0.0) > 0.0
                     and not getattr(self, 'drive_running', False)):
                 self.lbl_tcs.config(
-                    text=f"MAX: {self._speed_from_mps(self.max_achieved_speed):.0f} {self._speed_unit_label()}"
+                    text=f"{self.tr('ui_max')}: {self._speed_from_mps(self.max_achieved_speed):.0f} {self._speed_unit_label()}"
                 )
             if hasattr(self, 'lbl_accel'):
                 result = getattr(self, 'drive_reference_result', None)
@@ -1459,13 +1698,14 @@ class EngineApp:
                 )
 
     def open_settings_overlay(self):
+        ToolTip.hide_active()
         if self._settings_overlay is not None and self._settings_overlay.winfo_exists():
             self._settings_overlay.lift()
             return
         overlay = tk.Frame(self.root, bg="#05080c")
         overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
         panel = tk.Frame(overlay, bg="#101720", highlightbackground="#43d9ff", highlightthickness=2)
-        panel.place(relx=0.5, rely=0.5, anchor=tk.CENTER, relwidth=0.52, relheight=0.76)
+        panel.place(relx=0.5, rely=0.5, anchor=tk.CENTER, relwidth=0.56, relheight=0.84)
         panel.grid_columnconfigure(0, weight=1)
         panel.grid_columnconfigure(1, weight=1)
 
@@ -1506,8 +1746,23 @@ class EngineApp:
         tk.Radiobutton(units, textvariable=self.lang_vars['settings_kmh'], value='kmh', **unit_common).pack(anchor="w", pady=6)
         tk.Radiobutton(units, textvariable=self.lang_vars['settings_mph'], value='mph', **unit_common).pack(anchor="w", pady=6)
 
+        audio = tk.LabelFrame(panel, text=self.tr('settings_audio'), bg="#101720", fg="#43d9ff",
+                              font=("Arial", 11, "bold"), bd=1, relief=tk.GROOVE, padx=22, pady=14)
+        audio.grid(row=3, column=0, columnspan=2, sticky="ew", padx=42, pady=10)
+        audio.grid_columnconfigure(0, weight=1)
+        audio_status_key = 'sound_ready' if SOUND_AVAILABLE else 'sound_missing'
+        audio_status_color = '#63f28a' if SOUND_AVAILABLE else '#ffcc55'
+        tk.Label(audio, text=self.tr(audio_status_key), bg="#101720", fg=audio_status_color,
+                 font=("Arial", 10, "bold"), wraplength=620, justify=tk.LEFT).grid(
+                     row=0, column=0, sticky="w", padx=(0, 16), pady=4)
+        if not SOUND_AVAILABLE:
+            tk.Button(audio, textvariable=self.lang_vars['sound_help'], command=self.show_sound_help,
+                      bg="#7a5a19", fg="white", activebackground="#a77a20", activeforeground="white",
+                      relief=tk.FLAT, padx=14, pady=9, font=("Arial", 9, "bold"), cursor="hand2").grid(
+                          row=0, column=1, sticky="e")
+
         actions = tk.Frame(panel, bg="#101720")
-        actions.grid(row=3, column=0, columnspan=2, sticky="ew", padx=42, pady=(28, 34))
+        actions.grid(row=4, column=0, columnspan=2, sticky="ew", padx=42, pady=(22, 30))
         actions.grid_columnconfigure(0, weight=1)
         actions.grid_columnconfigure(1, weight=1)
         tk.Button(actions, textvariable=self.lang_vars['settings_close'], command=self.close_settings_overlay,
@@ -1580,7 +1835,7 @@ class EngineApp:
 
         tk.Label(self.sidebar, text="AUTOMATION DIY", bg="#111821", fg="#f2f5f8",
                  font=("Arial", 18, "bold")).pack(pady=(28, 3))
-        tk.Label(self.sidebar, text="ENGINE LAB 4.8.5", bg="#111821", fg="#43d9ff",
+        tk.Label(self.sidebar, text="ENGINE LAB 4.9.1", bg="#111821", fg="#43d9ff",
                  font=("Arial", 9, "bold")).pack(pady=(0, 16))
 
         self.settings_button = tk.Button(
@@ -1589,21 +1844,31 @@ class EngineApp:
             activeforeground="white", relief=tk.FLAT, bd=0, padx=22, pady=13,
             font=("Arial", 10, "bold"), cursor="hand2"
         )
-        self.settings_button.pack(fill=tk.X, padx=10, pady=(0, 16))
+        self.settings_button.pack(fill=tk.X, padx=10, pady=(0, 8))
+
+        self.sound_notice_button = None
+        if not SOUND_AVAILABLE:
+            self.sound_notice_button = tk.Button(
+                self.sidebar, textvariable=self.lang_vars['sound_silent_sidebar'], command=self.show_sound_help,
+                anchor="w", bg="#4f3c18", fg="#ffdd7a", activebackground="#74561e",
+                activeforeground="white", relief=tk.FLAT, bd=0, padx=22, pady=9,
+                font=("Arial", 9, "bold"), cursor="hand2"
+            )
+            self.sound_notice_button.pack(fill=tk.X, padx=10, pady=(0, 10))
 
         nav_items = [
             ("builder", "GARAGE", lambda: self.show_screen("builder")),
             ("dyno", "DYNO & GRAPH", lambda: self.show_screen("dyno")),
             ("throttle", "MANUAL THROTTLE", self.open_throttle_window),
             ("drive", "TEST DRIVE", self.open_drive_window),
-            ("track", "TEST TRACK", self.open_track_window),
+            ("track", "TRACK SIMULATION", self.open_track_window),
         ]
         self._nav_texts = {
             "builder": ("GARÁŽ", "GARAGE"),
             "dyno": ("DYNO & GRAF", "DYNO & GRAPH"),
             "throttle": ("RUČNÍ PLYN", "MANUAL THROTTLE"),
             "drive": ("ZKUŠEBNÍ JÍZDA", "TEST DRIVE"),
-            "track": ("TESTOVACÍ DRÁHA", "TEST TRACK"),
+            "track": ("SIMULACE OKRUHU", "TRACK SIMULATION"),
         }
         for name, text, command in nav_items:
             text = self._ui(*self._nav_texts[name])
@@ -1618,17 +1883,19 @@ class EngineApp:
         # Režimy vyžadující platný dyno pull jsou do jeho dokončení zamčené.
         for name in ("throttle", "drive", "track"):
             self.nav_buttons[name].config(state=tk.DISABLED)
-        if not SOUND_AVAILABLE:
-            self.nav_buttons["throttle"].config(state=tk.DISABLED)
-            self.nav_buttons["drive"].config(state=tk.DISABLED)
-
         tk.Frame(self.sidebar, bg="#263442", height=1).pack(fill=tk.X, padx=18, pady=20)
-        tk.Button(self.sidebar, text="F11  FULLSCREEN", command=self.toggle_fullscreen, anchor="w",
-                  bg="#111821", fg="#7f93a6", activebackground="#1d2a38", activeforeground="white",
-                  relief=tk.FLAT, bd=0, padx=24, pady=9).pack(fill=tk.X, padx=10)
-        tk.Button(self.sidebar, text="ESC  BACK", command=self.handle_escape, anchor="w",
-                  bg="#111821", fg="#7f93a6", activebackground="#1d2a38", activeforeground="white",
-                  relief=tk.FLAT, bd=0, padx=24, pady=9).pack(fill=tk.X, padx=10)
+        self.fullscreen_hint_button = tk.Button(
+            self.sidebar, textvariable=self.lang_vars['ui_fullscreen_hint'], command=self.toggle_fullscreen,
+            anchor="w", bg="#111821", fg="#7f93a6", activebackground="#1d2a38",
+            activeforeground="white", relief=tk.FLAT, bd=0, padx=24, pady=9
+        )
+        self.fullscreen_hint_button.pack(fill=tk.X, padx=10)
+        self.back_hint_button = tk.Button(
+            self.sidebar, textvariable=self.lang_vars['ui_back_hint'], command=self.handle_escape,
+            anchor="w", bg="#111821", fg="#7f93a6", activebackground="#1d2a38",
+            activeforeground="white", relief=tk.FLAT, bd=0, padx=24, pady=9
+        )
+        self.back_hint_button.pack(fill=tk.X, padx=10)
 
         self.main_area = tk.Frame(self.shell, bg="#090d12")
         self.main_area.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -1699,7 +1966,7 @@ class EngineApp:
             self.dyno_params = None
             self._reset_dyno_visuals()
             if hasattr(self, 'dyno_status'):
-                self.dyno_status.config(text=self._ui("Měření bylo přerušeno", "Dyno run cancelled"), fg="#ffb454")
+                self.dyno_status.config(text=self.tr("ui_dyno_cancelled"), fg="#ffb454")
             if hasattr(self, 'btn_graph'):
                 self.btn_graph.config(state=tk.DISABLED)
             for name in ("throttle", "drive", "track"):
@@ -1711,6 +1978,7 @@ class EngineApp:
             self.builder_run_button.config(state=tk.NORMAL)
 
     def _cleanup_screen(self, name):
+        ToolTip.hide_active()
         if name == "dyno":
             if self._dyno_running:
                 self._stop_dyno_playback(discard_incomplete=True)
@@ -1735,7 +2003,6 @@ class EngineApp:
         elif name == "track":
             self.track_running = False
             self._cancel_after('_track_after_id')
-            self.lang_vars['btn_track_start'].set(T[self.vars['app_lang'].get()]['btn_track_start'])
             screen = getattr(self, 'track_win', None)
             if screen is not None and screen.winfo_exists():
                 screen.destroy()
@@ -1756,6 +2023,7 @@ class EngineApp:
                           fg="#43d9ff" if active else "#c6d1dc")
 
     def show_screen(self, name):
+        ToolTip.hide_active()
         screen = self.screens.get(name)
         if screen is None or not screen.winfo_exists():
             return
@@ -1773,6 +2041,7 @@ class EngineApp:
             self._screen_transitioning = False
 
     def show_error_overlay(self, title, message, **kwargs):
+        ToolTip.hide_active()
         if self._message_overlay is not None and self._message_overlay.winfo_exists():
             self._message_overlay.destroy()
         overlay = tk.Frame(self.root, bg="#000000")
@@ -1793,6 +2062,34 @@ class EngineApp:
         overlay.lift()
         return None
 
+    def show_info_overlay(self, title, message, accent="#43d9ff"):
+        ToolTip.hide_active()
+        if self._message_overlay is not None and self._message_overlay.winfo_exists():
+            self._message_overlay.destroy()
+        overlay = tk.Frame(self.root, bg="#000000")
+        overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
+        panel = tk.Frame(overlay, bg="#171d25", highlightbackground=accent, highlightthickness=2)
+        panel.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width=620, height=330)
+        tk.Label(panel, text=str(title), bg="#171d25", fg=accent,
+                 font=("Arial", 16, "bold")).pack(pady=(28, 14))
+        tk.Label(panel, text=str(message), bg="#171d25", fg="white", wraplength=540,
+                 justify=tk.CENTER, font=("Arial", 11)).pack(expand=True, padx=28)
+        def close():
+            if overlay.winfo_exists():
+                overlay.destroy()
+            self._message_overlay = None
+        tk.Button(panel, text="OK", command=close, bg="#29394a", fg="white", relief=tk.FLAT,
+                  padx=30, pady=8, font=("Arial", 10, "bold")).pack(pady=(10, 24))
+        self._message_overlay = overlay
+        overlay.lift()
+
+    def show_sound_help(self):
+        self.close_settings_overlay()
+        detail = self.tr('sound_help_body')
+        if SOUND_ERROR:
+            detail += f"\n\n{self._ui('Technický detail', 'Technical detail')}: {SOUND_ERROR}"
+        self.show_info_overlay(self.tr('sound_help_title'), detail, accent="#ffcc55")
+
     def shutdown(self):
         if self.current_screen is not None:
             self._cleanup_screen(self.current_screen)
@@ -1805,6 +2102,176 @@ class EngineApp:
                 pass
         self.root.destroy()
 
+    def _dyno_spec_text(self):
+        if self.dyno_params is None:
+            return "", ""
+        params = self.dyno_params
+        name = str(params.get('engine_name', ''))
+        disp = math.pi * ((float(params['bore']) / 20.0) ** 2) * (float(params['stroke']) / 10.0) * int(params['cylinders'])
+        spec = f"{disp:.0f} cc {params.get('config', '')}{params.get('cylinders', '')}"
+        return name, spec
+
+    def _localized_dyno_result(self):
+        """Return localized failure strings without changing the authoritative curves."""
+        if not self.dyno_results or not self.dyno_results.get('blew_up') or self.dyno_params is None:
+            return self.dyno_results
+        try:
+            localized_params = dict(self.dyno_params)
+            localized_params['lang'] = self.vars['app_lang'].get()
+            return run_engine_simulation(localized_params)
+        except Exception:
+            return self.dyno_results
+
+    def _refresh_dyno_console_language(self):
+        if not hasattr(self, 'txt_output') or not self.dyno_results or self.dyno_params is None:
+            return
+        name, spec = self._dyno_spec_text()
+        self._dyno_header = f"{self.tr('msg_dyno_hdr')} {name} ({spec}) ---"
+        rpm_values = self.dyno_results.get('rpm', [])
+        if len(rpm_values) == 0:
+            return
+        if self._dyno_running:
+            index = int(clamp(getattr(self, '_dyno_index', 1) - 1, 0, len(rpm_values) - 1))
+        else:
+            index = len(rpm_values) - 1
+        rpm = int(rpm_values[index])
+        trq = float(self.dyno_results['torque'][index])
+        hp = float(self.dyno_results['hp'][index])
+        self._write_pull(self._dyno_header, rpm, trq, hp)
+        if self._dyno_running:
+            return
+        self._write_log(self.tr('msg_done'))
+        if self.dyno_results.get('blew_up'):
+            localized = self._localized_dyno_result()
+            self._write_log(f"{self.tr('msg_blown')} {localized.get('reason', '')}")
+            self._write_log(f"{self.tr('msg_fix')} {localized.get('fix', '')}")
+        else:
+            max_hp = float(np.max(self.dyno_results['hp']))
+            max_hp_rpm = int(self.dyno_results['rpm'][int(np.argmax(self.dyno_results['hp']))])
+            max_trq = float(np.max(self.dyno_results['torque']))
+            max_trq_rpm = int(self.dyno_results['rpm'][int(np.argmax(self.dyno_results['torque']))])
+            self._write_log(f"{self.tr('msg_max_hp')}  {max_hp:.0f} HP @ {max_hp_rpm} RPM")
+            self._write_log(f"{self.tr('msg_max_trq')} {max_trq:.0f} Nm @ {max_trq_rpm} RPM")
+            self._write_log(self.tr('msg_ready'))
+
+    def _refresh_localized_screen_texts(self):
+        """Refresh text that is stateful and therefore cannot use one fixed StringVar."""
+        ToolTip.hide_active()
+
+        if hasattr(self, 'dyno_ax_torque'):
+            self.dyno_ax_torque.set_ylabel(f"{self.tr('msg_trq')} (Nm)", color='#43d9ff')
+            self.dyno_ax_hp.set_ylabel(f"{self.tr('msg_hp')} (HP)", color='#ff6b6b')
+            self.dyno_torque_line.set_label(self.tr('msg_trq'))
+            self.dyno_hp_line.set_label(self.tr('msg_hp'))
+            self.graph_canvas.draw_idle()
+        if hasattr(self, 'dyno_engine_title'):
+            if self.dyno_params is None:
+                self.dyno_engine_title.config(text=self.tr('ui_dyno_ready'))
+            else:
+                name, spec = self._dyno_spec_text()
+                self.dyno_engine_title.config(
+                    text=f"{name}   •   {spec}   •   {self.dyno_params.get('aspiration', '')}"
+                )
+        if hasattr(self, 'dyno_status'):
+            if self._dyno_running:
+                self.dyno_status.config(text=self.tr('ui_dyno_running'), fg='#ffcc55')
+            elif self.dyno_results:
+                if self.dyno_results.get('blew_up'):
+                    self.dyno_status.config(text=self.tr('msg_blown'), fg='#ff5f5f')
+                else:
+                    max_hp = float(np.max(self.dyno_results['hp']))
+                    max_hp_rpm = int(self.dyno_results['rpm'][int(np.argmax(self.dyno_results['hp']))])
+                    max_trq = float(np.max(self.dyno_results['torque']))
+                    max_trq_rpm = int(self.dyno_results['rpm'][int(np.argmax(self.dyno_results['torque']))])
+                    self.dyno_status.config(
+                        text=(f"{self.tr('msg_max_hp')} {max_hp:.0f} HP @ {max_hp_rpm} RPM\n"
+                              f"{self.tr('msg_max_trq')} {max_trq:.0f} Nm @ {max_trq_rpm} RPM"),
+                        fg='#63f28a'
+                    )
+            else:
+                self.dyno_status.config(text=self.tr('ui_ready'), fg='#8fa5b7')
+        self._refresh_dyno_console_language()
+
+        rev = getattr(self, 'rev_window', None)
+        if rev is not None and rev.winfo_exists() and hasattr(self, 'lbl_temp'):
+            if getattr(self, 'engine_blown', False):
+                self.lbl_temp.config(text=self.tr('msg_hg_blown'), fg='#ff5f5f')
+            else:
+                self.lbl_temp.config(
+                    text=f"{self.tr('lbl_coolant')} {int(getattr(self, 'coolant_temp', 90.0))}°C",
+                    fg='#ff5f5f' if getattr(self, 'coolant_temp', 90.0) > 115.0 else '#8fa5b7'
+                )
+
+        drive = getattr(self, 'drive_win', None)
+        if drive is not None and drive.winfo_exists():
+            if hasattr(self, 'drive_skip_text'):
+                self.drive_skip_text.set(self.tr('btn_skip'))
+            if hasattr(self, 'drive_launch_text'):
+                if getattr(self, 'drive_running', False):
+                    self.drive_launch_text.set(self.tr('btn_accel'))
+                elif getattr(self, 'max_achieved_speed', 0.0) > 0.0:
+                    self.drive_launch_text.set(self.tr('btn_retry'))
+                else:
+                    self.drive_launch_text.set(self.tr('btn_launch'))
+            if hasattr(self, 'lbl_tcs'):
+                if getattr(self, 'max_achieved_speed', 0.0) > 0.0 and not getattr(self, 'drive_running', False):
+                    self.lbl_tcs.config(
+                        text=f"{self.tr('ui_max')}: {self._speed_from_mps(self.max_achieved_speed):.0f} {self._speed_unit_label()}",
+                        fg='black', bg='lime'
+                    )
+                elif getattr(self, 'drive_running', False):
+                    if getattr(self, 'slip_active', False):
+                        self.lbl_tcs.config(text=self.tr('ui_slip'), fg='black', bg='orange')
+                    else:
+                        self.lbl_tcs.config(text=self.tr('ui_tcs_ok'), fg='gray', bg='#222222')
+                else:
+                    self.lbl_tcs.config(text=self.tr('ui_tcs_ready'), fg='#8fa5b7', bg='#1b2631')
+
+        track = getattr(self, 'track_win', None)
+        if track is not None and track.winfo_exists():
+            result = getattr(self, 'track_result', None)
+            running = getattr(self, 'track_running', False)
+            if hasattr(self, 'track_button_text'):
+                self.track_button_text.set(self.tr('btn_track_start' if running or result is None else 'btn_track_retry'))
+            shown_time = 0.0
+            speed_mps = 0.0
+            gear_text = 'N'
+            sector = 1
+            if result is not None:
+                shown_time = min(getattr(self, 'track_sim_elapsed', 0.0), result['lap_time'])
+                cumulative = result['cumulative_time']
+                idx = int(np.searchsorted(cumulative, shown_time, side='right') - 1)
+                idx = int(clamp(idx, 0, len(cumulative) - 2))
+                speed_mps = float(result['speed_profile'][idx])
+                gear_text = str(int(result['gear_profile'][idx]) + 1)
+                sector = int(result['sector_profile'][idx])
+            self.lbl_track_live_speed.config(
+                text=f"{self.tr('lbl_track_speed')}: {self._speed_from_mps(speed_mps):.0f} {self._speed_unit_label()}"
+            )
+            self.lbl_track_live_gear.config(text=f"{self.tr('lbl_track_gear')}: {gear_text}")
+            self.lbl_track_live_sector.config(text=f"{self.tr('lbl_track_sector')}: {sector}")
+            self.lbl_track_lap.config(text=f"{self.tr('lbl_lap_time')}: {self._format_lap_time(shown_time) if result is not None else '--:--.---'}")
+            if running:
+                self.lbl_track_status.config(text=self.tr('msg_track_running'), fg='#ffcc55')
+            elif result is not None:
+                self.lbl_track_status.config(text=self.tr('msg_track_finished'), fg='lime')
+                sectors = result['sector_times']
+                self.lbl_track_stats.config(
+                    text=(f"{self.tr('lbl_track_length')}: {result['track_length'] / 1000.0:.3f} km\n"
+                          f"{self.tr('lbl_track_avg')}: {self._speed_from_mps(result['average_speed']):.1f} {self._speed_unit_label()}\n"
+                          f"{self.tr('lbl_track_max')}: {self._speed_from_mps(result['max_speed']):.1f} {self._speed_unit_label()}")
+                )
+                self.lbl_track_sectors.config(
+                    text=f"S1: {sectors[0]:.3f} s\nS2: {sectors[1]:.3f} s\nS3: {sectors[2]:.3f} s"
+                )
+            else:
+                self.lbl_track_status.config(text=self.tr('msg_track_ready'), fg='#8fa5b7')
+                self.lbl_track_stats.config(text=f"{self.tr('lbl_track_length')}: 3.605 km")
+                self.lbl_track_sectors.config(text='S1: --.-- s\nS2: --.-- s\nS3: --.-- s')
+            self._schedule_track_redraw()
+
+        self._refresh_speed_displays()
+
     def apply_language(self):
         lang = self.vars['app_lang'].get()
         for k, v in T[lang].items():
@@ -1815,12 +2282,18 @@ class EngineApp:
         for name, button in self.nav_buttons.items():
             if name in self._nav_texts:
                 button.configure(text=self._ui(*self._nav_texts[name]))
+
+        if hasattr(self, "builder_run_button"):
+            self.builder_run_button.configure(
+                text=self._ui("SPUSTIT DYNO", "RUN DYNO")
+            )
+
         self._refresh_screen_title()
         self.update_settings_summary()
 
         for i, tab_key in enumerate(['tab_1', 'tab_2', 'tab_3', 'tab_4', 'tab_5', 'tab_6', 'tab_7']):
             self.notebook.tab(i, text=self.tr(tab_key))
-        self._refresh_speed_displays()
+        self._refresh_localized_screen_texts()
         if self._settings_overlay is not None and self._settings_overlay.winfo_exists():
             self.close_settings_overlay()
             self.root.after_idle(self.open_settings_overlay)
@@ -2112,6 +2585,7 @@ class EngineApp:
 
         self.notebook = ttk.Notebook(self.builder_screen)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=28, pady=(12, 28))
+        self.scrollable_tabs = []
 
         def configure_parent(parent):
             parent.grid_columnconfigure(0, weight=1, minsize=220)
@@ -2124,6 +2598,25 @@ class EngineApp:
             row_minimum = 38 if row_count >= 11 else 48
             for row in range(row_count):
                 tab.grid_rowconfigure(row, weight=1, minsize=row_minimum)
+
+        def create_scrollable_tab(tab_key, row_count):
+            wrapper = AutoScrollFrame(self.notebook, background="#101720")
+            tab = wrapper.content
+            prepare_tab(tab, row_count)
+            self.notebook.add(wrapper, text=self.tr(tab_key))
+            self.scrollable_tabs.append(wrapper)
+            return tab
+
+        def refresh_active_scroll_tab(event=None):
+            try:
+                selected = self.notebook.index(self.notebook.select())
+                wrapper = self.scrollable_tabs[selected]
+            except (tk.TclError, IndexError, ValueError):
+                return
+            wrapper.scroll_to_top()
+            wrapper._schedule_refresh()
+
+        self.notebook.bind("<<NotebookTabChanged>>", refresh_active_scroll_tab, add="+")
 
         def make_combo(parent, r, lbl_key, var_name, options, tt_key):
             self.allowed_values[var_name] = tuple(options)
@@ -2204,8 +2697,7 @@ class EngineApp:
             return scale
 
         # TAB 1 - Block
-        tab1 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab1, 9)
-        self.notebook.add(tab1, text=self.tr("tab_1"))
+        tab1 = create_scrollable_tab("tab_1", 9)
         make_combo(tab1, 0, "lbl_config", 'config', ["Inline", "V", "Boxer"], "tt_config")
         self.frame_v = ttk.Frame(tab1); self.frame_v.grid(row=1, column=0, columnspan=4, sticky=tk.EW)
         make_combo(self.frame_v, 0, "lbl_vangle", 'v_angle', [60, 90, 120], "tt_vangle")
@@ -2219,8 +2711,7 @@ class EngineApp:
         ttk.Label(tab1, textvariable=self.vars['calc_disp'], font=("Arial", 15, "bold"), foreground="#43d9ff").grid(row=8, column=1, sticky=tk.W, padx=8)
 
         # TAB 2 - Bottom End
-        tab2 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab2, 5)
-        self.notebook.add(tab2, text=self.tr("tab_2"))
+        tab2 = create_scrollable_tab("tab_2", 5)
         make_combo(tab2, 0, "lbl_crank", 'crank', ["Cast", "Cast Iron Heavy", "Forged", "Forged Steel Heavy", "Forged Steel Light", "Billet", "Billet Steel Heavy", "Flat-plane"], "tt_crank")
         make_combo(tab2, 1, "lbl_conrods", 'conrods', ["Cast", "Cast Heavy", "Cast Light", "Heavy Duty", "Forged", "Forged Heavy", "Forged Light", "LW Forged", "Titanium"], "tt_conrods")
         make_combo(tab2, 2, "lbl_pistons", 'pistons', ["Cast", "Cast Heavy", "Cast Light", "Heavy Duty", "Forged", "Forged Heavy", "Forged Light", "LW Forged", "Hypereutectic Cast", "Low Friction"], "tt_pistons")
@@ -2229,8 +2720,7 @@ class EngineApp:
         make_slider(self.frame_bal_mass, 0, "lbl_bal_mass", 'balancer_mass', 0.0, 50.0, 0.1, "kg", "tt_bal_mass")
 
         # TAB 3 - Top End
-        tab3 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab3, 9)
-        self.notebook.add(tab3, text=self.tr("tab_3"))
+        tab3 = create_scrollable_tab("tab_3", 9)
         make_combo(tab3, 0, "lbl_head_mat", 'head_mat', ["Cast Iron", "Iron Eco.", "Iron Std.", "Iron Perf", "Aluminium", "Alu Eco", "Alu Std.", "Alu Perf", "Alu Billet Race"], "tt_head_mat")
         make_combo(tab3, 1, "lbl_valve", 'valvetrain', ["Pushrod (OHV)", "SOHC", "DOHC", "DAOHC"], "tt_valve")
         make_combo(tab3, 2, "lbl_valvesn", 'valves', [2, 3, 4, 5], "tt_valvesn")
@@ -2244,8 +2734,7 @@ class EngineApp:
         make_slider(tab3, 8, "lbl_comp", 'comp_ratio', 7.0, 22.0, 0.1, ": 1", "tt_comp")
 
         # TAB 4 - Aspiration
-        tab4 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab4, 7)
-        self.notebook.add(tab4, text=self.tr("tab_4"))
+        tab4 = create_scrollable_tab("tab_4", 7)
         make_combo(tab4, 0, "lbl_asp", 'aspiration', ["NA", "Turbo", "Supercharger"], "tt_asp")
         self.frame_turbo = ttk.Frame(tab4); self.frame_turbo.grid(row=1, column=0, columnspan=4, sticky=tk.EW, pady=5)
         make_combo(self.frame_turbo, 0, "lbl_tb", 'turbo_bearing', ["Journal", "Ball Bearings"], "tt_tb")
@@ -2259,8 +2748,7 @@ class EngineApp:
         make_slider(self.frame_sc, 2, "lbl_scp", 'sc_pulley', 0.1, 3.0, 0.1, "bar", "tt_scp")
 
         # TAB 5 - Fuel & Tune
-        tab5 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab5, 10)
-        self.notebook.add(tab5, text=self.tr("tab_5"))
+        tab5 = create_scrollable_tab("tab_5", 10)
         make_combo(tab5, 0, "lbl_fdeliv", 'fuel_deliv', ["Carburetor", "Mechanical Fuel Injection", "Single Point EFI", "EFI Multi", "Direct Injection"], "tt_fdeliv")
         make_slider(tab5, 1, "lbl_carb_size", 'carb_size', 0, 100, 1, "", "tt_carb_size")
         make_combo(tab5, 2, "lbl_inconf", 'intake_conf', ["Single", "Twin", "ITB"], "tt_inconf")
@@ -2273,8 +2761,7 @@ class EngineApp:
         make_slider(tab5, 9, "lbl_lim", 'rpm_limit', 3000, 12000, 10, "RPM", "tt_lim")
 
         # TAB 6 - Exhaust
-        tab6 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab6, 8)
-        self.notebook.add(tab6, text=self.tr("tab_6"))
+        tab6 = create_scrollable_tab("tab_6", 8)
         make_combo(tab6, 0, "lbl_arch", 'exh_arch', ["Single", "Dual"], "tt_arch")
         make_combo(tab6, 1, "lbl_head_exh", 'headers', ["Compact Cast", "Cast Low", "Cast Mid", "Cast", "Tubular", "Tubular Mid", "Tubular Long", "Tubular Race"], "tt_head_exh")
         make_slider(tab6, 2, "lbl_head_size", 'head_size', 0, 100, 1, "", "tt_head_size")
@@ -2285,8 +2772,7 @@ class EngineApp:
         make_combo(tab6, 7, "lbl_muf2", 'muffler2', ["None", "Straight", "Baffled", "Reverse Flow"], "tt_muf")
 
         # TAB 7 - Drivetrain
-        tab7 = ttk.Frame(self.notebook, padding=18); prepare_tab(tab7, 13)
-        self.notebook.add(tab7, text=self.tr("tab_7"))
+        tab7 = create_scrollable_tab("tab_7", 13)
         def apply_veh_preset(*args):
             if self._suspend_vehicle_preset_callback:
                 return
@@ -2347,7 +2833,7 @@ class EngineApp:
 
         header = tk.Frame(self.dyno_screen, bg="#0f1720", padx=28, pady=18)
         header.grid(row=0, column=0, columnspan=2, sticky="ew", padx=28, pady=(24, 12))
-        self.dyno_engine_title = tk.Label(header, text=self._ui("Připraveno k měření", "Ready for dyno"),
+        self.dyno_engine_title = tk.Label(header, text=self.tr("ui_dyno_ready"),
                                           bg="#0f1720", fg="white", font=("Arial", 15, "bold"))
         self.dyno_engine_title.pack(side=tk.LEFT)
         controls = tk.Frame(header, bg="#0f1720")
@@ -2390,8 +2876,11 @@ class EngineApp:
 
         stats = tk.Frame(self.dyno_screen, bg="#101720", highlightbackground="#263746", highlightthickness=1)
         stats.grid(row=1, column=1, sticky="nsew", padx=(12, 28), pady=(0, 14))
-        tk.Label(stats, text=self._ui("ŽIVÁ TELEMETRIE", "LIVE TELEMETRY"), bg="#101720", fg="#8fa5b7",
-                 font=("Arial", 10, "bold")).pack(pady=(28, 18))
+        self.dyno_telemetry_title = tk.Label(
+            stats, textvariable=self.lang_vars["ui_live_telemetry"], bg="#101720", fg="#8fa5b7",
+            font=("Arial", 10, "bold")
+        )
+        self.dyno_telemetry_title.pack(pady=(28, 18))
         self.dyno_live_rpm = tk.Label(stats, text="1000", bg="#101720", fg="#43d9ff", font=("Courier", 42, "bold"))
         self.dyno_live_rpm.pack()
         tk.Label(stats, text="RPM", bg="#101720", fg="#8fa5b7", font=("Arial", 10, "bold")).pack(pady=(0, 24))
@@ -2405,7 +2894,7 @@ class EngineApp:
         trq_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(6, 0))
         self.dyno_live_trq = tk.Label(trq_card, text="0", bg="#151f2a", fg="#43d9ff", font=("Courier", 27, "bold"))
         self.dyno_live_trq.pack(); tk.Label(trq_card, text="Nm", bg="#151f2a", fg="#a8b6c2").pack()
-        self.dyno_status = tk.Label(stats, text=self._ui("Připraveno", "Ready"), bg="#101720", fg="#8fa5b7",
+        self.dyno_status = tk.Label(stats, text=self.tr("ui_ready"), bg="#101720", fg="#8fa5b7",
                                     font=("Arial", 12, "bold"), wraplength=310, justify=tk.CENTER)
         self.dyno_status.pack(fill=tk.X, padx=30, pady=28)
 
@@ -2548,6 +3037,10 @@ class EngineApp:
             else:
                 self.frame_custom_gears.grid_remove()
 
+        if hasattr(self, 'scrollable_tabs'):
+            for scroll_tab in self.scrollable_tabs:
+                scroll_tab._schedule_refresh()
+
     def update_displacement(self):
         try:
             b, s, c = self.vars['bore'].get(), self.vars['stroke'].get(), self.vars['cylinders'].get()
@@ -2602,17 +3095,17 @@ class EngineApp:
                 errors.append(key)
 
         limits = {
-            'bore': (50.0, 120.0), 'stroke': (50.0, 120.0), 'radiator': (10.0, 100.0),
+            'bore': (50.0, 120.0), 'stroke': (20.0, 150.0), 'radiator': (10.0, 100.0),
             'tech_level': (50.0, 150.0), 'balancer_mass': (0.0, 50.0), 'vvl_prof': (0.0, 100.0),
             'vvl_rpm': (500.0, 12000.0), 'springs': (0.0, 100.0), 'cam_profile': (0.0, 100.0),
             'comp_ratio': (7.0, 22.0), 'intercooler': (0.0, 100.0), 'turb_size': (10.0, 100.0),
             'boost': (0.1, 3.0), 'comp_size': (10.0, 100.0), 'sc_pulley': (0.1, 3.0),
             'carb_size': (0.0, 100.0), 'man_size': (0.0, 100.0), 'fuel_map': (0.0, 100.0),
-            'afr': (10.0, 20.0), 'ignition': (0.0, 100.0), 'rpm_limit': (3000.0, 12000.0),
+            'afr': (10.0, 20.0), 'ignition': (0.0, 100.0), 'rpm_limit': (3000.0, 20000.0),
             'head_size': (0.0, 100.0), 'exh_diam': (25.0, 150.0), 'veh_weight': (500.0, 3000.0),
             'veh_cd': (0.20, 0.60), 'veh_area': (1.2, 4.0), 'wheel_radius': (0.20, 0.55),
-            'speed_limiter': (0.0, 450.0), 'downforce_cla': (0.0, 4.0), 'tire_grip': (0.5, 2.0),
-            'final_drive': (2.0, 6.0),
+            'speed_limiter': (0.0, 450.0), 'downforce_cla': (0.0, 4.0), 'tire_grip': (0.3, 2.5),
+            'final_drive': (1.5, 10.0),
         }
         for key, (low, high) in limits.items():
             if key not in params:
@@ -2676,7 +3169,7 @@ class EngineApp:
         spec = f"{disp:.0f} cc {params.get('config', '')}{params.get('cylinders', '')}"
         self._dyno_header = f"{self.tr('msg_dyno_hdr')} {name} ({spec}) ---"
         self.dyno_engine_title.config(text=f"{name}   •   {spec}   •   {params.get('aspiration', '')}")
-        self.dyno_status.config(text=self._ui("Měření probíhá…", "Dyno pull in progress…"), fg="#ffcc55")
+        self.dyno_status.config(text=self.tr("ui_dyno_running"), fg="#ffcc55")
         self._dyno_index = 0
         self._dyno_step_ms = 80
         self._dyno_temp_path = None
@@ -2768,9 +3261,8 @@ class EngineApp:
         self.btn_graph.config(state=tk.NORMAL)
         if not self.dyno_results.get('blew_up', True):
             self.nav_buttons['track'].config(state=tk.NORMAL)
-            if SOUND_AVAILABLE:
-                self.nav_buttons['throttle'].config(state=tk.NORMAL)
-                self.nav_buttons['drive'].config(state=tk.NORMAL)
+            self.nav_buttons['throttle'].config(state=tk.NORMAL)
+            self.nav_buttons['drive'].config(state=tk.NORMAL)
         if self._dyno_changed_during_run:
             self.invalidate_dyno()
 
@@ -2839,24 +3331,32 @@ class EngineApp:
         pedal_card = tk.Frame(self.rev_window, bg="#101720", highlightbackground="#263746", highlightthickness=1)
         pedal_card.grid(row=0, column=1, sticky="nsew", padx=(18, 54), pady=54)
         pedal_card.grid_columnconfigure(0, weight=1); pedal_card.grid_rowconfigure(2, weight=1)
-        tk.Label(pedal_card, text=self._ui("OVLÁDÁNÍ MOTORU", "ENGINE CONTROL"), bg="#101720",
-                 fg="#43d9ff", font=("Arial", 14, "bold")).grid(row=0, column=0, pady=(42, 10))
-        tk.Label(pedal_card,
-                 text=self._ui("Podrž tlačítko pro plný plyn. Uvolněním motor necháš spadnout na volnoběh.",
-                               "Hold the button for full throttle. Release it to return to idle."),
-                 bg="#101720", fg="#aebdca", font=("Arial", 11), wraplength=390,
-                 justify=tk.CENTER).grid(row=1, column=0, padx=36, pady=(0, 20))
-        btn_pedal = tk.Button(pedal_card, text=self.tr("btn_pedal"),
-                              bg="#1e3a4c", fg="white", activebackground="#18a8c9",
-                              activeforeground="#071015", relief=tk.FLAT, bd=0,
-                              font=("Arial", 13, "bold"), cursor="hand2")
-        btn_pedal.grid(row=2, column=0, padx=55, pady=35, sticky="nsew")
-        btn_pedal.bind("<ButtonPress-1>", lambda e: setattr(self, 'throttle_active', True) if not self.engine_blown else None)
-        btn_pedal.bind("<ButtonRelease-1>", lambda e: setattr(self, 'throttle_active', False))
-        btn_pedal.bind("<Leave>", lambda e: setattr(self, 'throttle_active', False))
-        tk.Label(pedal_card, text=self._ui("ESC nebo levé menu bezpečně ukončí režim.",
-                                           "ESC or the left menu safely closes this mode."),
-                 bg="#101720", fg="#6f8395", font=("Arial", 9)).grid(row=3, column=0, pady=(0, 28))
+        self.throttle_control_title = tk.Label(
+            pedal_card, textvariable=self.lang_vars["ui_engine_control"], bg="#101720",
+            fg="#43d9ff", font=("Arial", 14, "bold")
+        )
+        self.throttle_control_title.grid(row=0, column=0, pady=(42, 10))
+        self.throttle_instruction = tk.Label(
+            pedal_card, textvariable=self.lang_vars["ui_throttle_instruction"],
+            bg="#101720", fg="#aebdca", font=("Arial", 11), wraplength=390,
+            justify=tk.CENTER
+        )
+        self.throttle_instruction.grid(row=1, column=0, padx=36, pady=(0, 20))
+        self.btn_pedal = tk.Button(
+            pedal_card, textvariable=self.lang_vars["btn_pedal"],
+            bg="#1e3a4c", fg="white", activebackground="#18a8c9",
+            activeforeground="#071015", relief=tk.FLAT, bd=0,
+            font=("Arial", 13, "bold"), cursor="hand2"
+        )
+        self.btn_pedal.grid(row=2, column=0, padx=55, pady=35, sticky="nsew")
+        self.btn_pedal.bind("<ButtonPress-1>", lambda e: setattr(self, 'throttle_active', True) if not self.engine_blown else None)
+        self.btn_pedal.bind("<ButtonRelease-1>", lambda e: setattr(self, 'throttle_active', False))
+        self.btn_pedal.bind("<Leave>", lambda e: setattr(self, 'throttle_active', False))
+        self.throttle_exit_hint = tk.Label(
+            pedal_card, textvariable=self.lang_vars["ui_mode_exit_hint"],
+            bg="#101720", fg="#6f8395", font=("Arial", 9)
+        )
+        self.throttle_exit_hint.grid(row=3, column=0, pady=(0, 28))
 
         self.show_screen("throttle")
         self.start_audio_stream()
@@ -2934,8 +3434,11 @@ class EngineApp:
         dashboard = tk.Frame(self.drive_win, bg="#101720", highlightbackground="#263746", highlightthickness=1)
         dashboard.grid(row=0, column=1, sticky="nsew", padx=(18, 54), pady=54)
         dashboard.grid_columnconfigure(0, weight=1)
-        tk.Label(dashboard, text=self._ui("RYCHLOST", "SPEED"), bg="#101720", fg="#8fa5b7",
-                 font=("Arial", 10, "bold")).grid(row=0, column=0, pady=(38, 0))
+        self.drive_speed_title = tk.Label(
+            dashboard, textvariable=self.lang_vars["ui_speed"], bg="#101720", fg="#8fa5b7",
+            font=("Arial", 10, "bold")
+        )
+        self.drive_speed_title.grid(row=0, column=0, pady=(38, 0))
         self.lbl_speed = tk.Label(dashboard, text="0", font=("Courier", 76, "bold"), bg="#101720", fg='#43d9ff')
         self.lbl_speed.grid(row=1, column=0, pady=(0, 0))
         self.lbl_speed_unit = tk.Label(dashboard, textvariable=self.speed_unit_text,
@@ -2944,11 +3447,15 @@ class EngineApp:
 
         gear_card = tk.Frame(dashboard, bg="#151f2a", padx=26, pady=14)
         gear_card.grid(row=3, column=0, sticky="ew", padx=42, pady=22)
-        tk.Label(gear_card, text="GEAR", font=("Arial", 12, "bold"), bg="#151f2a", fg='#8fa5b7').pack(side=tk.LEFT)
+        self.drive_gear_title = tk.Label(
+            gear_card, textvariable=self.lang_vars["ui_gear"], font=("Arial", 12, "bold"),
+            bg="#151f2a", fg='#8fa5b7'
+        )
+        self.drive_gear_title.pack(side=tk.LEFT)
         self.lbl_gear = tk.Label(gear_card, text="N", font=("Courier", 34, "bold"), bg="#151f2a", fg='white')
         self.lbl_gear.pack(side=tk.RIGHT)
 
-        self.lbl_tcs = tk.Label(dashboard, text="TCS READY", font=("Arial", 13, "bold"),
+        self.lbl_tcs = tk.Label(dashboard, text=self.tr("ui_tcs_ready"), font=("Arial", 13, "bold"),
                                 bg='#1b2631', fg='#8fa5b7', padx=18, pady=9)
         self.lbl_tcs.grid(row=4, column=0, sticky="ew", padx=42, pady=6)
         self.lbl_accel = tk.Label(dashboard, text=f"{self._acceleration_label()}: -- s",
@@ -2957,10 +3464,16 @@ class EngineApp:
 
         btn_container = tk.Frame(dashboard, bg='#101720')
         btn_container.grid(row=6, column=0, pady=(4, 35))
-        self.btn_launch = ttk.Button(btn_container, text=self.tr("btn_launch"), command=self.start_launch)
+        self.drive_launch_text = tk.StringVar(value=self.tr("btn_launch"))
+        self.drive_skip_text = tk.StringVar(value=self.tr("btn_skip"))
+        self.btn_launch = ttk.Button(
+            btn_container, textvariable=self.drive_launch_text, command=self.start_launch
+        )
         self.btn_launch.pack(side=tk.LEFT, padx=7)
-        self.btn_skip = ttk.Button(btn_container, text=self.tr("btn_skip"), command=self.skip_to_top_speed,
-                                   state=tk.DISABLED)
+        self.btn_skip = ttk.Button(
+            btn_container, textvariable=self.drive_skip_text, command=self.skip_to_top_speed,
+            state=tk.DISABLED
+        )
         self.btn_skip.pack(side=tk.LEFT, padx=7)
 
         self.drive_running = False
@@ -3011,9 +3524,10 @@ class EngineApp:
 
         self.lbl_speed.config(text="0")
         self.lbl_gear.config(text="1", fg="white")
-        self.lbl_tcs.config(text="TCS OK", fg="gray", bg="#222222")
+        self.lbl_tcs.config(text=self.tr("ui_tcs_ok"), fg="gray", bg="#222222")
         self.lbl_accel.config(text=f"{self._acceleration_label()}: -- s", fg="gray")
-        self.btn_launch.config(state=tk.DISABLED, text=self.tr("btn_accel"))
+        self.drive_launch_text.set(self.tr("btn_accel"))
+        self.btn_launch.config(state=tk.DISABLED)
         self.btn_skip.config(state=tk.NORMAL)
 
     def _finish_drive_result(self, result):
@@ -3047,10 +3561,11 @@ class EngineApp:
         self.lbl_speed.config(text=f"{self._speed_from_mps(self.v):.0f}")
         self.lbl_gear.config(text=str(self.gear + 1), fg="white")
         self.lbl_tcs.config(
-            text=f"MAX: {self._speed_from_mps(self.max_achieved_speed):.0f} {self._speed_unit_label()}",
+            text=f"{self.tr('ui_max')}: {self._speed_from_mps(self.max_achieved_speed):.0f} {self._speed_unit_label()}",
             fg="black", bg="lime"
         )
-        self.btn_launch.config(state=tk.NORMAL, text=self.tr("btn_retry"))
+        self.drive_launch_text.set(self.tr("btn_retry"))
+        self.btn_launch.config(state=tk.NORMAL)
         self.btn_skip.config(state=tk.DISABLED)
 
     def skip_to_top_speed(self):
@@ -3250,9 +3765,9 @@ class EngineApp:
             self.lbl_gear.config(text=str(self.gear + 1), fg="white")
 
         if self.slip_active:
-            self.lbl_tcs.config(text="SLIP", fg="black", bg="orange")
+            self.lbl_tcs.config(text=self.tr("ui_slip"), fg="black", bg="orange")
         else:
-            self.lbl_tcs.config(text="TCS OK", fg="gray", bg="#222222")
+            self.lbl_tcs.config(text=self.tr("ui_tcs_ok"), fg="gray", bg="#222222")
 
         reference = self.drive_reference_result
         target_reached = (
@@ -3287,76 +3802,211 @@ class EngineApp:
         if old is not None and old.winfo_exists():
             old.destroy()
 
-        self.lang_vars['btn_track_start'].set(T[self.vars['app_lang'].get()]['btn_track_start'])
         self.track_win = EmbeddedScreen(self, "track", bg="#0b1017")
         self.screens["track"] = self.track_win
-        self.track_win.grid_columnconfigure(0, weight=5)
-        self.track_win.grid_columnconfigure(1, weight=3, minsize=390)
-        self.track_win.grid_rowconfigure(0, weight=1)
 
-        left = tk.Frame(self.track_win, bg="#101720", highlightbackground="#263746", highlightthickness=1)
-        left.grid(row=0, column=0, sticky="nsew", padx=(38, 16), pady=38)
-        left.grid_rowconfigure(0, weight=1); left.grid_columnconfigure(0, weight=1)
-        self.track_canvas = tk.Canvas(left, width=self.track_canvas_width, height=self.track_canvas_height,
-                                      bg='#0b4d20', highlightthickness=0)
-        self.track_canvas.grid(row=0, column=0, padx=18, pady=18)
+        # The complete track screen becomes scroll-safe only when a compact layout
+        # genuinely needs more vertical room. At normal resolutions the scrollbar
+        # stays hidden, just like the adaptive builder tabs.
+        self.track_scroller = AutoScrollFrame(self.track_win, background="#0b1017")
+        self.track_scroller.pack(fill=tk.BOTH, expand=True)
+        self.track_layout = tk.Frame(self.track_scroller.content, bg="#0b1017")
+        self.track_layout.pack(fill=tk.BOTH, expand=True)
+
+        self.track_left = tk.Frame(
+            self.track_layout, bg="#101720", highlightbackground="#263746", highlightthickness=1
+        )
+        self.track_left.grid_rowconfigure(0, weight=1)
+        self.track_left.grid_columnconfigure(0, weight=1)
+        self.track_canvas = tk.Canvas(
+            self.track_left, width=640, height=500, bg='#0b4d20', highlightthickness=0
+        )
+        self.track_canvas.grid(row=0, column=0, sticky="nsew", padx=18, pady=18)
+        self.track_canvas.bind("<Configure>", self._schedule_track_redraw, add="+")
+
+        self.track_right = tk.Frame(
+            self.track_layout, bg="#101720", highlightbackground="#263746", highlightthickness=1
+        )
+        self.track_right.grid_columnconfigure(0, weight=1)
+        self.track_right.grid_columnconfigure(1, weight=1)
+
+        self.lbl_track_status = tk.Label(
+            self.track_right, text=self.tr('msg_track_ready'), font=('Arial', 14, 'bold'),
+            bg='#101720', fg='#8fa5b7', wraplength=340
+        )
+        self.lbl_track_lap = tk.Label(
+            self.track_right, text=f"{self.tr('lbl_lap_time')}: --:--.---",
+            font=('Courier', 22, 'bold'), bg='#101720', fg='#43d9ff'
+        )
+
+        self.track_live_panel = tk.Frame(self.track_right, bg="#151f2a", padx=22, pady=18)
+        self.lbl_track_live_speed = tk.Label(
+            self.track_live_panel, text=f"{self.tr('lbl_track_speed')}: 0 {self._speed_unit_label()}",
+            font=('Courier', 13), bg='#151f2a', fg='white'
+        )
+        self.lbl_track_live_speed.pack(pady=4)
+        self.lbl_track_live_gear = tk.Label(
+            self.track_live_panel, text=f"{self.tr('lbl_track_gear')}: N",
+            font=('Courier', 13), bg='#151f2a', fg='white'
+        )
+        self.lbl_track_live_gear.pack(pady=4)
+        self.lbl_track_live_sector = tk.Label(
+            self.track_live_panel, text=f"{self.tr('lbl_track_sector')}: 1",
+            font=('Courier', 13), bg='#151f2a', fg='white'
+        )
+        self.lbl_track_live_sector.pack(pady=4)
+
+        self.lbl_track_stats = tk.Label(
+            self.track_right, text=f"{self.tr('lbl_track_length')}: 3.605 km",
+            justify=tk.LEFT, font=('Courier', 11), bg='#101720', fg='#8fa5b7', wraplength=330
+        )
+        self.lbl_track_sectors = tk.Label(
+            self.track_right, text='S1: --.-- s\nS2: --.-- s\nS3: --.-- s',
+            justify=tk.LEFT, font=('Courier', 11), bg='#101720', fg='white'
+        )
+        self.track_button_text = tk.StringVar(value=self.tr('btn_track_start'))
+        self.btn_track_start = ttk.Button(
+            self.track_right, textvariable=self.track_button_text, command=self.start_track_lap
+        )
+
+        self.track_running = False
+        self.track_result = None
+        self.track_sim_elapsed = 0.0
+        self.track_last_real_time = None
+        self.track_current_distance = 0.0
+        self.track_canvas_points = []
+        self.track_car = None
+
+        self.track_scroller.canvas.bind("<Configure>", self._schedule_track_layout, add="+")
+        self.show_screen("track")
+        self.root.after_idle(self._apply_track_layout)
+
+    def _schedule_track_layout(self, event=None):
+        if self._track_layout_pending:
+            return
+        self._track_layout_pending = True
+        self.root.after_idle(self._apply_track_layout)
+
+    def _apply_track_layout(self):
+        self._track_layout_pending = False
+        if (getattr(self, 'track_win', None) is None or not self.track_win.winfo_exists()
+                or not hasattr(self, 'track_layout')):
+            return
+
+        viewport_width = max(1, self.track_scroller.canvas.winfo_width())
+        compact = viewport_width < 980
+        self._track_compact_layout = compact
+
+        self.track_left.grid_forget()
+        self.track_right.grid_forget()
+        for column in range(2):
+            self.track_layout.grid_columnconfigure(column, weight=0, minsize=0)
+        for row in range(2):
+            self.track_layout.grid_rowconfigure(row, weight=0, minsize=0)
+
+        if compact:
+            self.track_layout.grid_columnconfigure(0, weight=1)
+            self.track_layout.grid_rowconfigure(0, weight=1, minsize=380)
+            self.track_layout.grid_rowconfigure(1, weight=0, minsize=260)
+            self.track_left.grid(row=0, column=0, sticky="nsew", padx=0, pady=(0, 10))
+            self.track_right.grid(row=1, column=0, sticky="ew", padx=0, pady=(10, 0))
+            self._grid_track_information(compact=True)
+        else:
+            self.track_layout.grid_columnconfigure(0, weight=5, minsize=420)
+            self.track_layout.grid_columnconfigure(1, weight=3, minsize=310)
+            self.track_layout.grid_rowconfigure(0, weight=1, minsize=500)
+            self.track_left.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=0)
+            self.track_right.grid(row=0, column=1, sticky="nsew", padx=(10, 0), pady=0)
+            self._grid_track_information(compact=False)
+
+        self.track_scroller._schedule_refresh()
+        self._schedule_track_redraw()
+
+    def _grid_track_information(self, compact=False):
+        widgets = (
+            self.lbl_track_status, self.lbl_track_lap, self.track_live_panel,
+            self.lbl_track_stats, self.lbl_track_sectors, self.btn_track_start
+        )
+        for widget in widgets:
+            widget.grid_forget()
+
+        if compact:
+            self.track_right.grid_columnconfigure(0, weight=1)
+            self.track_right.grid_columnconfigure(1, weight=1)
+            self.lbl_track_status.config(wraplength=720)
+            self.lbl_track_status.grid(row=0, column=0, columnspan=2, pady=(18, 8), padx=20)
+            self.lbl_track_lap.grid(row=1, column=0, columnspan=2, pady=6)
+            self.track_live_panel.grid(row=2, column=0, sticky="nsew", padx=(20, 10), pady=12)
+            self.lbl_track_stats.grid(row=2, column=1, sticky="w", padx=(10, 20), pady=12)
+            self.lbl_track_sectors.grid(row=3, column=0, pady=(6, 20))
+            self.btn_track_start.grid(row=3, column=1, pady=(6, 20))
+        else:
+            self.track_right.grid_columnconfigure(0, weight=1)
+            self.track_right.grid_columnconfigure(1, weight=0)
+            self.lbl_track_status.config(wraplength=340)
+            self.lbl_track_status.grid(row=0, column=0, pady=(36, 14), padx=24)
+            self.lbl_track_lap.grid(row=1, column=0, pady=8)
+            self.track_live_panel.grid(row=2, column=0, sticky="ew", padx=28, pady=18)
+            self.lbl_track_stats.grid(row=3, column=0, pady=10)
+            self.lbl_track_sectors.grid(row=4, column=0, pady=10)
+            self.btn_track_start.grid(row=5, column=0, pady=(16, 30))
+
+    def _schedule_track_redraw(self, event=None):
+        if self._track_redraw_pending:
+            return
+        self._track_redraw_pending = True
+        self.root.after_idle(self._redraw_track_canvas)
+
+    def _redraw_track_canvas(self):
+        self._track_redraw_pending = False
+        if (getattr(self, 'track_canvas', None) is None or not self.track_canvas.winfo_exists()):
+            return
+        width = max(1, self.track_canvas.winfo_width())
+        height = max(1, self.track_canvas.winfo_height())
+        if width < 120 or height < 120:
+            return
+
+        self.track_canvas_width = width
+        self.track_canvas_height = height
+        self.track_canvas.delete("all")
         self.track_canvas_points = self._build_track_canvas_points(TEST_TRACK_GEOMETRY['points'])
-        flat_points = [coord for point in self.track_canvas_points for coord in point]
-        self.track_canvas.create_line(*flat_points, fill='#24282c', width=42, smooth=False, joinstyle=tk.ROUND)
-        self.track_canvas.create_line(*flat_points, fill='#676767', width=34, smooth=False, joinstyle=tk.ROUND)
-        self.track_canvas.create_line(*flat_points, fill='#d8d8d8', width=2, smooth=False, joinstyle=tk.ROUND)
+        closed = self.track_canvas_points + [self.track_canvas_points[0]]
+        flat_points = [coord for point in closed for coord in point]
+        smallest = min(width, height)
+        outer_width = max(22, int(smallest * 0.072))
+        inner_width = max(16, int(outer_width * 0.80))
+        centre_width = max(1, int(smallest * 0.004))
+        self.track_canvas.create_line(*flat_points, fill='#24282c', width=outer_width,
+                                      smooth=False, joinstyle=tk.ROUND)
+        self.track_canvas.create_line(*flat_points, fill='#676767', width=inner_width,
+                                      smooth=False, joinstyle=tk.ROUND)
+        self.track_canvas.create_line(*flat_points, fill='#d8d8d8', width=centre_width,
+                                      smooth=False, joinstyle=tk.ROUND)
 
         p0 = np.asarray(self.track_canvas_points[0], dtype=float)
         p1 = np.asarray(self.track_canvas_points[1], dtype=float)
         tangent = p1 - p0
         tangent /= max(np.linalg.norm(tangent), 1e-9)
         normal = np.asarray((-tangent[1], tangent[0]))
-        start_a = p0 - normal * 18.0
-        start_b = p0 + normal * 18.0
-        self.track_canvas.create_line(start_a[0], start_a[1], start_b[0], start_b[1], fill='white', width=6)
-        self.track_canvas.create_text(p0[0] + 12, p0[1] - 25, text='START / FINISH', fill='white', font=('Arial', 10, 'bold'))
-        x0, y0 = self.track_canvas_points[0]
-        self.track_car = self.track_canvas.create_oval(x0 - 9, y0 - 9, x0 + 9, y0 + 9,
-                                                        fill='#00ffff', outline='white', width=2)
+        half_line = max(12.0, smallest * 0.030)
+        start_a = p0 - normal * half_line
+        start_b = p0 + normal * half_line
+        self.track_canvas.create_line(start_a[0], start_a[1], start_b[0], start_b[1],
+                                      fill='white', width=max(3, int(smallest * 0.009)))
+        self.track_canvas.create_text(
+            p0[0] + 12, p0[1] - max(18, smallest * 0.040),
+            text=self.tr('ui_track_start_finish'), fill='white', font=('Arial', 9, 'bold')
+        )
 
-        right = tk.Frame(self.track_win, bg="#101720", highlightbackground="#263746", highlightthickness=1)
-        right.grid(row=0, column=1, sticky="nsew", padx=(16, 38), pady=38)
-        right.grid_columnconfigure(0, weight=1)
-        self.lbl_track_status = tk.Label(right, text=self.tr('msg_track_ready'), font=('Arial', 14, 'bold'),
-                                         bg='#101720', fg='#8fa5b7', wraplength=340)
-        self.lbl_track_status.grid(row=0, column=0, pady=(42, 18), padx=25)
-        self.lbl_track_lap = tk.Label(right, text=f"{self.tr('lbl_lap_time')}: --:--.---",
-                                      font=('Courier', 22, 'bold'), bg='#101720', fg='#43d9ff')
-        self.lbl_track_lap.grid(row=1, column=0, pady=8)
-
-        live = tk.Frame(right, bg="#151f2a", padx=22, pady=18)
-        live.grid(row=2, column=0, sticky="ew", padx=30, pady=22)
-        self.lbl_track_live_speed = tk.Label(live, text=f"{self.tr('lbl_track_speed')}: 0 {self._speed_unit_label()}",
-                                              font=('Courier', 13), bg='#151f2a', fg='white')
-        self.lbl_track_live_speed.pack(pady=4)
-        self.lbl_track_live_gear = tk.Label(live, text=f"{self.tr('lbl_track_gear')}: N",
-                                             font=('Courier', 13), bg='#151f2a', fg='white')
-        self.lbl_track_live_gear.pack(pady=4)
-        self.lbl_track_live_sector = tk.Label(live, text=f"{self.tr('lbl_track_sector')}: 1",
-                                               font=('Courier', 13), bg='#151f2a', fg='white')
-        self.lbl_track_live_sector.pack(pady=4)
-
-        self.lbl_track_stats = tk.Label(right, text=f"{self.tr('lbl_track_length')}: 3.605 km",
-                                         justify=tk.LEFT, font=('Courier', 11), bg='#101720', fg='#8fa5b7',
-                                         wraplength=330)
-        self.lbl_track_stats.grid(row=3, column=0, pady=12)
-        self.lbl_track_sectors = tk.Label(right, text='S1: --.-- s\nS2: --.-- s\nS3: --.-- s',
-                                           justify=tk.LEFT, font=('Courier', 11), bg='#101720', fg='white')
-        self.lbl_track_sectors.grid(row=4, column=0, pady=12)
-        self.btn_track_start = ttk.Button(right, textvariable=self.lang_vars['btn_track_start'],
-                                          command=self.start_track_lap)
-        self.btn_track_start.grid(row=5, column=0, pady=(18, 36))
-
-        self.track_running = False
-        self.track_result = None
-        self.track_sim_elapsed = 0.0
-        self.track_last_real_time = None
-        self.show_screen("track")
+        if self.track_result is not None:
+            x, y = self._track_map_position(self.track_current_distance)
+        else:
+            x, y = self.track_canvas_points[0]
+        radius = max(6, int(smallest * 0.014))
+        self.track_car = self.track_canvas.create_oval(
+            x - radius, y - radius, x + radius, y + radius,
+            fill='#00ffff', outline='white', width=2
+        )
 
     def _format_lap_time(self, seconds):
         minutes = int(seconds // 60)
@@ -3371,7 +4021,7 @@ class EngineApp:
         span = np.maximum(max_xy - min_xy, 1.0)
         width = float(self.track_canvas_width)
         height = float(self.track_canvas_height)
-        margin = 42.0
+        margin = max(24.0, min(width, height) * 0.07)
         scale = min((width - 2.0 * margin) / span[0], (height - 2.0 * margin) / span[1])
         centred = (points - (min_xy + max_xy) * 0.5) * scale
         canvas = centred + np.asarray((width * 0.5, height * 0.5))
@@ -3404,8 +4054,11 @@ class EngineApp:
             messagebox.showerror(self.tr('msg_invalid'), str(exc), parent=self.track_win)
             return
 
+        if not self.track_canvas_points:
+            self._redraw_track_canvas()
         self.track_running = True
         self.track_sim_elapsed = 0.0
+        self.track_current_distance = 0.0
         self.track_last_real_time = time.perf_counter()
         self.track_playback_rate = max(1.0, self.track_result['lap_time'] / 10.0)
         self.lbl_track_status.config(text=self.tr('msg_track_running'), fg='#ffcc55')
@@ -3433,6 +4086,7 @@ class EngineApp:
         fraction = 0.0 if t1 <= t0 else (shown_time - t0) / (t1 - t0)
         distances = self.track_result['distances']
         distance = distances[index] + (distances[index + 1] - distances[index]) * fraction
+        self.track_current_distance = float(distance)
         x, y = self._track_map_position(distance)
         self.track_canvas.coords(self.track_car, x - 7, y - 7, x + 7, y + 7)
 
@@ -3459,13 +4113,16 @@ class EngineApp:
         )
         self.lbl_track_sectors.config(text=f"S1: {sectors[0]:.3f} s\nS2: {sectors[1]:.3f} s\nS3: {sectors[2]:.3f} s")
         self.btn_track_start.config(state=tk.NORMAL)
-        self.lang_vars['btn_track_start'].set(T[self.vars['app_lang'].get()]['btn_track_retry'])
+        self.track_button_text.set(self.tr('btn_track_retry'))
 
     def on_track_close(self):
         self._cleanup_screen('track')
         self._activate_screen('builder')
 
     def start_audio_stream(self, is_drive=False):
+        if not SOUND_AVAILABLE:
+            self.stream = None
+            return
         cylinders = int(self.dyno_params['cylinders'])
         aspiration = self.dyno_params['aspiration']
         crank = self.dyno_params['crank']

@@ -4,9 +4,9 @@
 
 A homemade, open-source engine-building, dyno, vehicle, and lap-time simulator inspired by the "Automation"-style car tycoon genre.
 
-Build an engine from the crankshaft up, run it on a virtual dyno, test its cooling under manual throttle, measure 0–100 km/h or 0–60 mph and top speed, then send the car around a fully simulated 3.605 km test track. Engine sound is generated procedurally and reacts live to RPM, throttle, cylinder count, aspiration, and crank type.
+Build an engine from the crankshaft up, run it on a virtual dyno, test its cooling under manual throttle, measure 0–100 km/h or 0–60 mph and top speed, then send the car through a deterministic 3.605 km Track Simulation. Engine sound is generated procedurally and reacts live to RPM, throttle, cylinder count, aspiration, and crank type.
 
-> **Current release: v4.8.5 — Fullscreen & Settings Update + Tweaks**
+> **Current release: v4.9.1 — Localization & Tooltip Stability Update**
 
 ![screenshot placeholder](docs/screenshot1.png)
 
@@ -31,17 +31,20 @@ Build an engine from the crankshaft up, run it on a virtual dyno, test its cooli
   - leave it disabled to retain the original automatic ratio sets
   - enable it to edit every ratio independently
   - built-in presets keep automatic gearing by default, preserving their established performance
-- **3.605 km test track with a flying-lap simulation**
+- **3.605 km Track Simulation with a flying timed lap**
   - three timed sectors
   - live speed, gear, sector, and lap-time telemetry
   - braking zones, corner-speed limits, tire friction-circle behavior, acceleration, drag, downforce, and shift penalties
   - one shared track geometry for both physics and rendering, so the displayed circuit is the circuit being simulated
 - **Procedurally generated engine audio** with no prerecorded engine samples
-- **Built-in tooltips** explaining the engineering effect of each parameter
+- **Stable built-in tooltips** explaining each parameter, limited to one active tooltip and cleaned up safely during screen changes
 - **Safe Save/Load** of portable JSON engine and vehicle configurations, including compatibility defaults and stricter validation for older or malformed files
 - **Real-world-inspired presets** for quick starting points
-- **Bilingual UI**: English and Czech, switchable at runtime from Settings
+- **Fully bilingual UI**: English and Czech, switchable at runtime across active and completed simulation screens
 - **Selectable speed units**: km/h with 0–100 km/h timing, or mph with 0–60 mph timing
+- **High-RPM motorsport calibration** for suitable naturally aspirated, short-stroke race engines with manually entered limits up to 20,000 RPM
+- **Expert manual ranges** beyond the normal slider ranges, including 20–150 mm stroke, 0.3–2.5 tire grip, and 1.5–10.0 final drive
+- **Responsive small-screen layouts** with automatic tab scrolling and a Track Simulation panel that rearranges itself when the window is narrow
 
 ![screenshot placeholder](docs/screenshot2.png)
 
@@ -62,13 +65,13 @@ Download the latest `.exe` from the [Releases](../../releases) page and run it d
 Requires Python 3.10+.
 
 ```bash
-pip install numpy matplotlib sounddevice
-python engine_sim.py
+pip install -r requirements.txt
+python automation_diy_4.9.1.py
 ```
 
 `tkinter` is included with most standard Windows Python installations. On some Linux distributions it may need to be installed separately through the system package manager.
 
-`sounddevice` and its PortAudio backend are optional. If they are unavailable, the simulator still runs normally, but live engine-audio controls are disabled.
+`sounddevice` and its PortAudio backend are optional. If they are unavailable, Manual Throttle and Test Drive remain usable in silent mode and the app displays an installation guide.
 
 The app starts in fullscreen mode. Press **F11** to toggle fullscreen and use **Esc** to close an overlay, return to the builder from another screen, or leave fullscreen when already in the builder. Load/Save, language, speed units, and Quit are available from **Settings** in the sidebar.
 
@@ -80,10 +83,10 @@ The app starts in fullscreen mode. Press **F11** to toggle fullscreen and use **
 4. Inspect the completed torque and power curves on the Dyno screen.
 5. Optionally run **2. Manual Throttle**.
 6. Run **3. Test Drive** for 0–100 km/h or 0–60 mph and top speed.
-7. Run **4. Test Track** for a comparable flying-lap result.
+7. Run **4. Track Simulation** for a comparable flying-lap result.
 8. Open **Settings → Save engine / vehicle as...** when you are happy with the build.
 
-For a complete explanation of the interface, Settings, speed units, every tab, simulation mode, failure model, custom gearing, and the test track, see **[USER_GUIDE.md](docs/USER_GUIDE.md)**.
+For a complete explanation of the interface, Settings, speed units, every tab, simulation mode, failure model, custom gearing, and Track Simulation, see **[USER_GUIDE.md](docs/USER_GUIDE.md)**.
 
 ## Simulation Scope
 

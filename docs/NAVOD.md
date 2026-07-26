@@ -4,16 +4,18 @@
 
 Tento návod prochází simulátor v pořadí, v jakém se běžně používá. Tooltips přímo v aplikaci poskytují rychlé vysvětlení jednotlivých parametrů; tento dokument ukazuje, jak do sebe jednotlivé systémy zapadají.
 
-Návod platí pro **Automation DIY v4.8.5 — Fullscreen & Settings Update + Tweaks**.
+Návod platí pro **Automation DIY v4.9.1 — Localization & Tooltip Stability Update**.
 
 ## 1. Celkový postup práce
 
-Simulátor se otevírá v režimu celé obrazovky a všechny hlavní režimy drží uvnitř jediného okna. Levé menu přepíná mezi obrazovkami Garáž, Dyno & Graf, Ruční plyn, Zkušební jízda a Testovací dráha.
+Simulátor se otevírá v režimu celé obrazovky a všechny hlavní režimy drží uvnitř jediného okna. Levé menu přepíná mezi obrazovkami Garáž, Dyno & Graf, Ruční plyn, Zkušební jízda a Simulace okruhu.
 
 - Klávesou **F11** zapneš nebo vypneš fullscreen.
 - Klávesa **Esc** zavře Nastavení nebo chybový overlay, vrátí tě z jiného režimu do Garáže, případně při otevřené Garáži opustí fullscreen.
 - V **Nastavení** můžeš načíst nebo uložit build, změnit jazyk, vybrat km/h či mph nebo ukončit simulátor.
 - Kompaktní tlačítko vpravo nahoře ukazuje aktuální jazyk a jednotku rychlosti a otevírá stejný panel Nastavení.
+- Při menším okně se dlouhé záložky automaticky posouvají. Posuvník se zobrazí pouze tehdy, když se obsah skutečně nevejde.
+- Simulace okruhu mění velikost mapy podle dostupného prostoru; v úzkém okně přesune informační panel pod mapu.
 
 Typický postup:
 
@@ -23,14 +25,14 @@ Typický postup:
 4. Sleduj živý graf a telemetrii a poté si na obrazovce Dyna prohlédni dokončené křivky.
 5. Volitelně otevři **Ruční plyn** pro živý test chlazení a telemetrie.
 6. Otevři **Zkušební jízdu** pro měření 0–100 km/h nebo 0–60 mph a maximální rychlosti.
-7. Otevři **Testovací dráhu** pro letmé kolo na společném okruhu dlouhém 3,605 km.
+7. Otevři **Simulaci okruhu** pro letmé kolo na společném okruhu dlouhém 3,605 km.
 8. Build pojmenuj a přes **Nastavení → Uložit motor / vozidlo jako...** ho ulož do přenositelného `.json` souboru.
 
 Jazyk a jednotky rychlosti lze změnit za chodu bez resetování rozpracovaného buildu nebo změny fyziky vozidla. Po každém spuštění jsou jako výchozí zvoleny km/h.
 
 ## 2. Přehled 7 záložek
 
-### Záložka 1 — Block
+### Záložka 1 — Blok motoru
 
 Určuje základní architekturu motoru.
 
@@ -39,13 +41,13 @@ Určuje základní architekturu motoru.
 - **Počet válců**: 3, 4, 5, 6, 8, 10, 12 nebo 16.
 - **Materiál bloku**: od těžké litiny přes varianty hliníku a AlSi až po billetový hliník a hořčík.
 - **Vrtání**: větší vrtání podporuje větší ventily a lepší dýchání ve vysokých otáčkách.
-- **Zdvih**: delší zdvih zvýhodňuje točivý moment dole, ale zvyšuje střední pístovou rychlost a omezuje vysoké otáčky.
+- **Zdvih**: delší zdvih zvýhodňuje točivý moment dole, ale zvyšuje střední pístovou rychlost a omezuje vysoké otáčky. Slider pokrývá běžných 50–120 mm; pro speciální motory lze ručně zadat 20–150 mm.
 - **Účinnost chladiče**: ovlivňuje odvod tepla v režimu Ruční plyn.
 - **Technologická úroveň**: globálně ovlivňuje účinnost, průtok, tření a odolnost proti klepání.
 
 Vypočítaný objem motoru se automaticky aktualizuje podle vrtání, zdvihu a počtu válců.
 
-### Záložka 2 — Bottom End
+### Záložka 2 — Spodek motoru
 
 Určuje mechanický strop otáček.
 
@@ -56,7 +58,7 @@ Určuje mechanický strop otáček.
 
 Nastavení omezovače nad limit nejslabší mechanické části motor při Dyno Pullu záměrně zničí.
 
-### Záložka 3 — Top End
+### Záložka 3 — Hlava a rozvody
 
 Řídí hlavu válců, proudění, valve float a část modelu klepání.
 
@@ -70,7 +72,7 @@ Nastavení omezovače nad limit nejslabší mechanické části motor při Dyno 
 - **Profil vačky** posouvá křivku objemové účinnosti v rozsahu otáček.
 - **Kompresní poměr** přidává moment a účinnost, ale u zážehových paliv také zvyšuje riziko klepání.
 
-### Záložka 4 — Aspiration
+### Záložka 4 — Plnění
 
 - **NA**: okamžitá reakce bez plnicího tlaku.
 - **Turbo**: přeplňování výfukovými plyny s náběhem závislým na velikosti turba, objemu motoru, ložiscích, konfiguraci a intercooleru.
@@ -80,7 +82,7 @@ Turbo nabízí nastavení ložisek, konfigurace Single/Twin/Quad, velikosti inte
 
 Kompresor nabízí typ Roots, Twin-screw nebo Centrifugal, velikost jednotky a nastavení řemenice či tlaku.
 
-### Záložka 5 — Fuel & Tune
+### Záložka 5 — Palivo a ladění
 
 Společně se záložkami Top End a Aspiration určuje výkon a riziko klepání.
 
@@ -92,11 +94,11 @@ Společně se záložkami Top End a Aspiration určuje výkon a riziko klepání
 - **Palivová mapa** mění bohatost směsi nezávisle na AFR.
 - **AFR** ovlivňuje výkon, účinnost a riziko klepání při chudé směsi.
 - **Předstih** přidává výkon, ale při přehnaném nastavení zvyšuje riziko detonace.
-- **Omezovač RPM** je požadovaná hranice Dyno Pullu a musí zůstat v mechanických limitech, pokud není selhání záměrné.
+- **Omezovač RPM** je požadovaná hranice Dyno Pullu. Slider pokrývá 3 000–12 000 RPM; ručně lze zadat až 20 000 RPM, ale takové otáčky přežije pouze odpovídající závodní architektura.
 
 Nafta obchází benzínový výpočet klepání. Nitromethane získává výrazně vyšší potenciální výkonový strop, ale neodstraňuje ostatní fyzikální limity motoru.
 
-### Záložka 6 — Exhaust
+### Záložka 6 — Výfuk
 
 - **Architektura**: Single nebo Dual.
 - **Svody** sahají od restriktivních kompaktních litinových systémů až po závodní tubular varianty.
@@ -107,9 +109,9 @@ Nafta obchází benzínový výpočet klepání. Nitromethane získává výrazn
 
 Příliš malý výfuk postupně dusí horní část křivky momentu.
 
-### Záložka 7 — Drivetrain
+### Záložka 7 — Pohon
 
-Tato nastavení ovlivňují **Zkušební jízdu** a **Testovací dráhu**, nikoliv dyno křivku.
+Tato nastavení ovlivňují **Zkušební jízdu** a **Simulaci okruhu**, nikoliv dyno křivku.
 
 - **Předvolba vozu** vyplní hodnoty šasi včetně zamýšleného stálého převodu reprezentativním nastavením. Zvolení předvolby současně vypne vlastní převody, aby preset zachoval automatickou převodovou sadu.
 - **Váha**: celková hmotnost vozidla včetně řidiče a náplní.
@@ -118,9 +120,9 @@ Tato nastavení ovlivňují **Zkušební jízdu** a **Testovací dráhu**, nikol
 - **Poloměr kola**: ovlivňuje sílu na kole i rychlost při daných otáčkách motoru.
 - **Omezovač rychlosti**: elektronická maximální rychlost; hodnota `0` jej vypne. Zobrazená hodnota a rozsah slideru se řídí zvolenými km/h nebo mph, zatímco uložený build používá jednu kanonickou hodnotu.
 - **Přítlak (Cl·A)**: součin součinitele přítlaku a plochy. Je oddělený od přilnavosti pneumatik.
-- **Trakce pneumatik**: základní koeficient tření dostupný pro akceleraci, brzdění a zatáčení.
+- **Trakce pneumatik**: základní koeficient tření dostupný pro akceleraci, brzdění a zatáčení. Slider nabízí 0,5–2,0; ručně lze zadat 0,3–2,5.
 - **Počet převodů**: 4–8 stupňů.
-- **Stálý převod**: násobí všechny převody v převodovce.
+- **Stálý převod**: násobí všechny převody v převodovce. Slider nabízí běžných 2,0–6,0; pro speciální převodovky lze ručně zadat 1,5–10,0.
 - **Pohon**:
   - FWD má malé ztráty, ale při akceleraci se odlehčuje hnaná přední náprava.
   - RWD při akceleraci získává zatížení zadní nápravy.
@@ -141,7 +143,7 @@ Když je zapnuté:
 - zobrazí se jedno pole pro každý aktivní převod
 - podporovány jsou převodovky se 4–8 stupni
 - tlačítko **Načíst automatické převody** obnoví výchozí sadu
-- převody ovlivní následující Zkušební jízdu i Testovací dráhu
+- převody ovlivní následující Zkušební jízdu i Simulaci okruhu
 
 U rozumně odstupňované převodovky má každý vyšší stupeň zpravidla numericky menší převodový poměr než stupeň před ním.
 
@@ -160,10 +162,19 @@ Po úspěšném pullu:
 
 - dokončený graf zůstane přímo na obrazovce Dyna
 - tlačítko **Graf** tě na tuto obrazovku vrátí z jiného režimu
-- při dostupném zvukovém backendu se zpřístupní Ruční plyn
-- zpřístupní se **Zkušební jízda** a **Testovací dráha**
+- zpřístupní se Ruční plyn, Zkušební jízda a Simulace okruhu
+- pokud zvukový backend chybí, Ruční plyn a Zkušební jízda pokračují v tichém režimu
 
 Výsledek Dyna je snímek motoru v okamžiku měření. Změna motorového parametru výsledek zneplatní a závislé režimy znovu zamkne, dokud neproběhne nový pull. Parametry samotného vozidla můžeš měnit bez nového výpočtu motorové křivky. Opuštění obrazovky Dyna během nedokončeného pullu měření bezpečně zruší a neúplný výsledek zahodí.
+
+
+### Vysokootáčkové motorsportové motory
+
+Verze 4.9 přidává úzce zaměřenou podporu extrémních atmosférických závodních motorů. Nejde o obecný násobič výkonu: simulátor postupně rozpoznává, zda build skutečně odpovídá vysokootáčkové architektuře.
+
+Pro plné využití rozsahu nad 12 000 RPM je potřeba kombinace vysoké technologické úrovně, agresivního profilu vačky, výrazně nadčtvercové geometrie, rozvodů DAOHC, ITB, závodního sání, atmosférického plnění, billetové klikové hřídele, titanových ojnic a LW Forged pístů. Čím více se build této kombinaci blíží, tím vyšší mechanický limit, dovolenou pístovou rychlost a vysokootáčkové dýchání získá.
+
+Běžné silniční motory tím nejsou automaticky posílené a vestavěné presety si zachovávají své dosavadní výsledky. Ručně zadaný extrémní limit bez odpovídajících dílů motor stále zničí.
 
 ## 4. Ruční plyn
 
@@ -196,9 +207,9 @@ Indikátor TCS ukazuje prokluz kol. Maximální rychlost může omezit dostupný
 
 Přepnutí mezi km/h a mph okamžitě upraví zobrazenou rychlost, text maximálky, omezovač rychlosti a cíl měření zrychlení, aniž by změnilo fyziku.
 
-## 6. Testovací dráha
+## 6. Simulace okruhu
 
-Testovací dráha počítá deterministické **letmé kolo**, nikoliv kolo se startem z klidu.
+Simulace okruhu počítá deterministické **letmé kolo**, nikoliv kolo se startem z klidu.
 
 ### Okruh
 
@@ -243,7 +254,7 @@ Pokud jsou dostupné `sounddevice` a funkční PortAudio, zvuk motoru se synteti
 
 Turbo motory obsahují zvuk náběhu a flutter při ubrání. Kompresorové motory dostávají kvílení závislé na otáčkách.
 
-Pokud zvukový backend není dostupný, simulátor zůstává plně použitelný bez živého zvuku.
+Pokud zvukový backend není dostupný, simulátor zůstává plně použitelný. Ruční plyn a Zkušební jízda běží v tichém režimu a Nastavení nabídne příkaz `pip install -r requirements.txt`.
 
 ## 8. Uložení a načtení
 
@@ -265,9 +276,8 @@ Při načítání:
 
 - **Jednorázová chyba při spuštění předkompilovaného exe**: antivirus může během prvního skenu krátce zamknout nepodepsaný single-file spustitelný soubor. Po dokončení kontroly aplikaci spusť znovu.
 - **Aplikace zůstala ve fullscreenu**: stiskni **F11**. Z Garáže fullscreen opustíš také klávesou **Esc**.
-- **Nefunguje živý zvuk**: zkontroluj `sounddevice`, PortAudio a funkční výchozí výstupní zařízení.
-- **Ruční plyn nebo Zkušební jízda jsou vypnuté, ale Testovací dráha funguje**: není dostupný backend živého zvuku. Výpočet dráhy jej nepotřebuje.
-- **Zkušební jízda nebo Testovací dráha jsou vypnuté**: nejprve dokonči úspěšný Dyno Pull. Zničený motor nelze testovat.
+- **Nefunguje živý zvuk**: simulace dál fungují v tichém režimu. Spusť `pip install -r requirements.txt`, zkontroluj PortAudio a ověř funkční výchozí výstupní zařízení.
+- **Zkušební jízda nebo Simulace okruhu jsou vypnuté**: nejprve dokonči úspěšný Dyno Pull. Zničený motor nelze testovat.
 - **Dyno hlásí, že byl motor změněn**: po posledním pullu se upravil motorový parametr. Před otevřením závislých režimů spusť nové měření.
-- **Vlastní převody nejsou vidět**: v záložce Drivetrain zapni **Jemné nastavení jednotlivých převodů**.
+- **Vlastní převody nejsou vidět**: v záložce Pohon zapni **Jemné nastavení jednotlivých převodů**.
 - **Preset po změně převodů dává jiné výsledky**: vlastní převody vypni nebo stiskni **Načíst automatické převody**.

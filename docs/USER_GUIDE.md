@@ -4,16 +4,18 @@
 
 This guide walks through the simulator in the order it is normally used. In-app tooltips provide quick per-parameter explanations; this document explains how the systems fit together.
 
-The guide applies to **Automation DIY v4.8.5 — Fullscreen & Settings Update + Tweaks**.
+The guide applies to **Automation DIY v4.9.1 — Localization & Tooltip Stability Update**.
 
 ## 1. Overall Workflow
 
-The simulator opens in fullscreen mode and keeps all main modes inside one application window. The left sidebar switches between the Garage, Dyno & Graph, Manual Throttle, Test Drive, and Test Track screens.
+The simulator opens in fullscreen mode and keeps all main modes inside one application window. The left sidebar switches between the Garage, Dyno & Graph, Manual Throttle, Test Drive, and Track Simulation screens.
 
 - Press **F11** to toggle fullscreen.
 - Press **Esc** to close Settings or an error overlay, return from another mode to the Garage, or leave fullscreen when the Garage is already active.
 - Open **Settings** to Load/Save a build, switch language, choose km/h or mph, or quit the simulator.
 - The compact button in the top-right corner shows the current language and speed unit and opens the same Settings panel.
+- Long builder tabs scroll automatically only when their content no longer fits the available height.
+- Track Simulation scales its map to the available space and moves the information panel below the circuit on narrow windows.
 
 Typical workflow:
 
@@ -23,7 +25,7 @@ Typical workflow:
 4. Watch the live graph and telemetry, then inspect the completed curves on the Dyno screen.
 5. Optionally open **Manual Throttle** for a live cooling and telemetry test.
 6. Open **Test Drive** for 0–100 km/h or 0–60 mph and top-speed testing.
-7. Open **Test Track** for a flying lap around the shared 3.605 km benchmark circuit.
+7. Open **Track Simulation** for a flying lap around the shared 3.605 km benchmark circuit.
 8. Name the build and use **Settings → Save engine / vehicle as...** to store it as a portable `.json` file.
 
 Language and speed units can be changed at runtime without resetting the current build or changing the vehicle physics. The speed-unit preference defaults to km/h on each launch.
@@ -39,7 +41,7 @@ Sets the engine's fundamental architecture.
 - **Cylinders**: 3, 4, 5, 6, 8, 10, 12, or 16.
 - **Block material**: ranges from heavy cast iron through aluminium and AlSi variants to billet aluminium and magnesium.
 - **Bore**: larger bore supports larger valves and stronger high-RPM breathing.
-- **Stroke**: longer stroke favors low-end torque but raises mean piston speed and limits high-RPM operation.
+- **Stroke**: longer stroke favors low-end torque but raises mean piston speed and limits high-RPM operation. The slider covers 50–120 mm; special engines may use 20–150 mm by typing the value manually.
 - **Radiator efficiency**: affects heat removal in Manual Throttle mode.
 - **Technology level**: globally influences efficiency, breathing, friction, and knock resistance.
 
@@ -92,7 +94,7 @@ Works together with the Top End and Aspiration tabs to determine output and knoc
 - **Fuel map** changes mixture richness separately from AFR.
 - **AFR** affects power, efficiency, and lean-mixture knock risk.
 - **Ignition timing** increases power but raises detonation risk when pushed too far.
-- **RPM limiter** is the requested dyno redline and must remain within the mechanical limits unless failure is intended.
+- **RPM limiter** is the requested dyno redline. The slider covers 3,000–12,000 RPM; manual entry supports up to 20,000 RPM, but only a suitable race architecture can survive it.
 
 Diesel bypasses the gasoline knock calculation, while Nitromethane receives a much higher potential power ceiling without removing the rest of the engine's physical limitations.
 
@@ -109,7 +111,7 @@ An undersized exhaust progressively chokes the upper part of the torque curve.
 
 ### Tab 7 — Drivetrain
 
-These settings affect **Test Drive** and **Test Track**, but not the dyno curve.
+These settings affect **Test Drive** and **Track Simulation**, but not the dyno curve.
 
 - **Vehicle preset** fills the chassis fields, including the intended final drive, with representative values. Selecting a vehicle preset also disables custom gear ratios so the preset retains its automatic gearing.
 - **Weight**: total vehicle mass including driver and fluids.
@@ -118,9 +120,9 @@ These settings affect **Test Drive** and **Test Track**, but not the dyno curve.
 - **Wheel radius**: affects wheel force and road speed at a given engine RPM.
 - **Speed limiter**: electronic top-speed limit; `0` disables it. Its displayed value and slider range follow the selected km/h or mph setting, while the saved build keeps one canonical value.
 - **Downforce (Cl·A)**: aerodynamic downforce coefficient-area product. It is independent from tire grip.
-- **Tire grip**: the base friction coefficient available for acceleration, braking, and cornering.
+- **Tire grip**: the base friction coefficient available for acceleration, braking, and cornering. The slider covers 0.5–2.0; manual entry supports 0.3–2.5.
 - **Gear count**: 4–8 speeds.
-- **Final drive**: multiplies every transmission ratio.
+- **Final drive**: multiplies every transmission ratio. The slider covers the normal 2.0–6.0 range; special gearboxes may use 1.5–10.0 through manual entry.
 - **Drivetrain**:
   - FWD has efficient power transmission but loses driven-axle load under acceleration.
   - RWD gains rear-axle load under acceleration.
@@ -141,7 +143,7 @@ When it is enabled:
 - one ratio field appears for every active gear
 - 4–8-speed transmissions are supported
 - **Load automatic ratios** restores the default set
-- ratios affect Test Drive and Test Track immediately after the next dyno/test run
+- ratios affect Test Drive and Track Simulation immediately after the next dyno/test run
 
 For a sensible transmission, every higher gear should normally use a numerically smaller ratio than the gear before it.
 
@@ -160,10 +162,19 @@ After a successful pull:
 
 - the completed graph remains embedded on the Dyno screen
 - **Graph** can return you to that screen from elsewhere
-- Manual Throttle becomes available when the audio backend is present
-- **Test Drive** and **Test Track** become available
+- Manual Throttle, Test Drive, and Track Simulation become available
+- when the audio backend is missing, Manual Throttle and Test Drive continue in silent mode
 
 The dyno result is a snapshot of the engine at the time of the pull. Changing an engine parameter invalidates that result and locks the dependent modes until a new pull is completed. Vehicle-only settings can still be adjusted without regenerating the engine curve. Leaving the Dyno screen during an unfinished pull safely cancels the measurement and discards the incomplete result.
+
+
+### High-RPM motorsport engines
+
+Version 4.9 adds narrowly targeted support for extreme naturally aspirated race engines. This is not a global power multiplier: the simulator progressively evaluates whether the build genuinely matches a high-RPM architecture.
+
+Using the range above 12,000 RPM effectively requires a combination of high Technology Level, an aggressive cam profile, strongly oversquare geometry, DAOHC valvetrain, ITBs, a Race intake manifold, naturally aspirated induction, a billet crankshaft, titanium connecting rods, and LW Forged pistons. The closer the build is to this combination, the more mechanical RPM capability, piston-speed tolerance, and high-RPM breathing it receives.
+
+Ordinary road engines are not automatically strengthened, and the built-in presets retain their established results. Entering an extreme limiter without the required architecture can still destroy the engine.
 
 ## 4. Manual Throttle
 
@@ -196,9 +207,9 @@ The live run and **Skip to Top Speed** share one authoritative vehicle calculati
 
 Switching between km/h and mph updates the visible speed, maximum-speed text, speed limiter, and acceleration target without changing the underlying physics.
 
-## 6. Test Track
+## 6. Track Simulation
 
-Test Track calculates a deterministic **flying lap**, not a standing-start lap.
+Track Simulation calculates a deterministic **flying lap**, not a standing-start lap.
 
 ### Circuit
 
@@ -243,7 +254,7 @@ When `sounddevice` and a working PortAudio backend are available, engine sound i
 
 Turbo engines include spool noise and lift-off flutter. Supercharged engines receive a speed-dependent whine.
 
-If the audio backend is unavailable, the simulator remains usable without live sound.
+If the audio backend is unavailable, the simulator remains fully usable. Manual Throttle and Test Drive run in silent mode, and Settings displays the `pip install -r requirements.txt` installation command.
 
 ## 8. Save and Load
 
@@ -265,9 +276,8 @@ When loading:
 
 - **One-off launch error in the prebuilt executable**: antivirus software may briefly lock an unsigned single-file executable during its first scan. Relaunch after the scan completes.
 - **The app is stuck in fullscreen**: press **F11**. Pressing **Esc** from the Garage also leaves fullscreen.
-- **No live sound**: check that `sounddevice`, PortAudio, and a working default output device are available.
-- **Manual Throttle or Test Drive is disabled while Test Track works**: the live audio backend is unavailable. Track simulation does not require it.
-- **Test Drive or Test Track is disabled**: run a successful Dyno Pull first. A destroyed engine cannot be tested.
+- **No live sound**: the simulations continue in silent mode. Run `pip install -r requirements.txt`, check PortAudio, and verify a working default output device.
+- **Test Drive or Track Simulation is disabled**: run a successful Dyno Pull first. A destroyed engine cannot be tested.
 - **The Dyno screen says the engine changed**: an engine parameter was edited after the last pull. Run a new Dyno Pull before opening dependent modes.
 - **Custom ratios are not visible**: enable **Fine-tune individual gear ratios** in the Drivetrain tab.
 - **A saved preset produces different performance after editing gears**: disable custom gearing or press **Load automatic ratios** to restore the original automatic set.
