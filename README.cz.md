@@ -84,7 +84,7 @@ Aplikace se spouští v režimu celé obrazovky. Klávesou **F11** fullscreen za
 5. Volitelně spusť **2. Ruční plyn**.
 6. Spusť **3. Zkušební jízdu** pro 0–100 km/h nebo 0–60 mph a maximální rychlost.
 7. Spusť **4. Simulaci okruhu** pro srovnatelný čas letmého kola.
-8. Až budeš s buildem spokojený, otevři **Nastavení → Uložit motor / vozidlo jako...**.
+8. Až budeš s buildem spokojený, pojmenuj ho a otevři **Nastavení → Uložit motor / vozidlo jako...**.
 
 Kompletní vysvětlení rozhraní, Nastavení, jednotek rychlosti, všech záložek, simulačních režimů, modelů selhání, vlastních převodů a simulace okruhu najdeš v **[NAVOD.md](docs/NAVOD.md)**.
 
