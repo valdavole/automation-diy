@@ -84,7 +84,7 @@ The app starts in fullscreen mode. Press **F11** to toggle fullscreen and use **
 5. Optionally run **2. Manual Throttle**.
 6. Run **3. Test Drive** for 0–100 km/h or 0–60 mph and top speed.
 7. Run **4. Track Simulation** for a comparable flying-lap result.
-8. Open **Settings → Save engine / vehicle as...** when you are happy with the build.
+8. Name your vehicle and open **Settings → Save engine / vehicle as...** when you are happy with the build.
 
 For a complete explanation of the interface, Settings, speed units, every tab, simulation mode, failure model, custom gearing, and Track Simulation, see **[USER_GUIDE.md](docs/USER_GUIDE.md)**.
 
