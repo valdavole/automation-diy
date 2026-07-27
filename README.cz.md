@@ -8,7 +8,7 @@ Postav motor od klikové hřídele nahoru, otestuj ho na virtuálním dynu, prov
 
 > **Aktuální verze: v4.10.2 — Branding Update**
 
-![Banner Automation DIY](automation_diy_banner_large.png)
+![Banner Automation DIY](automation_diy_banner_2.png)
 
 ## Funkce
 
