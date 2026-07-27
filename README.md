@@ -2,13 +2,13 @@
 
 *[Čti v češtině / Read in Czech](README.cz.md)*
 
-A homemade, open-source engine-building, dyno, vehicle, and lap-time simulator inspired by the "Automation"-style car tycoon genre.
+An open-source engine-building, dyno, vehicle, and lap-time simulator inspired by the "Automation"-style car tycoon genre.
 
 Build an engine from the crankshaft up, run it on a virtual dyno, test its cooling under manual throttle, measure 0–100 km/h or 0–60 mph and top speed, then send the car through a deterministic 3.605 km Track Simulation. Engine sound is generated procedurally and reacts live to RPM, throttle, cylinder count, aspiration, and crank type.
 
 > **Current release: v4.10.2 — Branding Update**
 
-![Automation DIY banner](automation_diy_banner.png)
+![Automation DIY banner](automation_diy_banner_large.png)
 
 ## Features
 
@@ -48,6 +48,8 @@ Build an engine from the crankshaft up, run it on a virtual dyno, test its cooli
 - **High-RPM motorsport calibration** for suitable naturally aspirated, short-stroke race engines with manually entered limits up to 20,000 RPM
 - **Expert manual ranges** beyond the normal slider ranges, including 20–150 mm stroke and 1.5–10.0 final drive
 - **Responsive small-screen layouts** with automatic tab scrolling and a Track Simulation panel that rearranges itself when the window is narrow
+
+![screenshot placeholder](docs/screenshot1.png)
 
 ![screenshot placeholder](docs/screenshot2.png)
 

@@ -8,7 +8,7 @@ Postav motor od klikové hřídele nahoru, otestuj ho na virtuálním dynu, prov
 
 > **Aktuální verze: v4.10.2 — Branding Update**
 
-![Banner Automation DIY](automation_diy_banner.png)
+![Banner Automation DIY](automation_diy_banner_large.png)
 
 ## Funkce
 
@@ -48,6 +48,8 @@ Postav motor od klikové hřídele nahoru, otestuj ho na virtuálním dynu, prov
 - **Vysokootáčková motorsportová kalibrace** pro vhodné atmosférické krátkozdvihové závodní motory s ručně nastavitelným omezovačem až 20 000 RPM
 - **Expertní ruční rozsahy** mimo běžný rozsah sliderů, například zdvih 20–150 mm a stálý převod 1,5–10,0
 - **Responzivní rozhraní pro menší displeje** s automatickým scrollováním záložek a přeskupením mapy Simulace okruhu
+
+![screenshot placeholder](docs/screenshot1.png)
 
 ![screenshot placeholder](docs/screenshot2.png)
 
