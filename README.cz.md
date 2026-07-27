@@ -49,6 +49,8 @@ Postav motor od klikové hřídele nahoru, otestuj ho na virtuálním dynu, prov
 - **Expertní ruční rozsahy** mimo běžný rozsah sliderů, například zdvih 20–150 mm a stálý převod 1,5–10,0
 - **Responzivní rozhraní pro menší displeje** s automatickým scrollováním záložek a přeskupením mapy Simulace okruhu
 
+![screenshot placeholder](docs/screenshot1.png)
+
 ![screenshot placeholder](docs/screenshot2.png)
 
 ![screenshot placeholder](docs/screenshot3.png)
