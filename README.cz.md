@@ -100,26 +100,6 @@ pyinstaller --noconfirm --clean --onefile --noconsole --name "Automation_DIY_4.1
 
 Hotový soubor najdeš jako `dist/Automation_DIY_4.10.2.exe`. Sestavuj ho ve Windows; PyInstaller vytváří balíček pro operační systém a prostředí Pythonu, ve kterém právě běží.
 
-### Doporučená struktura na GitHubu
-
-Do repozitáře ulož zdrojový kód, branding a dokumentaci. Vygenerované `.exe` dej jako soubor k GitHub Release `v4.10.2`, nikoliv přímo mezi zdrojové soubory.
-
-```text
-automation_diy_4.10.2.py
-automation_diy_banner.png
-automation_diy_icon.png
-automation_diy_icon.ico
-requirements.txt
-README.md
-README.cz.md
-CHANGELOG.md
-docs/
-  NAVOD.md
-  USER_GUIDE.md
-```
-
-Do repozitáře neukládej `build/`, `dist/`, `__pycache__/` ani vygenerovaný `Automation_DIY_4.10.2.spec`, pokud záměrně nespravuješ vlastní spec soubor.
-
 ## Typický postup
 
 1. Zadej samostatný **Název vozu / projektu**.
