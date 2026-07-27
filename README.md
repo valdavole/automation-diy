@@ -2,7 +2,7 @@
 
 *[Čti v češtině / Read in Czech](README.cz.md)*
 
-A homemade, open-source engine-building, dyno, vehicle, and lap-time simulator inspired by the "Automation"-style car tycoon genre.
+An open-source engine-building, dyno, vehicle, and lap-time simulator inspired by the "Automation"-style car tycoon genre.
 
 Build an engine from the crankshaft up, run it on a virtual dyno, test its cooling under manual throttle, measure 0–100 km/h or 0–60 mph and top speed, then send the car through a deterministic 3.605 km Track Simulation. Engine sound is generated procedurally and reacts live to RPM, throttle, cylinder count, aspiration, and crank type.
 
