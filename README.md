@@ -49,6 +49,8 @@ Build an engine from the crankshaft up, run it on a virtual dyno, test its cooli
 - **Expert manual ranges** beyond the normal slider ranges, including 20–150 mm stroke and 1.5–10.0 final drive
 - **Responsive small-screen layouts** with automatic tab scrolling and a Track Simulation panel that rearranges itself when the window is narrow
 
+![screenshot placeholder](docs/screenshot1.png)
+
 ![screenshot placeholder](docs/screenshot2.png)
 
 ![screenshot placeholder](docs/screenshot3.png)
