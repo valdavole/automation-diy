@@ -4,11 +4,11 @@
 
 Tento návod prochází simulátor v pořadí, v jakém se běžně používá. Tooltips přímo v aplikaci poskytují rychlé vysvětlení jednotlivých parametrů; tento dokument ukazuje, jak do sebe jednotlivé systémy zapadají.
 
-Návod platí pro **Automation DIY v4.9.1 — Localization & Tooltip Stability Update**.
+Návod platí pro **Automation DIY v4.10.2 — Branding Update**.
 
 ## 1. Celkový postup práce
 
-Simulátor se otevírá v režimu celé obrazovky a všechny hlavní režimy drží uvnitř jediného okna. Levé menu přepíná mezi obrazovkami Garáž, Dyno & Graf, Ruční plyn, Zkušební jízda a Simulace okruhu.
+Simulátor se otevírá v režimu celé obrazovky a všechny hlavní režimy drží uvnitř jediného okna. Brandované levé menu přepíná mezi obrazovkami Garáž, Dyno & Graf, Ruční plyn, Zkušební jízda a Simulace okruhu.
 
 - Klávesou **F11** zapneš nebo vypneš fullscreen.
 - Klávesa **Esc** zavře Nastavení nebo chybový overlay, vrátí tě z jiného režimu do Garáže, případně při otevřené Garáži opustí fullscreen.
@@ -19,14 +19,14 @@ Simulátor se otevírá v režimu celé obrazovky a všechny hlavní režimy dr�
 
 Typický postup:
 
-1. Vyber startovní bod z rozbalovacího seznamu presetů nahoře ve stavbě motoru, nebo začni od výchozích hodnot.
-2. Nastav motor a vozidlo napříč **7 záložkami**.
+1. Nahoře ve stavbě zadej samostatný **Název vozu / projektu**.
+2. Z **Blank Project** ručně nastav všechna povinná pole motoru a vozidla, nebo přes **Preset motoru a vozu** načti kompletní startovní konfiguraci. Tovární preset přepíše název projektu; ten potom můžeš změnit bez zásahu do technického nastavení.
 3. Klikni na **Spustit Dyno / 1. Dyno Pull** a nech vygenerovat křivku točivého momentu a výkonu.
 4. Sleduj živý graf a telemetrii a poté si na obrazovce Dyna prohlédni dokončené křivky.
 5. Volitelně otevři **Ruční plyn** pro živý test chlazení a telemetrie.
 6. Otevři **Zkušební jízdu** pro měření 0–100 km/h nebo 0–60 mph a maximální rychlosti.
 7. Otevři **Simulaci okruhu** pro letmé kolo na společném okruhu dlouhém 3,605 km.
-8. Build pojmenuj a přes **Nastavení → Uložit motor / vozidlo jako...** ho ulož do přenositelného `.json` souboru.
+8. Pojmenovaný build přes **Nastavení → Uložit motor / vozidlo jako...** ulož do přenositelného `.json` souboru.
 
 Jazyk a jednotky rychlosti lze změnit za chodu bez resetování rozpracovaného buildu nebo změny fyziky vozidla. Po každém spuštění jsou jako výchozí zvoleny km/h.
 
@@ -109,24 +109,54 @@ Nafta obchází benzínový výpočet klepání. Nitromethane získává výrazn
 
 Příliš malý výfuk postupně dusí horní část křivky momentu.
 
-### Záložka 7 — Pohon
+### Záložka 7 — Vozidlo a pohon
 
 Tato nastavení ovlivňují **Zkušební jízdu** a **Simulaci okruhu**, nikoliv dyno křivku.
 
-- **Předvolba vozu** vyplní hodnoty šasi včetně zamýšleného stálého převodu reprezentativním nastavením. Zvolení předvolby současně vypne vlastní převody, aby preset zachoval automatickou převodovou sadu.
-- **Váha**: celková hmotnost vozidla včetně řidiče a náplní.
-- **Odpor vzduchu (Cd)**: bezrozměrný součinitel aerodynamického odporu.
+Výběr začíná na **Blank Vehicle**, kde jsou hodnoty záměrně prázdné. Před spuštěním Dyna ručně nastav všechny povinné položky nebo načti předvolbu vozu. **Custom** znamená, že jedna či více hodnot už přesně neodpovídá vestavěné předvolbě.
+
+Nahoře nad všemi záložkami načítá **Preset motoru a vozu** kompletní kombinaci motoru a auta. **Předvolba vozu** uvnitř záložky 7 mění pouze vozidlo. Zvolení vestavěné předvolby vozu současně vypne vlastní jednotlivé převody, aby použila zamýšlenou automatickou převodovou sadu.
+
+#### Šasi a rozložení hmotnosti
+
+- **Hmotnost**: celková hmotnost vozidla včetně řidiče a náplní.
+- **Umístění motoru**: Front Transverse, Front Longitudinal, Mid nebo Rear. Ovlivňuje vyvážení vozu a využití pneumatik.
+- **Hmotnost vpředu / Hmotnost vzadu**: nastavuje se statický podíl na přední nápravě; zadní podíl se automaticky dopočítá do 100 %. Rozložení ovlivňuje trakci FWD/RWD i chování auta.
+- **Rozvor**: vzdálenost mezi nápravami. Delší rozvor snižuje podélný přenos hmotnosti.
+- **Výška těžiště**: vyšší těžiště vytváří větší přenos hmotnosti a zhoršuje využití pneumatik.
+
+#### Aerodynamika
+
+- **Základní odpor (Cd₀)**: odpor karoserie před započtením odporu vyvolaného přítlakem.
 - **Čelní plocha**: referenční plocha používaná společně s Cd ve výpočtu odporu.
+- **Přítlak (Cl·A)**: součin součinitele přítlaku a referenční plochy.
+- **Aerodynamická účinnost**: určuje, kolik dodatečného odporu vytvoří zvolený přítlak.
+- **Výsledný odpor (Cd)**: hodnota skutečně používaná Zkušební jízdou a Simulací okruhu. Zjednodušeně platí `výsledné Cd = základní Cd + (efektivní Cl·A / čelní plocha)² / aerodynamická účinnost`. Světlá výška navíc mění efektivní přítlak, takže vyšší přítlak už není bezplatná přilnavost na rovinkách.
+
+#### Pneumatiky, odpružení a brzdy
+
 - **Poloměr kola**: ovlivňuje sílu na kole i rychlost při daných otáčkách motoru.
+- **Šířka pneumatik**: širší pneumatika lépe snáší vysoké zatížení, ale přidává valivý odpor.
+- **Směs pneumatik**: Economy, Touring, Sport, Semi-Slick nebo Slick. Volba určuje základní tření i valivý odpor.
+- **Vypočtená přilnavost**: hodnota odvozená ze směsi a šířky pneumatik, odpružení, těžiště, rozložení hmotnosti a koncepce vozidla.
+- **Tuhost odpružení**: příliš měkké i příliš tvrdé nastavení zhoršuje využití pneumatik; vhodná oblast závisí na hmotnosti a přítlaku.
+- **Světlá výška**: ovlivňuje účinnost podlahy a přítlaku. Velmi nízké měkké auto může narážet na dorazy.
+- **Typ brzd / Průměr brzd**: Drum, Solid Disc, Vented Disc nebo Carbon Ceramic a jejich velikost určují dostupný mechanický brzdný účinek.
+- **ABS**: zlepšuje využití dostupné přilnavosti pneumatik při brzdění.
+
+#### Pohon a převodovka
+
 - **Omezovač rychlosti**: elektronická maximální rychlost; hodnota `0` jej vypne. Zobrazená hodnota a rozsah slideru se řídí zvolenými km/h nebo mph, zatímco uložený build používá jednu kanonickou hodnotu.
-- **Přítlak (Cl·A)**: součin součinitele přítlaku a plochy. Je oddělený od přilnavosti pneumatik.
-- **Trakce pneumatik**: základní koeficient tření dostupný pro akceleraci, brzdění a zatáčení. Slider nabízí 0,5–2,0; ručně lze zadat 0,3–2,5.
-- **Počet převodů**: 4–8 stupňů.
-- **Stálý převod**: násobí všechny převody v převodovce. Slider nabízí běžných 2,0–6,0; pro speciální převodovky lze ručně zadat 1,5–10,0.
-- **Pohon**:
+- **Pohon nápravy**:
   - FWD má malé ztráty, ale při akceleraci se odlehčuje hnaná přední náprava.
   - RWD při akceleraci získává zatížení zadní nápravy.
   - AWD využívá trakci všech čtyř kol, ale má největší ztráty pohonu.
+- **Diferenciál / Svornost LSD**: otevřený diferenciál může protočit odlehčené kolo. LSD s rostoucí svorností zlepšuje přenos síly, extrémní svornost ale může lehce zhoršit ochotu zatáčet.
+- **Typ převodovky**: Manual, Automatic, DCT nebo Sequential. Typ mění mechanickou účinnost.
+- **Počet převodů**: 4–8 stupňů.
+- **Stálý převod**: násobí všechny převody v převodovce. Slider nabízí běžných 2,0–6,0; pro speciální převodovky lze ručně zadat 1,5–10,0.
+- **Doba řazení**: skutečná doba přerušení tahu při řazení nahoru, používaná při akceleraci i v časové penalizaci na okruhu.
+- **Launch control / Otáčky launch control**: při zapnutí systém při rozjezdu drží zvolené otáčky. Bez něj simulace používá opatrnější ruční rozjezd; příliš vysoké otáčky mohou stále způsobit prokluz.
 
 #### Volitelné jemné nastavení převodů
 
@@ -192,13 +222,14 @@ Model používá:
 
 - kompletní křivku momentu motoru
 - automatické nebo vlastní převody
-- stálý převod a poloměr kola
-- účinnost pohonného ústrojí
-- podélný přenos hmotnosti
-- limity trakce pneumatik
-- aerodynamický odpor z Cd a čelní plochy
-- valivý odpor
-- aerodynamický přítlak
+- typ převodovky, nastavenou dobu řazení, stálý převod a poloměr kola
+- účinnost pohonu, chování diferenciálu a volitelný Launch control
+- umístění motoru, rozložení hmotnosti vpředu/vzadu, rozvor, výšku těžiště a podélný přenos hmotnosti
+- šířku a směs pneumatik, tuhost odpružení a světlou výšku
+- konstrukci a průměr brzd a ABS
+- aerodynamický odpor z výsledného Cd a čelní plochy
+- valivý odpor podle směsi a šířky pneumatik
+- přítlak upravený světlou výškou a odpor, který tento přítlak vyvolává
 - otáčkový i elektronický rychlostní limit
 
 Indikátor TCS ukazuje prokluz kol. Maximální rychlost může omezit dostupný výkon, odpor vzduchu, nejvyšší převod a redline nebo elektronický omezovač.
@@ -226,14 +257,15 @@ Model kola používá:
 
 - dyno křivku točivého momentu
 - automatické nebo vlastní převody
-- stálý převod, poloměr kola, redline a omezovač rychlosti
-- hmotnost a ztráty pohonu
-- Cd, čelní plochu a valivý odpor
-- přilnavost pneumatik a aerodynamický přítlak
+- typ převodovky, nastavenou dobu řazení, stálý převod, poloměr kola, redline a omezovač rychlosti
+- hmotnost, umístění motoru, rozložení hmotnosti, rozvor, výšku těžiště, diferenciál a ztráty pohonu
+- základní/výsledné Cd, čelní plochu, aerodynamickou účinnost a valivý odpor
+- šířku a směs pneumatik, tuhost odpružení, světlou výšku a aerodynamický přítlak
+- typ a průměr brzd a ABS
 - třecí kružnici pneumatik, takže zatáčení ubírá grip dostupný pro akceleraci nebo brzdění
 - zpětné průchody, které vytvoří brzdné zóny před zatáčkami
 - dopředné průchody, které omezí akceleraci mezi body dráhy
-- pevné časové ztráty za řazení nahoru a dolů
+- nastavenou dobu řazení nahoru a z ní odvozenou kratší penalizaci podřazení
 
 Animace je zrychlená, aby dlouhé simulované kolo nevyžadovalo stejnou dobu skutečného čekání.
 
@@ -260,24 +292,28 @@ Pokud zvukový backend není dostupný, simulátor zůstává plně použitelný
 
 Otevři **Nastavení** a přes **Uložit motor / vozidlo jako...** ulož aktuální build do JSON souboru. Volbou **Načíst motor / vozidlo...** ve stejném panelu jej obnovíš.
 
-Uložený soubor obsahuje nastavení motoru, šasi, zvolený preset vozidla, přepínač vlastních převodů i hodnoty všech jednotlivých převodových poměrů. Jazyk a volba km/h/mph jsou nastavení rozhraní, nikoliv data vozidla. Omezovač rychlosti se ukládá v kanonické hodnotě a při volbě mph se pouze převádí pro zobrazení.
+Formát v4.10.2 ukládá **Název vozu / projektu** a **Preset motoru a vozu** samostatně. Soubor dále obsahuje všechna nastavení motoru, zvolenou předvolbu vozu, kompletní dynamiku vozidla z v4.10, přepínač vlastních převodů i hodnoty všech jednotlivých převodových poměrů. Jazyk a volba km/h/mph jsou nastavení rozhraní, nikoliv data vozidla. Omezovač rychlosti se ukládá v kanonické hodnotě a při volbě mph se pouze převádí pro zobrazení.
 
 Při načítání:
 
 - simulátor nejprve obnoví bezpečné tovární hodnoty
-- uložený preset vozidla se použije jako základ a explicitní hodnoty šasi ze souboru se aplikují až nad něj
+- název projektu a identita presetu se obnoví nezávisle
+- uložený preset vozidla se použije jako základ a explicitní hodnoty vozidla ze souboru se aplikují až nad něj
 - uložené hodnoty se ověří proti číselným rozsahům a povoleným volbám rozbalovacích seznamů
 - Boolean položky musí obsahovat skutečné JSON hodnoty `true` nebo `false`, ne text či číslo
-- starší soubory bez novějších parametrů dostanou rozumné výchozí hodnoty
+- starší soubory bez parametrů z v4.10 dostanou kompatibilní odvozené nebo výchozí hodnoty
+- české interní názvy speciálních presetů uložené verzemi v4.10 nebo v4.10.1 se převedou na současné anglické identifikátory
 - starý Boolean formát VVL se převede automaticky
 - neplatný nebo poškozený soubor obnoví předchozí aktivní build a zobrazí chybový overlay místo částečně aplikovaných hodnot
 
 ## 9. Řešení problémů
 
 - **Jednorázová chyba při spuštění předkompilovaného exe**: antivirus může během prvního skenu krátce zamknout nepodepsaný single-file spustitelný soubor. Po dokončení kontroly aplikaci spusť znovu.
+- **Chybí banner nebo vlastní ikona**: nech `automation_diy_banner.png`, `automation_diy_icon.png` a `automation_diy_icon.ico` vedle zdrojového skriptu, případně je přibal přes PyInstaller podle `README.cz.md`. Pokud obrázek není dostupný, simulátor záměrně použije textovou hlavičku.
+- **Dyno hlásí neúplný prázdný projekt nebo vozidlo**: zadej název projektu a nastav všechna povinná prázdná pole, nebo načti kompletní Preset motoru a vozu.
 - **Aplikace zůstala ve fullscreenu**: stiskni **F11**. Z Garáže fullscreen opustíš také klávesou **Esc**.
 - **Nefunguje živý zvuk**: simulace dál fungují v tichém režimu. Spusť `pip install -r requirements.txt`, zkontroluj PortAudio a ověř funkční výchozí výstupní zařízení.
 - **Zkušební jízda nebo Simulace okruhu jsou vypnuté**: nejprve dokonči úspěšný Dyno Pull. Zničený motor nelze testovat.
 - **Dyno hlásí, že byl motor změněn**: po posledním pullu se upravil motorový parametr. Před otevřením závislých režimů spusť nové měření.
-- **Vlastní převody nejsou vidět**: v záložce Pohon zapni **Jemné nastavení jednotlivých převodů**.
+- **Vlastní převody nejsou vidět**: v záložce Vozidlo a pohon zapni **Jemné nastavení jednotlivých převodů**.
 - **Preset po změně převodů dává jiné výsledky**: vlastní převody vypni nebo stiskni **Načíst automatické převody**.

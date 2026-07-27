@@ -1,5 +1,36 @@
 # Changelog
 
+## v4.10.2 (Branding Update)
+
+* **In-app branding:** Added the Automation DIY banner to the sidebar and applied the new icon to the application window and Windows taskbar.
+* **Source and bundled asset loading:** Branding files are resolved next to the Python script, from an `assets` folder, from the PyInstaller bundle, or next to a frozen executable.
+* **Safe visual fallback:** If a branding asset is missing or cannot be loaded, the simulator falls back to its original text header and continues running.
+* **English internal preset names:** Renamed the special project and vehicle states to **Blank Project**, **Custom Setup**, **Blank Vehicle**, and **Custom** so saved identifiers remain understandable in both UI languages.
+* **Legacy save compatibility:** Czech identifiers written by v4.10 and v4.10.1 are still recognized and translated to the current internal names while loading.
+* **Version alignment:** Updated the application title, sidebar label, save-file format marker, source package, and documentation for v4.10.2.
+
+## v4.10.1 (Blank Project Update)
+
+* **Truly blank startup:** The simulator now starts with **Blank Project** and **Blank Vehicle** instead of silently loading the Mazda 6 engine and chassis values.
+* **Required from-scratch configuration:** Blank engine and vehicle fields must be configured manually or filled by selecting a factory preset before a dyno pull can begin.
+* **Separate project naming:** Added a dedicated **Car / Project Name** field independent from the **Engine & Vehicle Preset** selector.
+* **Clear preset behavior:** Selecting a factory preset loads its complete engine and vehicle configuration and replaces the project name; the name can then be edited freely without applying another preset.
+* **Custom-state tracking:** Editing technical values changes the preset indicator to **Custom Setup** or the vehicle selector to **Custom** without overwriting the chosen project name.
+* **Save/load compatibility:** Project name and preset identity are stored separately, with inference and aliases for older save files.
+
+## v4.10 (Vehicle Dynamics Update)
+
+* **Vehicle architecture:** Added engine location, front/rear weight distribution, wheelbase, and centre-of-gravity height.
+* **Detailed tires:** Replaced the single grip value for new builds with tire width and selectable Economy, Touring, Sport, Semi-Slick, or Slick compounds.
+* **Braking system:** Added brake construction, brake diameter, and optional ABS, all used by braking calculations.
+* **Suspension setup:** Added suspension stiffness and ride height, including tire-utilisation and floor/downforce-efficiency effects.
+* **Differentials:** Added Open and LSD options with adjustable locking and traction/cornering trade-offs.
+* **Transmission behavior:** Added Manual, Automatic, DCT, and Sequential gearbox types with real shift-interruption time.
+* **Launch Control:** Added an independent Launch Control switch and target RPM for standing starts.
+* **Induced aerodynamic drag:** Downforce now raises effective drag according to aerodynamic efficiency, so high-downforce setups gain cornering performance at the cost of straight-line speed.
+* **Shared vehicle model:** Test Drive and Track Simulation now use the same resolved tire, aero, braking, suspension, differential, weight-transfer, gearing, and launch parameters.
+* **Preset preservation:** Built-in presets were expanded with representative v4.10 vehicle values while retaining their established engine curves and benchmark performance.
+
 ## v4.9.1 (Localization & Tooltip Stability Update)
 
 * **Complete runtime localization:** Finished Czech and English translation coverage across the builder, dyno graph, live telemetry, Test Drive, Track Simulation, result panels, status messages, buttons, and keyboard hints.

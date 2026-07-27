@@ -4,11 +4,11 @@
 
 This guide walks through the simulator in the order it is normally used. In-app tooltips provide quick per-parameter explanations; this document explains how the systems fit together.
 
-The guide applies to **Automation DIY v4.9.1 — Localization & Tooltip Stability Update**.
+The guide applies to **Automation DIY v4.10.2 — Branding Update**.
 
 ## 1. Overall Workflow
 
-The simulator opens in fullscreen mode and keeps all main modes inside one application window. The left sidebar switches between the Garage, Dyno & Graph, Manual Throttle, Test Drive, and Track Simulation screens.
+The simulator opens in fullscreen mode and keeps all main modes inside one application window. The branded left sidebar switches between the Garage, Dyno & Graph, Manual Throttle, Test Drive, and Track Simulation screens.
 
 - Press **F11** to toggle fullscreen.
 - Press **Esc** to close Settings or an error overlay, return from another mode to the Garage, or leave fullscreen when the Garage is already active.
@@ -19,14 +19,14 @@ The simulator opens in fullscreen mode and keeps all main modes inside one appli
 
 Typical workflow:
 
-1. Pick a starting point from the preset dropdown at the top of the builder, or start from the defaults.
-2. Configure the engine and vehicle across the **7 tabs**.
+1. Enter a separate **Car / Project Name** at the top of the builder.
+2. Configure every required engine and vehicle field from **Blank Project**, or select an **Engine & Vehicle Preset** to load a complete starting point. A factory preset replaces the project name; you can rename it afterwards without changing the technical setup.
 3. Click **Run Dyno / 1. Dyno Pull** to generate the torque and power curves.
 4. Watch the live graph and telemetry, then inspect the completed curves on the Dyno screen.
 5. Optionally open **Manual Throttle** for a live cooling and telemetry test.
 6. Open **Test Drive** for 0–100 km/h or 0–60 mph and top-speed testing.
 7. Open **Track Simulation** for a flying lap around the shared 3.605 km benchmark circuit.
-8. Name the build and use **Settings → Save engine / vehicle as...** to store it as a portable `.json` file.
+8. Use **Settings → Save engine / vehicle as...** to store the named build as a portable `.json` file.
 
 Language and speed units can be changed at runtime without resetting the current build or changing the vehicle physics. The speed-unit preference defaults to km/h on each launch.
 
@@ -109,24 +109,54 @@ Diesel bypasses the gasoline knock calculation, while Nitromethane receives a mu
 
 An undersized exhaust progressively chokes the upper part of the torque curve.
 
-### Tab 7 — Drivetrain
+### Tab 7 — Vehicle & Drivetrain
 
 These settings affect **Test Drive** and **Track Simulation**, but not the dyno curve.
 
-- **Vehicle preset** fills the chassis fields, including the intended final drive, with representative values. Selecting a vehicle preset also disables custom gear ratios so the preset retains its automatic gearing.
+The selector starts at **Blank Vehicle**, whose fields are intentionally empty. Configure all required values manually or select a vehicle preset before running the dyno. **Custom** means that one or more vehicle values no longer exactly match a built-in vehicle preset.
+
+At the top of the whole builder, **Engine & Vehicle Preset** loads a complete engine-and-car combination. Inside Tab 7, **Vehicle Preset** changes only the vehicle. Selecting a built-in vehicle preset also disables individual custom ratios so that preset uses its intended automatic ratio set.
+
+#### Chassis & weight distribution
+
 - **Weight**: total vehicle mass including driver and fluids.
-- **Drag coefficient (Cd)**: dimensionless aerodynamic drag coefficient.
-- **Frontal area**: reference area used together with Cd in the drag calculation.
-- **Wheel radius**: affects wheel force and road speed at a given engine RPM.
-- **Speed limiter**: electronic top-speed limit; `0` disables it. Its displayed value and slider range follow the selected km/h or mph setting, while the saved build keeps one canonical value.
-- **Downforce (Cl·A)**: aerodynamic downforce coefficient-area product. It is independent from tire grip.
-- **Tire grip**: the base friction coefficient available for acceleration, braking, and cornering. The slider covers 0.5–2.0; manual entry supports 0.3–2.5.
-- **Gear count**: 4–8 speeds.
-- **Final drive**: multiplies every transmission ratio. The slider covers the normal 2.0–6.0 range; special gearboxes may use 1.5–10.0 through manual entry.
+- **Engine Location**: Front Transverse, Front Longitudinal, Mid, or Rear. It affects vehicle balance and tire utilisation.
+- **Front Weight / Rear Weight**: set the static front-axle share; the rear share is calculated automatically to total 100%. The split affects FWD/RWD traction and handling.
+- **Wheelbase**: the distance between axles. A longer wheelbase reduces longitudinal load transfer.
+- **Centre of Gravity Height**: a higher centre of gravity creates more load transfer and reduces tire utilisation.
+
+#### Aerodynamics
+
+- **Base Drag (Cd₀)**: body drag before downforce-induced drag.
+- **Frontal Area**: reference area used with Cd in the drag calculation.
+- **Downforce (Cl·A)**: aerodynamic downforce coefficient-area product.
+- **Aerodynamic Efficiency**: controls how much extra drag is created by a chosen amount of downforce.
+- **Effective Drag (Cd)**: the value actually used by Test Drive and Track Simulation. In simplified form, `effective Cd = base Cd + (effective Cl·A / frontal area)² / aerodynamic efficiency`. Ride height also changes effective downforce, so more downforce is no longer free straight-line grip.
+
+#### Tires, suspension & brakes
+
+- **Wheel Radius**: affects wheel force and road speed at a given engine RPM.
+- **Tire Width**: wider tires handle higher load better but add rolling resistance.
+- **Tire Compound**: Economy, Touring, Sport, Semi-Slick, or Slick. The choice sets base friction and rolling resistance.
+- **Calculated Grip**: a read-only result derived from tire setup, suspension, centre of gravity, weight distribution, and vehicle layout.
+- **Suspension Stiffness**: settings that are too soft or too stiff reduce tire utilisation; the suitable range depends on vehicle weight and downforce.
+- **Ride Height**: affects floor/downforce efficiency. A very low, softly sprung car can bottom out.
+- **Brake Type / Brake Diameter**: Drum, Solid Disc, Vented Disc, or Carbon Ceramic construction and its size determine the available mechanical braking force.
+- **ABS**: improves use of the available tire grip under braking.
+
+#### Drivetrain & gearbox
+
+- **Speed Limiter**: electronic top-speed limit; `0` disables it. Its displayed value and slider range follow the selected km/h or mph setting, while the saved build keeps one canonical value.
 - **Drivetrain**:
   - FWD has efficient power transmission but loses driven-axle load under acceleration.
   - RWD gains rear-axle load under acceleration.
   - AWD uses all four tires for traction but has the largest drivetrain losses.
+- **Differential / LSD Locking**: an Open differential can spin an unloaded tire. An LSD improves power delivery as locking increases, although extreme locking can slightly reduce cornering willingness.
+- **Gearbox Type**: Manual, Automatic, DCT, or Sequential. The type changes mechanical efficiency.
+- **Gear Count**: 4–8 speeds.
+- **Final Drive**: multiplies every transmission ratio. The slider covers the normal 2.0–6.0 range; special gearboxes may use 1.5–10.0 through manual entry.
+- **Shift Time**: actual torque-interruption time for an upshift, used by acceleration and the track shift penalty.
+- **Launch Control / Launch Control RPM**: when enabled, the system holds the selected launch RPM. Without it, the simulation uses a more cautious manual launch; excessive launch RPM can still create wheelspin.
 
 #### Optional individual gear ratios
 
@@ -192,13 +222,14 @@ The model uses:
 
 - the engine's complete torque curve
 - automatic or custom transmission ratios
-- final drive and wheel radius
-- drivetrain efficiency
-- longitudinal weight transfer
-- tire-traction limits
-- aerodynamic drag from Cd and frontal area
-- rolling resistance
-- aerodynamic downforce
+- gearbox type, configured shift time, final drive, and wheel radius
+- drivetrain efficiency, differential behavior, and optional Launch Control
+- engine location, front/rear weight distribution, wheelbase, centre-of-gravity height, and longitudinal weight transfer
+- tire width and compound, suspension stiffness, and ride height
+- brake construction, brake diameter, and ABS
+- aerodynamic drag from effective Cd and frontal area
+- compound/width-dependent rolling resistance
+- ride-height-adjusted aerodynamic downforce and its induced drag
 - RPM and electronic speed limits
 
 The TCS indicator reports wheel slip. Maximum speed can be limited by available power, drag, the highest gear and redline, or the electronic limiter.
@@ -226,14 +257,15 @@ The lap model uses:
 
 - the dyno torque curve
 - automatic or custom gear ratios
-- final drive, wheel radius, redline, and speed limiter
-- mass and drivetrain losses
-- Cd, frontal area, and rolling resistance
-- tire grip and aerodynamic downforce
+- gearbox type, configured shift time, final drive, wheel radius, redline, and speed limiter
+- mass, engine location, weight distribution, wheelbase, centre-of-gravity height, differential behavior, and drivetrain losses
+- base/effective Cd, frontal area, aerodynamic efficiency, and rolling resistance
+- tire width and compound, suspension stiffness, ride height, and aerodynamic downforce
+- brake type, brake diameter, and ABS
 - the tire friction circle, so cornering reduces the grip available for acceleration or braking
 - backward passes to build braking zones before corners
 - forward passes to limit acceleration between track points
-- fixed shift-time penalties for upshifts and downshifts
+- the configured upshift time and a shorter derived downshift penalty
 
 The animation is accelerated so a long simulated lap does not require the same amount of real waiting time.
 
@@ -260,24 +292,28 @@ If the audio backend is unavailable, the simulator remains fully usable. Manual 
 
 Open **Settings** and use **Save engine / vehicle as...** to store the current build as JSON. Use **Load engine / vehicle...** in the same panel to restore one.
 
-The saved file includes engine settings, chassis settings, the selected vehicle preset, the custom-gearing toggle, and all individual gear-ratio values. Language and the km/h/mph display preference are interface settings rather than vehicle data. The speed limiter is stored canonically and converted for display when mph is selected.
+The v4.10.2 save format stores **Car / Project Name** and **Engine & Vehicle Preset** separately. It also includes all engine settings, the selected vehicle preset, the complete v4.10 vehicle-dynamics setup, the custom-gearing toggle, and every individual gear ratio. Language and the km/h/mph display preference are interface settings rather than vehicle data. The speed limiter is stored canonically and converted for display when mph is selected.
 
 When loading:
 
 - the simulator first restores safe factory defaults
-- a saved vehicle preset is applied as a base before the file's explicit chassis values are overlaid
+- project name and preset identity are restored independently
+- a saved vehicle preset is applied as a base before the file's explicit vehicle values are overlaid
 - saved values are validated against numeric ranges and allowed dropdown choices
 - Boolean fields must contain real JSON Boolean values rather than strings or numbers
-- older files that do not contain newer parameters receive sensible defaults
+- older files that do not contain newer v4.10 parameters receive compatible inferred/default values
+- Czech special preset identifiers saved by v4.10 or v4.10.1 are translated to the current English internal names
 - the old Boolean VVL format is converted automatically
 - invalid or malformed files restore the previous active build and show an in-app error overlay instead of leaving partially applied values
 
 ## 9. Troubleshooting
 
 - **One-off launch error in the prebuilt executable**: antivirus software may briefly lock an unsigned single-file executable during its first scan. Relaunch after the scan completes.
+- **The banner or custom icon is missing**: keep `automation_diy_banner.png`, `automation_diy_icon.png`, and `automation_diy_icon.ico` beside the source script, or include them with PyInstaller as shown in `README.md`. The simulator deliberately falls back to its text header if an asset is unavailable.
+- **Dyno reports an incomplete blank project/vehicle**: enter a project name and configure every required blank field, or load a complete Engine & Vehicle Preset.
 - **The app is stuck in fullscreen**: press **F11**. Pressing **Esc** from the Garage also leaves fullscreen.
 - **No live sound**: the simulations continue in silent mode. Run `pip install -r requirements.txt`, check PortAudio, and verify a working default output device.
 - **Test Drive or Track Simulation is disabled**: run a successful Dyno Pull first. A destroyed engine cannot be tested.
 - **The Dyno screen says the engine changed**: an engine parameter was edited after the last pull. Run a new Dyno Pull before opening dependent modes.
-- **Custom ratios are not visible**: enable **Fine-tune individual gear ratios** in the Drivetrain tab.
+- **Custom ratios are not visible**: enable **Fine-tune individual gear ratios** in the Vehicle & Drivetrain tab.
 - **A saved preset produces different performance after editing gears**: disable custom gearing or press **Load automatic ratios** to restore the original automatic set.
