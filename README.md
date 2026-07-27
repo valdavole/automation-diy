@@ -8,7 +8,7 @@ Build an engine from the crankshaft up, run it on a virtual dyno, test its cooli
 
 > **Current release: v4.10.2 — Branding Update**
 
-![Automation DIY banner](automation_diy_banner.png)
+![Automation DIY banner](automation_diy_banner_large.png)
 
 ## Features
 
