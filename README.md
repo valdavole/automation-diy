@@ -100,26 +100,6 @@ pyinstaller --noconfirm --clean --onefile --noconsole --name "Automation_DIY_4.1
 
 The finished file is `dist/Automation_DIY_4.10.2.exe`. Build it on Windows; PyInstaller creates bundles for the operating system and Python environment on which it is run.
 
-### Recommended GitHub layout
-
-Keep source files and documentation in the repository, but publish the generated `.exe` as an asset of the `v4.10.2` GitHub Release rather than committing build output.
-
-```text
-automation_diy_4.10.2.py
-automation_diy_banner.png
-automation_diy_icon.png
-automation_diy_icon.ico
-requirements.txt
-README.md
-README.cz.md
-CHANGELOG.md
-docs/
-  NAVOD.md
-  USER_GUIDE.md
-```
-
-Do not commit `build/`, `dist/`, `__pycache__/`, or the generated `Automation_DIY_4.10.2.spec` unless you intentionally maintain a custom spec file.
-
 ## Typical Workflow
 
 1. Enter a separate **Car / Project Name**.
